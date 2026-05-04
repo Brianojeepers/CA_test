@@ -105,3 +105,13 @@ python3 scripts/learning_outcomes.py
 The learning outcomes view shows curriculum changes, linked market evidence,
 release status, cohort exposure, outcome readiness, and monitor decisions that
 should not become learning modules yet.
+
+Run the concise monthly council packet:
+
+```bash
+python3 scripts/monthly_packet.py
+```
+
+The monthly packet summarizes data trust, KPI posture, signal posture, decisions
+needed, credential and learning work, and prediction follow-ups. Each section
+includes a drill-down command for granular review.
