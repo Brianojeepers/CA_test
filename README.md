@@ -70,6 +70,11 @@ python3 scripts/export_monthly_packet.py
 The generated file is written to `outputs/monthly_packet.md`. Generated files in
 `outputs/` are ignored by git except `outputs/.gitkeep`.
 
+Both monthly packet commands use
+`decision_spine.services.monthly_packet.build_monthly_packet()`, which returns
+structured data for future API and frontend consumption before rendering text or
+Markdown.
+
 Run the decision impact synthesis:
 
 ```bash

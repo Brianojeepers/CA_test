@@ -20,6 +20,7 @@ In scope:
 - Markdown operating documentation in `docs/`.
 - Regression tests in `tests/`.
 - Markdown packet export to `outputs/monthly_packet.md`.
+- Reusable Python service functions under `decision_spine/` for future API and UI use.
 - Pilot extract templates and dry-run validation.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
@@ -116,6 +117,13 @@ Core operating scripts:
 | `scripts/source_contract_review.py` | Gate real-data imports by source readiness and privacy posture. |
 | `scripts/validate_pilot_extract.py` | Dry-run pilot extract shape and privacy-risk checks. |
 
+Reusable service layer:
+
+| Service | Requirement |
+| --- | --- |
+| `decision_spine.services.monthly_packet.build_monthly_packet` | Return structured monthly-packet data for CLI, Markdown export, API, and future frontend consumption. |
+| `decision_spine.services.monthly_packet.render_monthly_packet_markdown` | Render the structured monthly packet to `outputs/monthly_packet.md` without duplicating calculation logic. |
+
 Stakeholder scripts:
 
 | Script | Stakeholder |
@@ -189,6 +197,7 @@ The MVP is in a valid local state when:
 - Real-data import remains blocked unless source contracts are green or explicitly pilot-approved.
 - Pilot extracts pass `scripts/validate_pilot_extract.py` before review.
 - Generated outputs are ignored by git.
+- Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 
 ## 10. Tests
 

@@ -29,7 +29,14 @@ def main() -> int:
         ("Run tests", [python, "-m", "unittest", "discover", "-s", "tests"], None),
         (
             "Compile scripts and tests",
-            [python, "-m", "py_compile", *sorted(map(str, ROOT.glob("scripts/*.py"))), *sorted(map(str, ROOT.glob("tests/*.py")))],
+            [
+                python,
+                "-m",
+                "py_compile",
+                *sorted(map(str, ROOT.glob("decision_spine/**/*.py"))),
+                *sorted(map(str, ROOT.glob("scripts/*.py"))),
+                *sorted(map(str, ROOT.glob("tests/*.py"))),
+            ],
             {**os.environ, "PYTHONPYCACHEPREFIX": PYCACHE_PREFIX},
         ),
     ]
