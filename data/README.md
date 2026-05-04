@@ -18,6 +18,7 @@ with real source data.
 | `cohort_outcomes.json` | Cohort-level placement and retention metrics for pre/post comparisons. |
 | `predictions.json` | Horizon predictions with six-month scoring fields. |
 | `pedagogy_map.json` | Optional pedagogical framing for selected learning, credential, and assessment changes. |
+| `source_contracts.json` | Source-owner, privacy, field, freshness, and readiness contracts for real-data pilot extracts. |
 
 The operating role accountable for turning this evidence into action is defined in
 `docs/signal_intelligence_council.md`.
@@ -31,6 +32,7 @@ The operating role accountable for turning this evidence into action is defined 
 | `cohort_id` | `releases.json`, `cohort_outcomes.json` |
 | `prediction_id` | `predictions.json` |
 | `pedagogy_id` | `pedagogy_map.json` |
+| `contract_id` | `source_contracts.json` |
 
 Pending releases may reference future cohort IDs that are not present in
 `cohort_outcomes.json` yet. The validator treats those as warnings, not failures.
@@ -156,3 +158,13 @@ python3 scripts/pedagogy_review.py
 The pedagogy review shows optional Bloom/Dreyfus/performance-evidence framing for
 selected decisions and releases. See `docs/pedagogical_framing.md` for the design
 rules behind this map.
+
+Run the real-data source contract review:
+
+```bash
+python3 scripts/source_contract_review.py
+```
+
+The source contract review shows which future source extracts are ready, blocked,
+or usable only for controlled manual sampling. See `docs/source_data_contracts.md`
+and `docs/real_data_readiness.md` before importing real data.

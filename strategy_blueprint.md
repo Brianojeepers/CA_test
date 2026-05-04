@@ -32,6 +32,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/signal_review.py` for signal-to-action review: act now, act tracked, monitor, do not act.
 - `scripts/credential_requirements.py` for Assessment Ops credential and assessment actions.
 - `docs/real_data_readiness.md` for the controlled path from synthetic seed data to real pilot extracts.
+- `docs/source_data_contracts.md` and `scripts/source_contract_review.py` for source-owner, privacy, field, freshness, and pilot-readiness contracts before real data is imported.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
 

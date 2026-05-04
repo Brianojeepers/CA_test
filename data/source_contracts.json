@@ -1,0 +1,156 @@
+[
+  {
+    "contract_id": "SRC-2026-001",
+    "data_domain": "market_signals",
+    "candidate_source": "Summarized job market, client demand, and external research evidence",
+    "source_owner": "Research",
+    "privacy_owner": "Commercial Operations",
+    "feeds_files": ["signals.json", "predictions.json"],
+    "minimum_grain": "Summarized signal theme by role archetype, geography, client segment, and horizon window",
+    "required_fields": [
+      "source_date",
+      "signal_theme",
+      "signal_type",
+      "role_archetype",
+      "horizon_window",
+      "geography",
+      "client_segment",
+      "source_classes",
+      "score_components",
+      "confidence",
+      "summary"
+    ],
+    "privacy_posture": "Use summarized evidence only; exclude client names, raw RFP text, and account-specific commercial details unless explicitly approved.",
+    "freshness_sla": "Monthly pilot refresh; weekly once automated ingestion is approved.",
+    "pilot_status": "candidate",
+    "readiness": "amber",
+    "blockers": [
+      "No approved source owner for sales-note or RFP summaries.",
+      "Scoring rubric needs calibration against real examples."
+    ],
+    "next_action": "Select 5-10 real demand signals and manually summarize them into the seed schema for privacy review."
+  },
+  {
+    "contract_id": "SRC-2026-002",
+    "data_domain": "decision_log",
+    "candidate_source": "Signal Intelligence Council decision register",
+    "source_owner": "Council Chair",
+    "privacy_owner": "Council Chair",
+    "feeds_files": ["decisions.json"],
+    "minimum_grain": "One row per approved, monitor, rejected, or deferred decision",
+    "required_fields": [
+      "decision_signed_date",
+      "linked_signal_ids",
+      "decision_type",
+      "decision_status",
+      "owner",
+      "partner_functions",
+      "decision_summary",
+      "rationale",
+      "alternatives_considered",
+      "complexity_tier"
+    ],
+    "privacy_posture": "Store decision rationale and alternatives, not private stakeholder comments or raw meeting transcripts.",
+    "freshness_sla": "Updated within two business days of each council decision.",
+    "pilot_status": "needs_owner_confirmation",
+    "readiness": "amber",
+    "blockers": [
+      "Canonical decision register is not confirmed.",
+      "Decision status definitions need council sign-off."
+    ],
+    "next_action": "Confirm where the council decision log will live and who owns final decision IDs."
+  },
+  {
+    "contract_id": "SRC-2026-003",
+    "data_domain": "release_log",
+    "candidate_source": "Curriculum version log, assessment rubric log, credential requirements log, and LMS release notes",
+    "source_owner": "Academy Operations",
+    "privacy_owner": "Academy Operations",
+    "feeds_files": ["releases.json", "pedagogy_map.json"],
+    "minimum_grain": "One row per market-traceable curriculum, credential, assessment, or positioning release",
+    "required_fields": [
+      "decision_id",
+      "release_date",
+      "release_status",
+      "change_type",
+      "change_scope",
+      "programme",
+      "artifact",
+      "cohort_id",
+      "market_traceable",
+      "linked_signal_ids"
+    ],
+    "privacy_posture": "No learner-level records; release notes should describe artifacts and cohorts at programme level.",
+    "freshness_sla": "Updated before a change is announced as released.",
+    "pilot_status": "candidate",
+    "readiness": "amber",
+    "blockers": [
+      "Definition of released vs pilot vs pending needs to be consistent across curriculum and assessment teams."
+    ],
+    "next_action": "Collect 2-4 real release examples and test whether each can link to a decision and cohort."
+  },
+  {
+    "contract_id": "SRC-2026-004",
+    "data_domain": "cohort_outcomes",
+    "candidate_source": "Aggregated Matching, placement, retention, and CSM outcome records",
+    "source_owner": "Matching Operations",
+    "privacy_owner": "Talent Data Privacy",
+    "feeds_files": ["cohort_outcomes.json"],
+    "minimum_grain": "Aggregated cohort or programme segment with no individual talent identifiers",
+    "required_fields": [
+      "programme",
+      "archetype",
+      "credential_tier",
+      "cohort_start_date",
+      "credential_issued_date",
+      "eligible_for_placement",
+      "placed_within_60_days",
+      "placement_rate",
+      "placements_started",
+      "active_and_satisfactory_at_day_90",
+      "retention_90d_rate",
+      "client_csat_avg",
+      "change_exposure",
+      "baseline_period",
+      "data_confidence"
+    ],
+    "privacy_posture": "Aggregate outcomes, remove individual identifiers, and suppress or label small-n cohorts before import.",
+    "freshness_sla": "Monthly pilot refresh after placement and 90-day retention windows close.",
+    "pilot_status": "privacy_review_required",
+    "readiness": "red",
+    "blockers": [
+      "Minimum aggregation threshold needs approval.",
+      "Client satisfaction availability and safe aggregation are not confirmed.",
+      "Pilot storage location for real outcomes is not agreed."
+    ],
+    "next_action": "Run privacy review for 2-4 anonymized cohort outcome rows before storing any real extract."
+  },
+  {
+    "contract_id": "SRC-2026-005",
+    "data_domain": "prediction_register",
+    "candidate_source": "Council horizon review and research prediction register",
+    "source_owner": "Research",
+    "privacy_owner": "Council Chair",
+    "feeds_files": ["predictions.json"],
+    "minimum_grain": "One time-bound horizon claim with linked signals and scoring criteria",
+    "required_fields": [
+      "issued_date",
+      "scoring_date",
+      "linked_signal_ids",
+      "prediction_statement",
+      "horizon_window",
+      "confidence",
+      "confirming_criterion",
+      "contradicting_criterion",
+      "outcome",
+      "accuracy_score",
+      "learning_notes"
+    ],
+    "privacy_posture": "Use market claims and scoring criteria; avoid confidential client pipeline details unless summarized and approved.",
+    "freshness_sla": "Created during monthly council review; scored at the agreed horizon date.",
+    "pilot_status": "candidate",
+    "readiness": "green",
+    "blockers": [],
+    "next_action": "Add 3-5 real horizon predictions with confirming and contradicting criteria before the next council packet."
+  }
+]

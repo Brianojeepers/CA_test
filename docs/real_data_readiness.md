@@ -12,7 +12,7 @@ The goal is not to ingest everything. The goal is to run a small, safe pilot tha
 | --- | --- |
 | Product workflow | Safe to test with synthetic seed data. |
 | KPI logic | Safe to test with synthetic seed data. |
-| Real source mapping | Not defined yet. |
+| Real source mapping | Draft source contracts defined in `data/source_contracts.json`. |
 | Privacy and sensitivity review | Required before real extracts. |
 | Production integration | Out of scope for the current MVP. |
 
@@ -66,6 +66,18 @@ This is enough to test traceability and KPI behavior without creating a broad da
 | Client/commercial owner | Confirms client demand evidence can be summarized safely. |
 | Talent/data privacy owner | Confirms outcome data is anonymized and aggregated enough. |
 | Council owner | Confirms the extract supports real operating decisions. |
+
+## Source Contracts
+
+Before importing real data, review `docs/source_data_contracts.md` and run:
+
+```bash
+python3 scripts/source_contract_review.py
+```
+
+The current contract register keeps real source readiness separate from seed-data
+validity. A source can have useful candidate fields and still be blocked by
+privacy, aggregation, ownership, or freshness rules.
 
 ## Pilot Rules
 

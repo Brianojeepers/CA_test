@@ -183,6 +183,7 @@ def validate_all() -> ValidationResult:
         cohorts = load_json("cohort_outcomes.json")
         predictions = load_json("predictions.json")
         pedagogy = load_optional_json("pedagogy_map.json")
+        source_contracts = load_optional_json("source_contracts.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -194,6 +195,8 @@ def validate_all() -> ValidationResult:
     require_unique_ids(result, "predictions.json", predictions, "prediction_id")
     if pedagogy:
         require_unique_ids(result, "pedagogy_map.json", pedagogy, "pedagogy_id")
+    if source_contracts:
+        require_unique_ids(result, "source_contracts.json", source_contracts, "contract_id")
 
     require_fields(
         result,
@@ -325,6 +328,29 @@ def validate_all() -> ValidationResult:
             },
             "pedagogy_id",
         )
+    if source_contracts:
+        require_fields(
+            result,
+            "source_contracts.json",
+            source_contracts,
+            {
+                "contract_id",
+                "data_domain",
+                "candidate_source",
+                "source_owner",
+                "privacy_owner",
+                "feeds_files",
+                "minimum_grain",
+                "required_fields",
+                "privacy_posture",
+                "freshness_sla",
+                "pilot_status",
+                "readiness",
+                "blockers",
+                "next_action",
+            },
+            "contract_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -437,6 +463,53 @@ def validate_all() -> ValidationResult:
                 "decision_id",
                 "learning or credential decision has no pedagogy mapping yet",
             )
+
+    expected_files = {
+        "signals.json",
+        "decisions.json",
+        "releases.json",
+        "cohort_outcomes.json",
+        "predictions.json",
+        "pedagogy_map.json",
+    }
+    for contract in source_contracts:
+        cid = record_id(contract, "contract_id")
+        if contract.get("readiness") not in {"green", "amber", "red"}:
+            result.error(
+                "source_contracts.json",
+                cid,
+                "readiness",
+                "expected one of ['amber', 'green', 'red']",
+            )
+        for field_name in ("feeds_files", "required_fields", "blockers"):
+            value = contract.get(field_name)
+            if not isinstance(value, list):
+                result.error("source_contracts.json", cid, field_name, "must be a list")
+        feeds_files = contract.get("feeds_files")
+        if isinstance(feeds_files, list):
+            for filename in feeds_files:
+                if filename not in expected_files:
+                    result.warning(
+                        "source_contracts.json",
+                        cid,
+                        "feeds_files",
+                        f"file is not part of current MVP schema: {filename!r}",
+                    )
+        for field_name in (
+            "data_domain",
+            "candidate_source",
+            "source_owner",
+            "privacy_owner",
+            "minimum_grain",
+            "privacy_posture",
+            "freshness_sla",
+            "pilot_status",
+            "next_action",
+        ):
+            if field_name in contract and (
+                not isinstance(contract[field_name], str) or not contract[field_name].strip()
+            ):
+                result.error("source_contracts.json", cid, field_name, "must be a non-empty string")
 
     for prediction in predictions:
         rid = record_id(prediction, "prediction_id")
