@@ -115,3 +115,12 @@ python3 scripts/monthly_packet.py
 The monthly packet summarizes data trust, KPI posture, signal posture, decisions
 needed, credential and learning work, and prediction follow-ups. Each section
 includes a drill-down command for granular review.
+
+Run the stakeholder-facing decision changelog:
+
+```bash
+python3 scripts/decision_changelog.py
+```
+
+The decision changelog lists released changes, pending changes, monitor/no-change
+decisions, and any approved decisions missing a release record.
