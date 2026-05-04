@@ -184,6 +184,17 @@ and cohort, including pending evidence, insufficient samples, suppression flags,
 and next actions. See `docs/learner_evidence_model.md` for the privacy-safe
 evidence model.
 
+Run the decision impact review:
+
+```bash
+python3 scripts/decision_impact_review.py
+```
+
+The decision impact review classifies approved decisions as too early, emerging,
+positive, needing attention, or missing outcome data by joining implementation,
+competency, learner evidence, outcome, and prediction records. See
+`docs/decision_impact_model.md` for interpretation rules.
+
 Run the real-data source contract review:
 
 ```bash

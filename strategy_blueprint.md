@@ -75,6 +75,7 @@ Pedagogical translation is defined in `docs/pedagogical_framing.md`. Bloom's tax
 The local MVP now tests this as optional structured data in `data/pedagogy_map.json`, reviewed through `scripts/pedagogy_review.py`, before making pedagogical labels mandatory across every curriculum or credential record.
 The first competency ontology lives in `data/role_competencies.json` and is reviewed through `scripts/competency_gap_review.py`; it links role archetypes to competency clusters, market signals, decisions, releases, and gap hypotheses.
 Aggregated proficiency evidence lives in `data/learner_evidence_summary.json` and is reviewed through `scripts/proficiency_readiness_review.py`; it checks whether cohorts can demonstrate the competencies without storing learner-level records.
+Decision impact synthesis is reviewed through `scripts/decision_impact_review.py`; it combines implementation, readiness, outcomes, and prediction context to decide whether a council decision is too early, promising, positive, or needs attention.
 
 ## 4) Intelligence features to implement
 
