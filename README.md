@@ -55,6 +55,15 @@ Run the core operating packet:
 python3 scripts/monthly_packet.py
 ```
 
+Export a shareable Markdown packet:
+
+```bash
+python3 scripts/export_monthly_packet.py
+```
+
+The generated file is written to `outputs/monthly_packet.md`. Generated files in
+`outputs/` are ignored by git except `outputs/.gitkeep`.
+
 Run the decision impact synthesis:
 
 ```bash
@@ -86,6 +95,7 @@ outcome data exists.
 | `scripts/council_review.py` | Council decision, release, traceability, and prediction queues. |
 | `scripts/signal_review.py` | Signal triage: act, monitor, or exclude. |
 | `scripts/monthly_packet.py` | Concise council packet with drill-down commands. |
+| `scripts/export_monthly_packet.py` | Writes `outputs/monthly_packet.md` for sharing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
 | `scripts/proficiency_readiness_review.py` | Aggregated learner evidence by competency and cohort. |
