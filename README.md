@@ -49,6 +49,12 @@ Run the full local check suite:
 python3 scripts/run_checks.py
 ```
 
+Validate pilot extract templates:
+
+```bash
+python3 scripts/validate_pilot_extract.py data/pilot_extract_templates
+```
+
 Run the core operating packet:
 
 ```bash
@@ -78,6 +84,9 @@ Run:
 python3 scripts/run_checks.py
 ```
 
+This includes seed-data validation, pilot-template dry-run validation, regression
+tests, and compile checks.
+
 Expected current validation warning:
 
 ```text
@@ -100,6 +109,7 @@ outcome data exists.
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
 | `scripts/proficiency_readiness_review.py` | Aggregated learner evidence by competency and cohort. |
 | `scripts/source_contract_review.py` | Real-data source readiness and privacy gate. |
+| `scripts/validate_pilot_extract.py` | Dry-run validator for pilot extract templates or ignored local extracts. |
 
 More stakeholder-specific scripts are documented in `data/README.md`.
 
@@ -111,6 +121,7 @@ Real data should enter only through a controlled, privacy-reviewed pilot extract
 See:
 
 - `docs/real_data_readiness.md`
+- `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
 - `data/source_contracts.json`
 

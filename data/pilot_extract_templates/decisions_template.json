@@ -1,0 +1,14 @@
+[
+  {
+    "decision_signed_date": "2026-05-08",
+    "linked_signal_ids": ["SIG-PILOT-001"],
+    "decision_type": "curriculum",
+    "decision_status": "approved",
+    "owner": "Signal Intelligence Council",
+    "partner_functions": ["Learning", "Assessment Ops"],
+    "decision_summary": "Short approved decision summary.",
+    "rationale": "Short rationale using summarized evidence only.",
+    "alternatives_considered": ["Monitor", "Defer"],
+    "complexity_tier": "medium"
+  }
+]

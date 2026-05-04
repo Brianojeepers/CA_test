@@ -79,6 +79,24 @@ The current contract register keeps real source readiness separate from seed-dat
 validity. A source can have useful candidate fields and still be blocked by
 privacy, aggregation, ownership, or freshness rules.
 
+## Pilot Extract Templates
+
+Pilot extract templates live in:
+
+```text
+data/pilot_extract_templates/
+```
+
+Local pilot extracts should live in ignored `data/pilot_extracts/`.
+
+Before any pilot extract is reviewed for import, run:
+
+```bash
+python3 scripts/validate_pilot_extract.py data/pilot_extracts
+```
+
+See `docs/pilot_extract_process.md` for the full dry-run process.
+
 ## Pilot Rules
 
 - Keep synthetic seed data available for tests and demos.

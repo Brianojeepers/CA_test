@@ -1,0 +1,19 @@
+[
+  {
+    "programme": "AI Builder",
+    "archetype": "Builder",
+    "credential_tier": "AI Certified",
+    "cohort_start_date": "2026-05-01",
+    "credential_issued_date": "2026-06-15",
+    "eligible_for_placement": 30,
+    "placed_within_60_days": null,
+    "placement_rate": null,
+    "placements_started": null,
+    "active_and_satisfactory_at_day_90": null,
+    "retention_90d_rate": null,
+    "client_csat_avg": null,
+    "change_exposure": "post_change",
+    "baseline_period": "Prior comparable cohorts",
+    "data_confidence": "low"
+  }
+]

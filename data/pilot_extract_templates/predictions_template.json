@@ -1,0 +1,15 @@
+[
+  {
+    "issued_date": "2026-05-08",
+    "scoring_date": "2026-11-08",
+    "linked_signal_ids": ["SIG-PILOT-001"],
+    "prediction_statement": "Time-bound falsifiable market claim.",
+    "horizon_window": "3-9 months",
+    "confidence": "medium",
+    "confirming_criterion": "Specific evidence that would confirm this prediction.",
+    "contradicting_criterion": "Specific evidence that would contradict this prediction.",
+    "outcome": "pending",
+    "accuracy_score": null,
+    "learning_notes": "Leave pending until scoring date."
+  }
+]

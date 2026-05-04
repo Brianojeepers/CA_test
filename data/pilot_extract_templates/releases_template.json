@@ -1,0 +1,14 @@
+[
+  {
+    "decision_id": "DEC-PILOT-001",
+    "release_date": null,
+    "release_status": "in_progress",
+    "change_type": "curriculum_module",
+    "change_scope": "learning_outcome",
+    "programme": "AI Builder",
+    "artifact": "Pilot Artifact Name",
+    "cohort_id": "COH-PILOT-001",
+    "market_traceable": true,
+    "linked_signal_ids": ["SIG-PILOT-001"]
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "competency_id": "COMP-PILOT-001",
+    "cohort_id": "COH-PILOT-001",
+    "programme": "AI Builder",
+    "role_archetype": "Builder",
+    "evidence_type": "assessment_artifact",
+    "evidence_window": "2026-06",
+    "sample_size": 30,
+    "meets_threshold_count": null,
+    "readiness_rate": null,
+    "readiness_level": "pending",
+    "evidence_confidence": "low",
+    "privacy_posture": "aggregated",
+    "suppression_applied": false,
+    "evidence_summary": "Aggregated evidence summary only. Do not include raw submissions or reviewer comments.",
+    "next_action": "Score aggregate after review window closes."
+  }
+]

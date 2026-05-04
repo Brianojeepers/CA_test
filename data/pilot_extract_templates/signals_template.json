@@ -1,0 +1,20 @@
+[
+  {
+    "source_date": "2026-05-01",
+    "signal_theme": "Enterprise AI workflow evaluation",
+    "signal_type": "capability",
+    "role_archetype": "Builder",
+    "horizon_window": "0-3 months",
+    "geography": "Global",
+    "client_segment": "Enterprise SaaS",
+    "source_classes": ["client_rfp", "job_postings"],
+    "score_components": {
+      "source_diversity_score": 60,
+      "recency_score": 90,
+      "corroboration_score": 70,
+      "commercial_pull_score": 100
+    },
+    "confidence": "medium",
+    "summary": "Summarized demand evidence only. Do not include client names, raw RFP text, or account details."
+  }
+]

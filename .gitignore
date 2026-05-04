@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 outputs/*
 !outputs/.gitkeep
+data/pilot_extracts/*
+!data/pilot_extracts/.gitkeep

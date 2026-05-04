@@ -20,6 +20,7 @@ In scope:
 - Markdown operating documentation in `docs/`.
 - Regression tests in `tests/`.
 - Markdown packet export to `outputs/monthly_packet.md`.
+- Pilot extract templates and dry-run validation.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -61,9 +62,13 @@ Primary seed files:
 
 Detailed field-level contribution rules live in `data/README.md`.
 
+Pilot extract templates live in `data/pilot_extract_templates/`. Local real-data
+pilot extracts should live in ignored `data/pilot_extracts/`.
+
 Real-data readiness and source obligations live in:
 
 - `docs/real_data_readiness.md`
+- `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
 - `data/source_contracts.json`
 
@@ -109,6 +114,7 @@ Core operating scripts:
 | `scripts/export_monthly_packet.py` | Write `outputs/monthly_packet.md`. |
 | `scripts/decision_impact_review.py` | Classify approved decisions by impact maturity. |
 | `scripts/source_contract_review.py` | Gate real-data imports by source readiness and privacy posture. |
+| `scripts/validate_pilot_extract.py` | Dry-run pilot extract shape and privacy-risk checks. |
 
 Stakeholder scripts:
 
@@ -181,6 +187,7 @@ The MVP is in a valid local state when:
 - Only known intentional validation warnings remain.
 - The original 17 user stories have script or documentation coverage.
 - Real-data import remains blocked unless source contracts are green or explicitly pilot-approved.
+- Pilot extracts pass `scripts/validate_pilot_extract.py` before review.
 - Generated outputs are ignored by git.
 
 ## 10. Tests

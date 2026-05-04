@@ -8,6 +8,10 @@ Real data should be introduced only through a controlled, privacy-reviewed pilot
 See `docs/real_data_readiness.md` before replacing or supplementing these seed files
 with real source data.
 
+Pilot extract templates live in `data/pilot_extract_templates/`. Local pilot
+extracts should live in ignored `data/pilot_extracts/` and pass
+`python3 scripts/validate_pilot_extract.py data/pilot_extracts` before review.
+
 ## Files
 
 | File | Purpose |

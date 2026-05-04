@@ -25,6 +25,7 @@ def main() -> int:
     python = sys.executable
     steps = [
         ("Validate data", [python, "scripts/validate_data.py"], None),
+        ("Validate pilot templates", [python, "scripts/validate_pilot_extract.py", "data/pilot_extract_templates"], None),
         ("Run tests", [python, "-m", "unittest", "discover", "-s", "tests"], None),
         (
             "Compile scripts and tests",
