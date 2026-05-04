@@ -76,3 +76,12 @@ python3 scripts/council_review.py
 
 The council review surfaces decision queues, release accountability, traceability
 checks, and prediction follow-ups for monthly operating review.
+
+Run the signal-to-action review:
+
+```bash
+python3 scripts/signal_review.py
+```
+
+The signal review groups evidence into act now, act tracked, monitor, and do not
+act buckets with linked decisions, releases, implications, and next steps.
