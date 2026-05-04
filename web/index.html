@@ -56,6 +56,19 @@
             <div id="impact-filter" class="segmented" aria-label="Filter decisions by impact status"></div>
           </div>
 
+          <section class="controls-panel" aria-label="Decision filters">
+            <label>
+              Search
+              <input id="decision-search" type="search" placeholder="Decision, signal, release, owner..." />
+            </label>
+            <label>
+              Owner
+              <select id="owner-filter">
+                <option value="all">All owners</option>
+              </select>
+            </label>
+          </section>
+
           <section class="impact-visual" aria-label="Decision impact distribution">
             <div id="impact-bars" class="impact-bars"></div>
           </section>
@@ -91,6 +104,11 @@
             <div id="decision-detail" class="decision-detail">
               Select a decision row to inspect the traceability summary.
             </div>
+          </section>
+
+          <section class="panel">
+            <p class="eyebrow">Data warnings</p>
+            <div id="warning-list" class="warning-list"></div>
           </section>
         </aside>
       </section>

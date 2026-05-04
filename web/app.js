@@ -9,9 +9,24 @@ const statusLabels = {
   no_outcome_data: "No outcome data",
 };
 
+const statusExplanations = {
+  positive_signal:
+    "Evidence and outcomes are directionally positive enough to consider amplification while monitoring retention.",
+  evidence_emerging:
+    "Learner evidence is promising, but placement, retention, or confidence is not mature enough for a stronger claim.",
+  too_early:
+    "Implementation, learner evidence, or outcome windows have not matured enough to judge impact.",
+  needs_attention:
+    "Evidence, sample size, suppression, release quality, or outcomes indicate a risk that needs review.",
+  no_outcome_data:
+    "Traceability exists, but learner evidence or cohort outcomes are not yet linked.",
+};
+
 let packet = null;
 let selectedDecisionId = null;
 let activeFilter = "all";
+let activeOwner = "all";
+let searchQuery = "";
 let decisionDetails = {};
 
 function formatPercent(value) {
@@ -101,6 +116,18 @@ function renderFilters() {
   });
 }
 
+function renderOwnerFilter() {
+  const owners = [...new Set(packet.decision_impact.rows.map((row) => row.owner))].sort();
+  const select = document.getElementById("owner-filter");
+  select.innerHTML = [
+    '<option value="all">All owners</option>',
+    ...owners.map((owner) => {
+      const selected = owner === activeOwner ? "selected" : "";
+      return `<option value="${escapeHtml(owner)}" ${selected}>${escapeHtml(owner)}</option>`;
+    }),
+  ].join("");
+}
+
 function renderImpactBars() {
   const counts = packet.decision_impact.counts;
   const max = Math.max(...Object.values(counts), 1);
@@ -121,8 +148,29 @@ function renderImpactBars() {
 }
 
 function filteredRows() {
-  if (activeFilter === "all") return packet.decision_impact.rows;
-  return packet.decision_impact.rows.filter((row) => row.status === activeFilter);
+  return packet.decision_impact.rows.filter((row) => {
+    if (activeFilter !== "all" && row.status !== activeFilter) return false;
+    if (activeOwner !== "all" && row.owner !== activeOwner) return false;
+    if (!searchQuery) return true;
+    const detail = decisionDetails[row.decision_id];
+    const haystack = [
+      row.decision_id,
+      row.status,
+      row.owner,
+      row.summary,
+      row.decision_type,
+      ...row.release_refs.flatMap((release) => [release.release_id, release.status]),
+      ...(detail?.signals ?? []).flatMap((signal) => [signal.signal_id, signal.signal_theme]),
+      ...(detail?.competencies ?? []).flatMap((competency) => [
+        competency.competency_id,
+        competency.competency_cluster,
+        competency.capability,
+      ]),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(searchQuery);
+  });
 }
 
 function renderDecisionTable() {
@@ -147,12 +195,16 @@ function renderDecisionTable() {
 
   document.querySelectorAll("[data-decision-id]").forEach((row) => {
     row.addEventListener("click", () => {
-      selectedDecisionId = row.dataset.decisionId;
-      renderDecisionTable();
-      renderDecisionDetail();
-      loadDecisionDetail(selectedDecisionId);
+      selectDecision(row.dataset.decisionId);
     });
   });
+}
+
+function selectDecision(decisionId) {
+  selectedDecisionId = decisionId;
+  renderDecisionTable();
+  renderDecisionDetail();
+  loadDecisionDetail(selectedDecisionId);
 }
 
 function renderActions() {
@@ -162,8 +214,18 @@ function renderActions() {
     return;
   }
   list.innerHTML = packet.actions
-    .map((action) => `<div class="action-item ${action.severity}">${action.text}</div>`)
+    .map((action) => {
+      const decisionId = action.decision_id || "";
+      const clickable = decisionId ? "clickable" : "";
+      const dataAttr = decisionId ? `data-action-decision-id="${escapeHtml(decisionId)}"` : "";
+      return `<button class="action-item ${action.severity} ${clickable}" type="button" ${dataAttr}>${escapeHtml(action.text)}</button>`;
+    })
     .join("");
+  document.querySelectorAll("[data-action-decision-id]").forEach((item) => {
+    item.addEventListener("click", () => {
+      selectDecision(item.dataset.actionDecisionId);
+    });
+  });
 }
 
 async function loadDecisionDetail(decisionId) {
@@ -230,6 +292,10 @@ function renderDecisionDetail() {
       <span>${trace.evidence_count} evidence rows</span>
     </div>
     <section class="trace-section">
+      <h3>Why this status?</h3>
+      <p>${escapeHtml(statusExplanations[row.status])}</p>
+    </section>
+    <section class="trace-section">
       <h3>Rationale</h3>
       <p>${escapeHtml(decision.rationale)}</p>
     </section>
@@ -272,6 +338,18 @@ function renderDecisionDetail() {
   `;
 }
 
+function renderWarnings() {
+  const warnings = packet.data_trust.warnings;
+  const list = document.getElementById("warning-list");
+  if (!warnings.length) {
+    list.innerHTML = "<p>No validation warnings.</p>";
+    return;
+  }
+  list.innerHTML = warnings
+    .map((warning) => `<div class="warning-item">${escapeHtml(warning)}</div>`)
+    .join("");
+}
+
 function renderDrilldowns() {
   document.getElementById("drilldowns").innerHTML = packet.stakeholder_drilldowns
     .map(
@@ -294,13 +372,23 @@ function renderKnownLimits() {
 function render() {
   renderSummary();
   renderFilters();
+  renderOwnerFilter();
   renderImpactBars();
   renderDecisionTable();
   renderActions();
   renderDecisionDetail();
   renderDrilldowns();
   renderKnownLimits();
+  renderWarnings();
 }
 
 document.getElementById("refresh-button").addEventListener("click", loadPacket);
+document.getElementById("decision-search").addEventListener("input", (event) => {
+  searchQuery = event.target.value.trim().toLowerCase();
+  renderDecisionTable();
+});
+document.getElementById("owner-filter").addEventListener("change", (event) => {
+  activeOwner = event.target.value;
+  renderDecisionTable();
+});
 loadPacket();
