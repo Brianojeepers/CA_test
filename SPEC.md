@@ -22,6 +22,7 @@ In scope:
 - Markdown packet export to `outputs/monthly_packet.md`.
 - Reusable Python service functions under `decision_spine/` for future API and UI use.
 - FastAPI boundary under `app/api/` for structured JSON access to service-layer data.
+- Static first-pass dashboard prototype under `web/` for stakeholder workflow discovery.
 - Pilot extract templates and dry-run validation.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
@@ -132,6 +133,13 @@ API surface:
 | `GET /api/health` | Return API health as `{ "status": "ok" }`. |
 | `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
 
+Frontend prototype:
+
+| Surface | Requirement |
+| --- | --- |
+| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, drill-downs, and known limits. |
+| `web/app.js` | Fetch `GET /api/monthly-packet` and support filtering/selecting decision impact records. |
+
 Stakeholder scripts:
 
 | Script | Stakeholder |
@@ -207,6 +215,7 @@ The MVP is in a valid local state when:
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
+- The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 
 ## 10. Tests
 

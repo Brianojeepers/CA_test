@@ -98,6 +98,15 @@ The first API endpoints are:
 - `GET /api/health`
 - `GET /api/monthly-packet`
 
+Run the first stakeholder dashboard prototype:
+
+```bash
+python3 -m http.server 3000 --directory web
+```
+
+Open `http://127.0.0.1:3000`. The page consumes
+`http://127.0.0.1:8000/api/monthly-packet`.
+
 ## Before Committing
 
 Run:

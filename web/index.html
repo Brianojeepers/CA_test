@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decision Spine Monthly Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Decision Spine</p>
+        <h1>Monthly Council Dashboard</h1>
+      </div>
+      <div class="topbar-actions">
+        <span id="generated-date" class="meta-pill">Loading</span>
+        <button id="refresh-button" class="button" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section id="status-banner" class="status-banner" aria-live="polite">
+        Connecting to the API...
+      </section>
+
+      <section class="summary-grid" aria-label="Executive summary">
+        <article class="metric-card">
+          <span class="metric-label">Data Trust</span>
+          <strong id="data-trust">-</strong>
+          <small id="data-warning">Waiting for validation status</small>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Signal Strength</span>
+          <strong id="signal-average">-</strong>
+          <small id="signal-mix">Green 0 / Amber 0 / Red 0</small>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Prediction Accuracy</span>
+          <strong id="prediction-accuracy">-</strong>
+          <small id="prediction-scored">0 scored predictions</small>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Actions</span>
+          <strong id="action-count">-</strong>
+          <small>Items needing council attention</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <section class="main-column">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Decision impact</p>
+              <h2>What is ready, early, or blocked?</h2>
+            </div>
+            <div id="impact-filter" class="segmented" aria-label="Filter decisions by impact status"></div>
+          </div>
+
+          <section class="impact-visual" aria-label="Decision impact distribution">
+            <div id="impact-bars" class="impact-bars"></div>
+          </section>
+
+          <section class="table-panel" aria-label="Decision impact table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Decision</th>
+                  <th>Status</th>
+                  <th>Owner</th>
+                  <th>Releases</th>
+                </tr>
+              </thead>
+              <tbody id="decision-table"></tbody>
+            </table>
+          </section>
+        </section>
+
+        <aside class="side-column">
+          <section class="panel">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Action queue</p>
+                <h2>Needs attention</h2>
+              </div>
+            </div>
+            <div id="action-list" class="action-list"></div>
+          </section>
+
+          <section class="panel">
+            <p class="eyebrow">Selected decision</p>
+            <div id="decision-detail" class="decision-detail">
+              Select a decision row to inspect the traceability summary.
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="lower-grid">
+        <section class="panel">
+          <p class="eyebrow">Stakeholder drill-downs</p>
+          <div id="drilldowns" class="drilldown-grid"></div>
+        </section>
+
+        <section class="panel">
+          <p class="eyebrow">Known limits</p>
+          <ul id="known-limits" class="limit-list"></ul>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
