@@ -26,6 +26,9 @@ REQUIRED_IDS = {
     "view-scope-count",
     "view-action-count",
     "stakeholder-insights",
+    "v02-intelligence-summary",
+    "v02-intelligence-guardrails",
+    "v02-intelligence-list",
     "data-trust",
     "data-warning",
     "signal-average",
@@ -87,6 +90,7 @@ REQUIRED_FILES = [
     "render/stakeholderBrief.js",
     "render/summary.js",
     "render/table.js",
+    "render/v02Intelligence.js",
     "render/views.js",
     "render/warnings.js",
 ]
@@ -130,7 +134,7 @@ def check_html_contract(errors: list[str]) -> None:
 
 def check_api_contract(errors: list[str]) -> None:
     api_js = (WEB_DIR / "api.js").read_text(encoding="utf-8")
-    for endpoint in ("/monthly-packet", "/schema-gap", "/decisions/"):
+    for endpoint in ("/monthly-packet", "/schema-gap", "/v02-intelligence", "/decisions/"):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
     for token in ("updateSchemaAction", "PATCH"):
@@ -265,6 +269,30 @@ def check_schema_gap_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing schema gap style: {token}")
 
 
+def check_v02_intelligence_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    v02_js = (WEB_DIR / "render" / "v02Intelligence.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("fetchV02Intelligence", "renderV02Intelligence", "v02Intelligence"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing v0.2 intelligence token: {token}")
+
+    for token in (
+        "v02-intelligence-summary",
+        "v02-intelligence-guardrails",
+        "v02-intelligence-list",
+        "directional_findings",
+        "Hard recommendations are disabled",
+    ):
+        if token not in v02_js:
+            errors.append(f"web/render/v02Intelligence.js is missing v0.2 intelligence token: {token}")
+
+    for token in (".v02-intelligence-list", ".v02-card", ".v02-guardrails", ".v02-finding-list"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing v0.2 intelligence style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -294,6 +322,7 @@ def main() -> int:
         check_stakeholder_brief_contract(errors)
         check_review_diff_contract(errors)
         check_schema_gap_contract(errors)
+        check_v02_intelligence_contract(errors)
         check_js_syntax(errors)
 
     if errors:

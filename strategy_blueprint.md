@@ -41,6 +41,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/credential_requirements.py` for Assessment Ops credential and assessment actions.
 - `docs/real_data_readiness.md` for the controlled path from synthetic seed data to real pilot extracts.
 - `docs/source_data_contracts.md` and `scripts/source_contract_review.py` for source-owner, privacy, field, freshness, and pilot-readiness contracts before real data is imported.
+- `scripts/v02_intelligence_preview.py` for directional role-demand, competency-gap, horizon, and curriculum-impact previews that keep hard recommendations disabled until fields and sources are ready.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -61,6 +62,10 @@ v0.2 should add:
 The first implementation of this boundary is `scripts/schema_gap_review.py`. It
 does not claim the new intelligence features are solved; it tells us which fields
 and source agreements are missing before those features can be trustworthy.
+The next implementation layer is `scripts/v02_intelligence_preview.py`: it shows
+what the current MVP can say directionally about role demand, competency gaps,
+horizon signals, and curriculum impact while preserving explicit "do not claim
+yet" guardrails.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**

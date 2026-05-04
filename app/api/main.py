@@ -16,6 +16,7 @@ from decision_spine.services.schema_gap import (
     build_schema_gap_report,
     update_field_action_status,
 )
+from decision_spine.services.v02_intelligence import build_v02_intelligence_preview
 
 
 class FieldActionStatusUpdate(BaseModel):
@@ -58,6 +59,14 @@ def monthly_packet() -> dict[str, Any]:
 def schema_gap() -> dict[str, Any]:
     try:
         return build_schema_gap_report()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/v02-intelligence")
+def v02_intelligence() -> dict[str, Any]:
+    try:
+        return build_v02_intelligence_preview()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

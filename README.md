@@ -79,6 +79,12 @@ Review seed, pilot-template, source-contract, and v0.2 intelligence schema gaps:
 python3 scripts/schema_gap_review.py
 ```
 
+Preview directional v0.2 intelligence surfaces:
+
+```bash
+python3 scripts/v02_intelligence_preview.py
+```
+
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
 
@@ -133,6 +139,7 @@ The first API endpoints are:
 - `GET /api/health`
 - `GET /api/monthly-packet`
 - `GET /api/schema-gap`
+- `GET /api/v02-intelligence`
 - `PATCH /api/schema-gap/actions/{capability}/{field}`
 - `GET /api/decisions/{decision_id}`
 
@@ -143,13 +150,15 @@ python3 -m http.server 3000 --directory web
 ```
 
 Open `http://127.0.0.1:3000`. The page consumes
-`http://127.0.0.1:8000/api/monthly-packet` and
-`http://127.0.0.1:8000/api/schema-gap`.
+`http://127.0.0.1:8000/api/monthly-packet`,
+`http://127.0.0.1:8000/api/schema-gap`, and
+`http://127.0.0.1:8000/api/v02-intelligence`.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
-decision recommendations, review snapshot diffs, v0.2 readiness cards, a v0.2
-owner workbench with field-action status badges, editable action notes, recent
-activity history, changelog filtering, copyable stakeholder briefs, action mode,
-and the council notes panel during monthly review.
+decision recommendations, review snapshot diffs, directional v0.2 intelligence
+previews, v0.2 readiness cards, a v0.2 owner workbench with field-action status
+badges, editable action notes, recent activity history, changelog filtering,
+copyable stakeholder briefs, action mode, and the council notes panel during
+monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.
@@ -193,6 +202,7 @@ outcome data exists.
 | `scripts/source_contract_review.py` | Real-data source readiness and privacy gate. |
 | `scripts/validate_pilot_extract.py` | Dry-run validator for pilot extract templates or ignored local extracts. |
 | `scripts/schema_gap_review.py` | Field-gap review for seed data, pilot templates, source contracts, and v0.2 intelligence requirements. |
+| `scripts/v02_intelligence_preview.py` | Directional role-demand, competency-gap, horizon, and curriculum-impact preview with guardrails. |
 | `scripts/check_frontend.py` | Static dashboard contract and JavaScript syntax check. |
 | `scripts/check_dashboard.py` | Live local dashboard/API smoke check. |
 

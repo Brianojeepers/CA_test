@@ -16,6 +16,14 @@ export async function fetchSchemaGap() {
   return response.json();
 }
 
+export async function fetchV02Intelligence() {
+  const response = await fetch(`${API_BASE_URL}/v02-intelligence`);
+  if (!response.ok) {
+    throw new Error(`API returned ${response.status}`);
+  }
+  return response.json();
+}
+
 export async function updateSchemaAction(capability, field, status, notes) {
   const response = await fetch(
     `${API_BASE_URL}/schema-gap/actions/${encodeURIComponent(capability)}/${encodeURIComponent(field)}`,

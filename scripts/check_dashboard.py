@@ -25,6 +25,8 @@ EXPECTED_DASHBOARD_TEXT = [
     "Copy brief",
     "Stakeholder lens",
     "Stakeholder insights",
+    "v0.2 intelligence",
+    "Directional preview",
     "Since last snapshot",
     "v0.2 readiness",
     "Intelligence capability readiness",
@@ -112,6 +114,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/stakeholderBrief.js",
             "render/summary.js",
             "render/table.js",
+            "render/v02Intelligence.js",
             "render/views.js",
             "render/warnings.js",
             "styles.css",
@@ -170,6 +173,19 @@ def check_api(errors: list[str]) -> None:
         errors.append("schema gap endpoint field action count does not match summary")
     if not schema_gap.get("field_actions_by_owner"):
         errors.append("schema gap endpoint returned no owner workbench groups")
+
+    try:
+        v02_intelligence = fetch_json(f"{API_BASE_URL}/v02-intelligence", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if v02_intelligence.get("summary", {}).get("hard_recommendations_enabled") is not False:
+        errors.append("v0.2 intelligence preview must keep hard recommendations disabled")
+    if len(v02_intelligence.get("sections", [])) != 4:
+        errors.append("v0.2 intelligence endpoint did not return four preview sections")
+    if not v02_intelligence.get("guardrails"):
+        errors.append("v0.2 intelligence endpoint returned no guardrails")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

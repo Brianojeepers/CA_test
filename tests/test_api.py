@@ -63,6 +63,16 @@ class ApiTests(unittest.TestCase):
         self.assertIn("field_actions_by_owner", payload)
         self.assertEqual(payload["v02_requirements"][0]["capability"], "role_anchor_demand_index")
 
+    def test_v02_intelligence_endpoint_returns_directional_preview(self) -> None:
+        response = self.client.get("/api/v02-intelligence")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertFalse(payload["summary"]["hard_recommendations_enabled"])
+        self.assertEqual(payload["summary"]["section_count"], 4)
+        self.assertEqual(payload["sections"][0]["id"], "role_anchor_demand_index")
+        self.assertIn("guardrails", payload)
+
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
         with self.temporary_status_register() as (status_path, event_path):
             response = self.client.patch(

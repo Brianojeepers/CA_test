@@ -1,4 +1,10 @@
-import { fetchDecisionDetail, fetchMonthlyPacket, fetchSchemaGap, updateSchemaAction } from "./api.js";
+import {
+  fetchDecisionDetail,
+  fetchMonthlyPacket,
+  fetchSchemaGap,
+  fetchV02Intelligence,
+  updateSchemaAction,
+} from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
 import { renderChangelog } from "./render/changelog.js";
@@ -14,6 +20,7 @@ import { renderSchemaGap } from "./render/schemaGap.js";
 import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
+import { renderV02Intelligence } from "./render/v02Intelligence.js";
 import { renderStakeholderContext, renderStakeholderTabs } from "./render/views.js";
 import { renderWarnings } from "./render/warnings.js";
 import {
@@ -27,6 +34,7 @@ import {
 
 let packet = null;
 let schemaGap = null;
+let v02Intelligence = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
 let activeFilter = "all";
@@ -200,6 +208,7 @@ function selectDecision(decisionId) {
 async function handleSchemaActionUpdate(action, status, notes) {
   try {
     schemaGap = await updateSchemaAction(action.capability, action.field, status, notes);
+    v02Intelligence = await fetchV02Intelligence();
     render();
     setStatus(`Updated ${action.field.replaceAll("_", " ")} to ${status.replaceAll("_", " ")}.`, "ok");
   } catch (error) {
@@ -237,6 +246,7 @@ function render() {
     new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
   );
   renderSchemaGap(schemaGap, handleSchemaActionUpdate);
+  renderV02Intelligence(v02Intelligence);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);
   renderMeetingControls(actionMode);
@@ -260,9 +270,14 @@ function render() {
 async function loadPacket() {
   setStatus("Refreshing monthly packet...");
   try {
-    const [nextPacket, nextSchemaGap] = await Promise.all([fetchMonthlyPacket(), fetchSchemaGap()]);
+    const [nextPacket, nextSchemaGap, nextV02Intelligence] = await Promise.all([
+      fetchMonthlyPacket(),
+      fetchSchemaGap(),
+      fetchV02Intelligence(),
+    ]);
     packet = nextPacket;
     schemaGap = nextSchemaGap;
+    v02Intelligence = nextV02Intelligence;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
