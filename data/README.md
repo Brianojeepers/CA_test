@@ -153,6 +153,35 @@ The positioning view groups market evidence by role archetype, client segment,
 and geography, then shows relevant artifacts, outcomes, caveats, and suggested
 positioning claims.
 
+Run the Training as a Service offer input view:
+
+```bash
+python3 scripts/training_offer_inputs.py
+```
+
+The training offer input view summarizes capability areas, validated evidence,
+internal artifacts, regulated-client relevance, and future data needed before
+client-facing training products are designed.
+
+Run the Talent Experience profile signal view:
+
+```bash
+python3 scripts/talent_profile_signals.py
+```
+
+The talent profile signal view translates released, market-backed capabilities
+into profile guidance inputs and excludes monitored or unsupported tags.
+
+Run the Delivery cohort window review:
+
+```bash
+python3 scripts/delivery_window_review.py
+```
+
+The delivery window review maps approved releases to target cohort IDs, release
+status, and available cohort timing context. Actual cohort calendar detail is
+unavailable in v1.
+
 Run the pedagogical framing review:
 
 ```bash
