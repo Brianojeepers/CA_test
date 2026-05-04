@@ -21,6 +21,7 @@ In scope:
 - Regression tests in `tests/`.
 - Markdown packet export to `outputs/monthly_packet.md`.
 - Reusable Python service functions under `decision_spine/` for future API and UI use.
+- FastAPI boundary under `app/api/` for structured JSON access to service-layer data.
 - Pilot extract templates and dry-run validation.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
@@ -124,6 +125,13 @@ Reusable service layer:
 | `decision_spine.services.monthly_packet.build_monthly_packet` | Return structured monthly-packet data for CLI, Markdown export, API, and future frontend consumption. |
 | `decision_spine.services.monthly_packet.render_monthly_packet_markdown` | Render the structured monthly packet to `outputs/monthly_packet.md` without duplicating calculation logic. |
 
+API surface:
+
+| Endpoint | Requirement |
+| --- | --- |
+| `GET /api/health` | Return API health as `{ "status": "ok" }`. |
+| `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
+
 Stakeholder scripts:
 
 | Script | Stakeholder |
@@ -198,6 +206,7 @@ The MVP is in a valid local state when:
 - Pilot extracts pass `scripts/validate_pilot_extract.py` before review.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
+- The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
 
 ## 10. Tests
 

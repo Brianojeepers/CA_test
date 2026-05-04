@@ -11,7 +11,10 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from validate_data import validate_all
+try:
+    from validate_data import validate_all
+except ModuleNotFoundError:
+    from scripts.validate_data import validate_all
 
 
 ROOT = Path(__file__).resolve().parents[1]

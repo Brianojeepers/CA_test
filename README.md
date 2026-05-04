@@ -49,6 +49,12 @@ Run the full local check suite:
 python3 scripts/run_checks.py
 ```
 
+Install API dependencies before running the FastAPI boundary:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
 Validate pilot extract templates:
 
 ```bash
@@ -80,6 +86,17 @@ Run the decision impact synthesis:
 ```bash
 python3 scripts/decision_impact_review.py
 ```
+
+Run the local API:
+
+```bash
+python3 -m uvicorn app.api.main:app --reload
+```
+
+The first API endpoints are:
+
+- `GET /api/health`
+- `GET /api/monthly-packet`
 
 ## Before Committing
 

@@ -33,6 +33,7 @@ def main() -> int:
                 python,
                 "-m",
                 "py_compile",
+                *sorted(map(str, ROOT.glob("app/**/*.py"))),
                 *sorted(map(str, ROOT.glob("decision_spine/**/*.py"))),
                 *sorted(map(str, ROOT.glob("scripts/*.py"))),
                 *sorted(map(str, ROOT.glob("tests/*.py"))),
