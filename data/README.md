@@ -134,3 +134,13 @@ python3 scripts/outcome_review.py
 The outcome review shows post-change cohorts, linked releases, placement and
 retention deltas, small-n and pending-data flags, confidence, and suggested
 actions.
+
+Run the Sales and Solutions positioning view:
+
+```bash
+python3 scripts/client_positioning.py
+```
+
+The positioning view groups market evidence by role archetype, client segment,
+and geography, then shows relevant artifacts, outcomes, caveats, and suggested
+positioning claims.
