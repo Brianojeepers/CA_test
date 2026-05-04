@@ -95,3 +95,13 @@ python3 scripts/credential_requirements.py
 The credential requirements view shows credential and assessment actions, linked
 signal evidence, release status, and monitor decisions that should not become
 requirements yet.
+
+Run the Developer Learning outcome view:
+
+```bash
+python3 scripts/learning_outcomes.py
+```
+
+The learning outcomes view shows curriculum changes, linked market evidence,
+release status, cohort exposure, outcome readiness, and monitor decisions that
+should not become learning modules yet.

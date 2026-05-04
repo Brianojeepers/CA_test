@@ -62,12 +62,15 @@ Create a canonical ontology and version it.
 - `role_anchor` (backend, fullstack, solutions architect, data, frontend, product)
 - `competency_cluster` (agentic engineering, evaluation, systems thinking, integration, communication)
 - `skill` (atomic capability + proficiency levels)
+- `pedagogical_frame` (Bloom target, Dreyfus target, performance context, assessment evidence)
 - `market_signal` (source, timestamp, region, confidence)
 - `curriculum_module` (outcomes, prerequisites, assessments)
 - `placement_event` (candidate, role, client, conversion stage)
 - `forecast` (role/skill, horizon, confidence interval)
 
 Key rule: every curriculum change must link to specific market signals and outcome hypotheses.
+
+Pedagogical translation is defined in `docs/pedagogical_framing.md`. Bloom's taxonomy should describe cognitive complexity, Dreyfus should describe proficiency and autonomy, and assessment evidence should prove realistic performance rather than content exposure.
 
 ## 4) Intelligence features to implement
 
@@ -85,6 +88,7 @@ Output: priority ranking and confidence per region.
 For each role anchor, measure:
 - market-required proficiency vs learner demonstrated proficiency.
 - include decay curves for fast-changing tools.
+- distinguish cognitive complexity from autonomy level so a skill is not over- or under-taught.
 
 Output: “teach now / monitor / deprecate” recommendation.
 

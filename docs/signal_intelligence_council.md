@@ -96,3 +96,7 @@ Core responsibilities:
 - Pedagogical design frameworks, including competency-based design, deliberate practice, and formative and summative assessment.
 - Clear communication across technical and non-technical audiences.
 - Judgment to distinguish durable signal from market noise.
+
+The practical pedagogical framing for translating signals into learning outcomes,
+assessment evidence, and credential thresholds is defined in
+`docs/pedagogical_framing.md`.
