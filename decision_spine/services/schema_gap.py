@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 TEMPLATE_DIR = DATA_DIR / "pilot_extract_templates"
 V02_REQUIREMENTS_FILE = DATA_DIR / "v02_intelligence_requirements.json"
+FIELD_ACTION_STATUS_FILE = DATA_DIR / "v02_field_action_status.json"
+ACTION_STATUSES = ("open", "in_review", "approved", "blocked", "deferred")
 
 
 CURRENT_SCHEMA_FIELDS: dict[str, tuple[str, ...]] = {
@@ -254,6 +256,21 @@ def load_v02_requirements(path: Path = V02_REQUIREMENTS_FILE) -> list[dict[str, 
     return normalized
 
 
+def action_key(capability: str, field: str) -> str:
+    return f"{capability}:{field}"
+
+
+def load_field_action_statuses(path: Path = FIELD_ACTION_STATUS_FILE) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    statuses = load_json(path)
+    by_key: dict[str, dict[str, Any]] = {}
+    for status in statuses:
+        key = action_key(str(status.get("capability", "")), str(status.get("field", "")))
+        by_key[key] = status
+    return by_key
+
+
 def fields_in_records(records: list[dict[str, Any]]) -> set[str]:
     fields: set[str] = set()
     for record in records:
@@ -411,7 +428,11 @@ def field_action_severity(field_detail: dict[str, Any], requirement: dict[str, A
     return ("amber", False, "Confirm field definition and pilot owner")
 
 
-def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_field_actions(
+    v02_reports: list[dict[str, Any]],
+    status_by_key: dict[str, dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    status_by_key = status_by_key or load_field_action_statuses()
     actions: list[dict[str, Any]] = []
     for requirement in v02_reports:
         for field_detail in requirement.get("missing_field_details", []):
@@ -419,6 +440,8 @@ def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any
             source_owner = field_detail.get("source_owner") or requirement.get("owner") or "Unassigned"
             privacy = field_detail.get("privacy_sensitivity") or requirement.get("privacy_sensitivity") or "unknown"
             field = field_detail["field"]
+            status = status_by_key.get(action_key(requirement["capability"], field), {})
+            action_status = status.get("status", "open")
             action_text = f"{action_prefix} for {field} before using {requirement['label']} in recommendations."
             actions.append(
                 {
@@ -430,6 +453,9 @@ def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any
                     "privacy_sensitivity": privacy,
                     "severity": severity,
                     "blocked": blocked,
+                    "action_status": action_status,
+                    "status_notes": status.get("notes", ""),
+                    "status_updated_date": status.get("updated_date"),
                     "action_text": action_text,
                     "decision_unlocked": field_detail.get("decision_unlocked") or requirement.get("decision_unlocked", ""),
                 }
@@ -449,11 +475,13 @@ def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any
 
 def action_counts(actions: list[dict[str, Any]]) -> dict[str, int]:
     counts = Counter(action["severity"] for action in actions)
+    status_counts = Counter(action["action_status"] for action in actions)
     return {
         "action_count": len(actions),
         "red": counts["red"],
         "amber": counts["amber"],
         "blocked": sum(1 for action in actions if action["blocked"]),
+        "status_counts": {status: status_counts[status] for status in ACTION_STATUSES},
     }
 
 
@@ -529,10 +557,12 @@ def build_schema_gap_report() -> dict[str, Any]:
     ]
     requirements = load_v02_requirements()
     v02_reports = build_v02_requirement_report(requirements)
-    field_actions = build_field_actions(v02_reports)
+    status_by_key = load_field_action_statuses()
+    field_actions = build_field_actions(v02_reports, status_by_key)
     field_actions_by_owner = build_field_actions_by_owner(field_actions)
     source_readiness = build_source_readiness(feed_contract_groups)
     readiness_counts = Counter(item["readiness"] for item in source_readiness)
+    field_action_status_counts = Counter(action["action_status"] for action in field_actions)
 
     return {
         "summary": {
@@ -549,6 +579,7 @@ def build_schema_gap_report() -> dict[str, Any]:
             "red_field_actions": sum(1 for action in field_actions if action["severity"] == "red"),
             "blocked_field_actions": sum(1 for action in field_actions if action["blocked"]),
             "field_action_owner_count": len(field_actions_by_owner),
+            "field_action_status_counts": {status: field_action_status_counts[status] for status in ACTION_STATUSES},
         },
         "file_reports": file_reports,
         "source_readiness": source_readiness,
@@ -611,11 +642,21 @@ def render_schema_gap_report_text(report: dict[str, Any]) -> str:
             f"top={top_action['field']} ({top_action['capability_label']})"
         )
 
+    lines.extend(["", "Action Status", "-------------"])
+    status_counts = report["summary"]["field_action_status_counts"]
+    lines.append(
+        "- "
+        + " ".join(
+            f"{status}={status_counts[status]}"
+            for status in ACTION_STATUSES
+        )
+    )
+
     lines.extend(["", "Field Actions", "-------------"])
     for action in report["field_actions"]:
         blocked = " blocked" if action["blocked"] else ""
         lines.append(
-            f"- [{action['severity']}{blocked}] {action['source_owner']}: "
+            f"- [{action['severity']}{blocked}; {action['action_status']}] {action['source_owner']}: "
             f"{action['field']} ({action['capability_label']}) - {action['action_text']}"
         )
 

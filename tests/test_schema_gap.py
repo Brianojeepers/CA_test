@@ -1,6 +1,6 @@
 import unittest
 
-from decision_spine.services.schema_gap import build_schema_gap_report, load_v02_requirements
+from decision_spine.services.schema_gap import build_schema_gap_report, load_field_action_statuses, load_v02_requirements
 
 
 class SchemaGapTests(unittest.TestCase):
@@ -56,6 +56,8 @@ class SchemaGapTests(unittest.TestCase):
         self.assertEqual(report["summary"]["field_action_count"], 18)
         self.assertEqual(len(report["field_actions"]), 18)
         self.assertEqual(report["summary"]["blocked_field_actions"], 2)
+        self.assertEqual(report["summary"]["field_action_status_counts"]["open"], 18)
+        self.assertTrue(all(action["action_status"] == "open" for action in report["field_actions"]))
 
     def test_privacy_sensitive_learner_actions_are_blocked(self) -> None:
         report = build_schema_gap_report()
@@ -81,7 +83,21 @@ class SchemaGapTests(unittest.TestCase):
         self.assertEqual(owner_groups["Market Intelligence"]["action_count"], 6)
         self.assertEqual(owner_groups["Market Intelligence"]["amber"], 6)
         self.assertEqual(owner_groups["Market Intelligence"]["blocked"], 0)
+        self.assertEqual(owner_groups["Market Intelligence"]["status_counts"]["open"], 6)
         self.assertEqual(report["summary"]["field_action_owner_count"], len(owner_groups))
+
+    def test_status_register_uses_known_v02_fields_only(self) -> None:
+        requirements = load_v02_requirements()
+        known = {
+            f"{requirement['capability']}:{field}"
+            for requirement in requirements
+            for field in requirement["required_fields"]
+        }
+
+        statuses = load_field_action_statuses()
+
+        self.assertEqual(len(statuses), 18)
+        self.assertTrue(set(statuses).issubset(known))
 
 
 if __name__ == "__main__":

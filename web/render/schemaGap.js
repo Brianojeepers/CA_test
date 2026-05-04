@@ -17,16 +17,32 @@ function fieldLabel(field) {
 
 let activeSchemaOwner = "all";
 
+function statusTone(status) {
+  const tones = {
+    open: "neutral",
+    in_review: "amber",
+    approved: "green",
+    blocked: "red",
+    deferred: "neutral",
+  };
+  return tones[status] ?? "neutral";
+}
+
+function statusLabel(status) {
+  return fieldLabel(status ?? "open");
+}
+
 function renderAction(action) {
-  const blockedText = action.blocked ? "Blocked" : "Needs definition";
+  const actionStatus = action.action_status ?? "open";
   return `
     <div class="schema-action ${escapeHtml(action.severity)}">
       <div>
         <strong>${escapeHtml(action.source_owner)}</strong>
         <span>${escapeHtml(fieldLabel(action.field))} · ${escapeHtml(action.capability_label)}</span>
       </div>
-      <span class="badge ${escapeHtml(action.severity)}">${blockedText}</span>
+      <span class="badge ${statusTone(actionStatus)}">${escapeHtml(statusLabel(actionStatus))}</span>
       <p>${escapeHtml(action.action_text)}</p>
+      ${action.status_notes ? `<p class="schema-status-note">${escapeHtml(action.status_notes)}</p>` : ""}
     </div>
   `;
 }
@@ -61,7 +77,8 @@ function selectedOwnerSummary(report) {
     return "No owner actions for the selected view.";
   }
   const top = selected.top_action ? ` Top action: ${fieldLabel(selected.top_action.field)}.` : "";
-  return `${selected.owner}: ${selected.action_count} action(s), ${selected.red} red, ${selected.amber} amber, ${selected.blocked} blocked.${top}`;
+  const openCount = selected.status_counts?.open ?? ownerActions(report).filter((action) => action.action_status === "open").length;
+  return `${selected.owner}: ${selected.action_count} action(s), ${openCount} open, ${selected.red} red, ${selected.amber} amber, ${selected.blocked} blocked.${top}`;
 }
 
 function renderOwnerTabs(report) {

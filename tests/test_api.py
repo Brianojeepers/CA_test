@@ -33,6 +33,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["v02_gap_count"], 18)
         self.assertEqual(payload["summary"]["field_action_count"], 18)
         self.assertEqual(payload["summary"]["blocked_field_actions"], 2)
+        self.assertEqual(payload["summary"]["field_action_status_counts"]["open"], 18)
         self.assertIn("v02_requirements", payload)
         self.assertIn("field_actions", payload)
         self.assertIn("field_actions_by_owner", payload)

@@ -228,6 +228,7 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         "schema-gap-summary",
         "field_actions",
         "field_actions_by_owner",
+        "action_status",
         "schema-gap-actions",
         "schema-owner-tabs",
         "data-schema-owner",

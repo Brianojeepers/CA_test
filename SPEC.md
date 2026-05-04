@@ -68,6 +68,7 @@ Primary seed files:
 | `data/pedagogy_map.json` | Bloom/Dreyfus/performance framing for selected decisions and releases. |
 | `data/source_contracts.json` | Real-data source readiness, ownership, freshness, and privacy contracts. |
 | `data/v02_intelligence_requirements.json` | Versioned field requirements for expanded role-demand, competency-gap, horizon, and impact reasoning. |
+| `data/v02_field_action_status.json` | Lightweight status register for v0.2 field-action resolution tracking. |
 
 Detailed field-level contribution rules live in `data/README.md`.
 
@@ -252,6 +253,7 @@ The MVP is in a valid local state when:
 - The dashboard shows v0.2 intelligence readiness by capability, missing field count, owner, and privacy posture.
 - The dashboard shows a v0.2 field action queue for missing data definitions, source owners, and privacy blockers.
 - The dashboard groups v0.2 field actions into an owner workbench with owner-specific action counts.
+- The dashboard shows v0.2 field-action status badges from `data/v02_field_action_status.json`.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.

@@ -47,6 +47,17 @@ def load_optional_json(filename: str) -> list[dict[str, Any]]:
     return load_json(filename)
 
 
+def load_optional_json_document(filename: str) -> dict[str, Any]:
+    path = DATA_DIR / filename
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8") as file:
+        data = json.load(file)
+    if not isinstance(data, dict):
+        raise ValueError(f"{filename}: expected top-level JSON object")
+    return data
+
+
 def parse_date(value: Any) -> date | None:
     if value is None:
         return None
@@ -186,6 +197,8 @@ def validate_all() -> ValidationResult:
         source_contracts = load_optional_json("source_contracts.json")
         role_competencies = load_optional_json("role_competencies.json")
         learner_evidence = load_optional_json("learner_evidence_summary.json")
+        v02_requirements = load_optional_json_document("v02_intelligence_requirements.json")
+        v02_action_statuses = load_optional_json("v02_field_action_status.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -406,12 +419,29 @@ def validate_all() -> ValidationResult:
             },
             "evidence_id",
         )
+    if v02_action_statuses:
+        require_fields(
+            result,
+            "v02_field_action_status.json",
+            v02_action_statuses,
+            {
+                "capability",
+                "field",
+                "owner",
+                "status",
+                "notes",
+                "updated_date",
+            },
+            "field",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
     validate_dates(result, "releases.json", releases, "release_id", {"release_date"})
     validate_dates(result, "cohort_outcomes.json", cohorts, "cohort_id", {"cohort_start_date", "credential_issued_date"})
     validate_dates(result, "predictions.json", predictions, "prediction_id", {"issued_date", "scoring_date"})
+    if v02_action_statuses:
+        validate_dates(result, "v02_field_action_status.json", v02_action_statuses, "field", {"updated_date"})
 
     validate_enum(result, "signals.json", signals, "signal_id", "status", {"green", "amber", "red"})
     validate_enum(result, "signals.json", signals, "signal_id", "confidence", {"low", "medium", "high"})
@@ -421,6 +451,15 @@ def validate_all() -> ValidationResult:
     validate_enum(result, "cohort_outcomes.json", cohorts, "cohort_id", "change_exposure", {"pre_change", "post_change"})
     validate_enum(result, "cohort_outcomes.json", cohorts, "cohort_id", "data_confidence", {"low", "medium", "high"})
     validate_enum(result, "predictions.json", predictions, "prediction_id", "outcome", {"confirmed", "contradicted", "inconclusive", "pending"})
+    for status in v02_action_statuses:
+        validate_enum(
+            result,
+            "v02_field_action_status.json",
+            [status],
+            "field",
+            "status",
+            {"open", "in_review", "approved", "blocked", "deferred"},
+        )
 
     for score_field in (
         "source_diversity_score",
@@ -725,6 +764,52 @@ def validate_all() -> ValidationResult:
                 "competency_id",
                 "active competency has no learner evidence yet",
             )
+
+    if v02_requirements or v02_action_statuses:
+        requirements = v02_requirements.get("requirements")
+        known_v02_fields: set[tuple[str, str]] = set()
+        if v02_requirements and not isinstance(requirements, list):
+            result.error("v02_intelligence_requirements.json", "<root>", "requirements", "must be a list")
+        elif isinstance(requirements, list):
+            for requirement in requirements:
+                if not isinstance(requirement, dict):
+                    result.error("v02_intelligence_requirements.json", "<unknown>", "requirements", "each item must be an object")
+                    continue
+                capability = requirement.get("capability")
+                fields = requirement.get("required_fields")
+                if not isinstance(capability, str) or not capability.strip():
+                    result.error("v02_intelligence_requirements.json", "<unknown>", "capability", "must be a non-empty string")
+                    continue
+                if not isinstance(fields, list) or not fields:
+                    result.error("v02_intelligence_requirements.json", capability, "required_fields", "must be a non-empty list")
+                    continue
+                for field_item in fields:
+                    field_name = field_item.get("field") if isinstance(field_item, dict) else field_item
+                    if not isinstance(field_name, str) or not field_name.strip():
+                        result.error(
+                            "v02_intelligence_requirements.json",
+                            capability,
+                            "required_fields",
+                            "field must be a non-empty string",
+                        )
+                        continue
+                    known_v02_fields.add((capability, field_name))
+
+        seen_status_keys: set[tuple[Any, Any]] = set()
+        for status in v02_action_statuses:
+            capability = status.get("capability")
+            field_name = status.get("field")
+            sid = f"{capability}:{field_name}"
+            if (capability, field_name) in seen_status_keys:
+                result.error("v02_field_action_status.json", sid, "field", "duplicate capability/field status")
+            seen_status_keys.add((capability, field_name))
+            if known_v02_fields and (capability, field_name) not in known_v02_fields:
+                result.error("v02_field_action_status.json", sid, "field", "status references unknown v0.2 field")
+            for field_name_key in ("capability", "field", "owner", "notes"):
+                if field_name_key in status and (
+                    not isinstance(status[field_name_key], str) or not status[field_name_key].strip()
+                ):
+                    result.error("v02_field_action_status.json", sid, field_name_key, "must be a non-empty string")
 
     expected_files = {
         "signals.json",

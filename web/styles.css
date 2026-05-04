@@ -532,6 +532,12 @@ select {
   margin: 0;
 }
 
+.schema-status-note {
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 8px;
+}
+
 .schema-blocker {
   background: var(--red-bg);
   border-left: 4px solid var(--red);
@@ -668,6 +674,27 @@ select {
 .badge.neutral {
   background: var(--neutral-bg);
   color: var(--neutral);
+}
+
+.badge.open,
+.badge.deferred {
+  background: var(--neutral-bg);
+  color: var(--neutral);
+}
+
+.badge.in_review {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.badge.approved {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.badge.blocked {
+  background: var(--red-bg);
+  color: var(--red);
 }
 
 .impact-visual {

@@ -1,0 +1,146 @@
+[
+  {
+    "capability": "competency_gap_index_learner_side",
+    "field": "demonstrated_proficiency",
+    "owner": "Assessment Ops",
+    "status": "open",
+    "notes": "Define aggregate proficiency evidence and privacy-safe suppression before use.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "competency_gap_index_learner_side",
+    "field": "proficiency_gap_score",
+    "owner": "Data and Analytics",
+    "status": "open",
+    "notes": "Define aggregate gap scoring only after learner evidence suppression rules are approved.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "curriculum_impact_simulator",
+    "field": "instructional_capacity_cost",
+    "owner": "Delivery",
+    "status": "open",
+    "notes": "Define capacity cost scale for pilot curriculum changes.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "competency_gap_index_market_side",
+    "field": "tool_decay_risk",
+    "owner": "Learning Architecture",
+    "status": "open",
+    "notes": "Define decay-risk categories for fast-changing tools.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "curriculum_impact_simulator",
+    "field": "estimated_learner_time_delta",
+    "owner": "Learning Design",
+    "status": "open",
+    "notes": "Define learner time delta scale and source of estimates.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "competency_gap_index_market_side",
+    "field": "market_required_proficiency",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define how market evidence maps to proficiency levels.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "horizon_radar",
+    "field": "weak_signal_theme",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define naming convention for early weak-signal themes.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "compensation_pressure",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define compensation-pressure proxy and approved evidence grain.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "demand_growth_rate",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define demand growth calculation for pilot source extracts.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "demand_volume",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define demand volume unit and source sampling method.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "hiring_velocity",
+    "owner": "Market Intelligence",
+    "status": "open",
+    "notes": "Define hiring velocity proxy before scoring role anchors.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "curriculum_impact_simulator",
+    "field": "expected_extension_lift",
+    "owner": "Matching and CSM",
+    "status": "open",
+    "notes": "Define expected extension or retention lift as directional pilot input.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "curriculum_impact_simulator",
+    "field": "expected_placement_lift",
+    "owner": "Matching and CSM",
+    "status": "open",
+    "notes": "Define expected placement lift as directional pilot input.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "placement_conversion_alignment",
+    "owner": "Matching and CSM",
+    "status": "open",
+    "notes": "Define how demand evidence aligns to feasible placement conversion.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "competency_gap_index_market_side",
+    "field": "deprecation_signal",
+    "owner": "Signal Intelligence Council",
+    "status": "open",
+    "notes": "Define evidence threshold for deprecating competency coverage.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "horizon_radar",
+    "field": "maturity_stage",
+    "owner": "Signal Intelligence Council",
+    "status": "open",
+    "notes": "Define maturity-stage taxonomy for horizon review.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "horizon_radar",
+    "field": "review_due_date",
+    "owner": "Signal Intelligence Council",
+    "status": "open",
+    "notes": "Define cadence rule for weak-signal review dates.",
+    "updated_date": "2026-05-04"
+  },
+  {
+    "capability": "role_anchor_demand_index",
+    "field": "strategic_durability_score",
+    "owner": "Signal Intelligence Council",
+    "status": "open",
+    "notes": "Define durability scoring to separate stable demand from hype.",
+    "updated_date": "2026-05-04"
+  }
+]
