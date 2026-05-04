@@ -42,6 +42,7 @@ The first working version is intentionally smaller than the target architecture.
 - `docs/real_data_readiness.md` for the controlled path from synthetic seed data to real pilot extracts.
 - `docs/source_data_contracts.md` and `scripts/source_contract_review.py` for source-owner, privacy, field, freshness, and pilot-readiness contracts before real data is imported.
 - `scripts/v02_intelligence_preview.py` for directional role-demand, competency-gap, horizon, and curriculum-impact previews that keep hard recommendations disabled until fields and sources are ready.
+- `scripts/export_pilot_request_pack.py` for turning v0.2 missing fields into owner-ready pilot data requests before database design.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -66,6 +67,10 @@ The next implementation layer is `scripts/v02_intelligence_preview.py`: it shows
 what the current MVP can say directionally about role demand, competency gaps,
 horizon signals, and curriculum impact while preserving explicit "do not claim
 yet" guardrails.
+The current bridge from preview to implementation is the pilot request pack: it
+groups missing v0.2 fields by source owner, separates privacy-review requests
+from simple field-definition requests, and gives us a concrete data collection
+brief before committing to database schemas.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**

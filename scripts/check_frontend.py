@@ -29,6 +29,9 @@ REQUIRED_IDS = {
     "v02-intelligence-summary",
     "v02-intelligence-guardrails",
     "v02-intelligence-list",
+    "pilot-request-summary",
+    "pilot-request-guardrails",
+    "pilot-request-list",
     "data-trust",
     "data-warning",
     "signal-average",
@@ -84,6 +87,7 @@ REQUIRED_FILES = [
     "render/impact.js",
     "render/insights.js",
     "render/meetingNotes.js",
+    "render/pilotRequests.js",
     "render/recommendation.js",
     "render/reviewDiff.js",
     "render/schemaGap.js",
@@ -134,7 +138,7 @@ def check_html_contract(errors: list[str]) -> None:
 
 def check_api_contract(errors: list[str]) -> None:
     api_js = (WEB_DIR / "api.js").read_text(encoding="utf-8")
-    for endpoint in ("/monthly-packet", "/schema-gap", "/v02-intelligence", "/decisions/"):
+    for endpoint in ("/monthly-packet", "/schema-gap", "/v02-intelligence", "/pilot-request-pack", "/decisions/"):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
     for token in ("updateSchemaAction", "PATCH"):
@@ -293,6 +297,24 @@ def check_v02_intelligence_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing v0.2 intelligence style: {token}")
 
 
+def check_pilot_request_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    pilot_js = (WEB_DIR / "render" / "pilotRequests.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("fetchPilotRequestPack", "renderPilotRequests", "pilotRequestPack"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing pilot request token: {token}")
+
+    for token in ("pilot-request-summary", "pilot-request-guardrails", "pilot-request-list", "request_priority"):
+        if token not in pilot_js:
+            errors.append(f"web/render/pilotRequests.js is missing pilot request token: {token}")
+
+    for token in (".pilot-request-list", ".pilot-owner-group", ".pilot-request", ".pilot-request-guardrails"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing pilot request style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -323,6 +345,7 @@ def main() -> int:
         check_review_diff_contract(errors)
         check_schema_gap_contract(errors)
         check_v02_intelligence_contract(errors)
+        check_pilot_request_contract(errors)
         check_js_syntax(errors)
 
     if errors:

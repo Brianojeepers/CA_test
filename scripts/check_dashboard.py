@@ -27,6 +27,8 @@ EXPECTED_DASHBOARD_TEXT = [
     "Stakeholder insights",
     "v0.2 intelligence",
     "Directional preview",
+    "Pilot data requests",
+    "Owner-ready request pack",
     "Since last snapshot",
     "v0.2 readiness",
     "Intelligence capability readiness",
@@ -108,6 +110,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/impact.js",
             "render/insights.js",
             "render/meetingNotes.js",
+            "render/pilotRequests.js",
             "render/recommendation.js",
             "render/reviewDiff.js",
             "render/schemaGap.js",
@@ -186,6 +189,19 @@ def check_api(errors: list[str]) -> None:
         errors.append("v0.2 intelligence endpoint did not return four preview sections")
     if not v02_intelligence.get("guardrails"):
         errors.append("v0.2 intelligence endpoint returned no guardrails")
+
+    try:
+        pilot_pack = fetch_json(f"{API_BASE_URL}/pilot-request-pack", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if pilot_pack.get("summary", {}).get("request_count") != 18:
+        errors.append("pilot request pack endpoint did not return 18 field requests")
+    if pilot_pack.get("summary", {}).get("privacy_review_count") != 2:
+        errors.append("pilot request pack endpoint did not return two privacy-review requests")
+    if not pilot_pack.get("owner_groups"):
+        errors.append("pilot request pack endpoint returned no owner groups")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

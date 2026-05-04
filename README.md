@@ -85,6 +85,12 @@ Preview directional v0.2 intelligence surfaces:
 python3 scripts/v02_intelligence_preview.py
 ```
 
+Export owner-ready v0.2 pilot data requests:
+
+```bash
+python3 scripts/export_pilot_request_pack.py
+```
+
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
 
@@ -112,10 +118,10 @@ Save the current packet as a review snapshot after a council review:
 python3 scripts/save_review_snapshot.py
 ```
 
-The generated files are written to `outputs/monthly_packet.md` and
-`outputs/stakeholder_packets/*.md`; review snapshots are written under
-`outputs/review_snapshots/`. Generated files in `outputs/` are ignored by git
-except `outputs/.gitkeep`.
+The generated files are written to `outputs/monthly_packet.md`,
+`outputs/pilot_request_pack.md`, and `outputs/stakeholder_packets/*.md`; review
+snapshots are written under `outputs/review_snapshots/`. Generated files in
+`outputs/` are ignored by git except `outputs/.gitkeep`.
 
 Both monthly packet commands use
 `decision_spine.services.monthly_packet.build_monthly_packet()`, which returns
@@ -140,6 +146,7 @@ The first API endpoints are:
 - `GET /api/monthly-packet`
 - `GET /api/schema-gap`
 - `GET /api/v02-intelligence`
+- `GET /api/pilot-request-pack`
 - `PATCH /api/schema-gap/actions/{capability}/{field}`
 - `GET /api/decisions/{decision_id}`
 
@@ -152,13 +159,14 @@ python3 -m http.server 3000 --directory web
 Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`,
 `http://127.0.0.1:8000/api/schema-gap`, and
-`http://127.0.0.1:8000/api/v02-intelligence`.
+`http://127.0.0.1:8000/api/v02-intelligence`, plus the pilot request pack at
+`http://127.0.0.1:8000/api/pilot-request-pack`.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
 decision recommendations, review snapshot diffs, directional v0.2 intelligence
-previews, v0.2 readiness cards, a v0.2 owner workbench with field-action status
-badges, editable action notes, recent activity history, changelog filtering,
-copyable stakeholder briefs, action mode, and the council notes panel during
-monthly review.
+previews, owner-ready pilot data requests, v0.2 readiness cards, a v0.2 owner
+workbench with field-action status badges, editable action notes, recent
+activity history, changelog filtering, copyable stakeholder briefs, action mode,
+and the council notes panel during monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.
@@ -195,6 +203,7 @@ outcome data exists.
 | `scripts/monthly_packet.py` | Concise council packet with drill-down commands. |
 | `scripts/export_monthly_packet.py` | Writes `outputs/monthly_packet.md` for sharing. |
 | `scripts/export_stakeholder_packets.py` | Writes concise stakeholder briefs under `outputs/stakeholder_packets/`. |
+| `scripts/export_pilot_request_pack.py` | Writes owner-ready v0.2 field requests to `outputs/pilot_request_pack.md`. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |

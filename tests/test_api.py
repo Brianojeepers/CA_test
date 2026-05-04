@@ -73,6 +73,15 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["sections"][0]["id"], "role_anchor_demand_index")
         self.assertIn("guardrails", payload)
 
+    def test_pilot_request_pack_endpoint_returns_owner_ready_requests(self) -> None:
+        response = self.client.get("/api/pilot-request-pack")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["request_count"], 18)
+        self.assertEqual(payload["summary"]["privacy_review_count"], 2)
+        self.assertIn("owner_groups", payload)
+
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
         with self.temporary_status_register() as (status_path, event_path):
             response = self.client.patch(

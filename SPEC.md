@@ -27,6 +27,7 @@ In scope:
 - Static first-pass dashboard prototype under `web/` for stakeholder workflow discovery.
 - Pilot extract templates and dry-run validation.
 - Schema gap review across seed data, pilot templates, source contracts, and v0.2 intelligence requirements.
+- Owner-ready v0.2 pilot data request pack grouped by source owner.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -126,6 +127,7 @@ Core operating scripts:
 | `scripts/monthly_packet.py` | Print concise monthly packet with drill-down commands. |
 | `scripts/export_monthly_packet.py` | Write `outputs/monthly_packet.md`. |
 | `scripts/export_stakeholder_packets.py` | Write concise stakeholder briefs under `outputs/stakeholder_packets/`. |
+| `scripts/export_pilot_request_pack.py` | Write owner-ready v0.2 pilot field requests to `outputs/pilot_request_pack.md`. |
 | `scripts/save_review_snapshot.py` | Save the current structured packet under `outputs/review_snapshots/` for future review diffing. |
 | `scripts/decision_impact_review.py` | Classify approved decisions by impact maturity. |
 | `scripts/source_contract_review.py` | Gate real-data imports by source readiness and privacy posture. |
@@ -146,6 +148,8 @@ Reusable service layer:
 | `decision_spine.services.schema_gap.build_schema_gap_report` | Return structured schema coverage and v0.2 field-gap data. |
 | `decision_spine.services.schema_gap.render_schema_gap_report_text` | Render schema gap review output for CLI use. |
 | `decision_spine.services.v02_intelligence.build_v02_intelligence_preview` | Return directional v0.2 intelligence preview sections without enabling hard recommendations. |
+| `decision_spine.services.pilot_request_pack.build_pilot_request_pack` | Return owner-grouped v0.2 field requests from the schema-gap workbench. |
+| `decision_spine.services.pilot_request_pack.render_pilot_request_pack_markdown` | Render the owner-ready pilot request pack to Markdown. |
 
 API surface:
 
@@ -155,6 +159,7 @@ API surface:
 | `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
 | `GET /api/schema-gap` | Return seed, pilot-template, source-contract, and v0.2 intelligence field readiness. |
 | `GET /api/v02-intelligence` | Return directional role-demand, competency-gap, horizon, and curriculum-impact preview data with guardrails. |
+| `GET /api/pilot-request-pack` | Return owner-ready v0.2 pilot field requests grouped by source owner. |
 | `PATCH /api/schema-gap/actions/{capability}/{field}` | Update a v0.2 field-action status and notes in the local status register, then return the refreshed schema-gap report. |
 | `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
 
@@ -164,9 +169,9 @@ Frontend prototype:
 | --- | --- |
 | `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, review snapshot diffs, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
 | `web/app.js` | Coordinate dashboard state, filtering, decision selection, and council meeting controls. |
-| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, and decision-detail API data. |
+| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, pilot request pack, and decision-detail API data. |
 | `web/stakeholders.js` | Define stakeholder-specific dashboard lenses and row/action filtering. |
-| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, pilot data requests, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 | `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 
@@ -224,12 +229,19 @@ Tracked:
 Ignored:
 
 - `outputs/monthly_packet.md`
+- `outputs/pilot_request_pack.md`
 - any other generated output files under `outputs/`
 
 Generate the monthly packet with:
 
 ```bash
 python3 scripts/export_monthly_packet.py
+```
+
+Generate the pilot request pack with:
+
+```bash
+python3 scripts/export_pilot_request_pack.py
 ```
 
 ## 9. Acceptance Criteria
@@ -243,12 +255,14 @@ The MVP is in a valid local state when:
 - Real-data import remains blocked unless source contracts are green or explicitly pilot-approved.
 - Pilot extracts pass `scripts/validate_pilot_extract.py` before review.
 - Schema gap review makes source-template, seed-contract, and v0.2 intelligence field gaps explicit before broader product expansion.
+- The MVP can export an owner-ready v0.2 pilot data request pack grouped by source owner.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
 - Decision detail is available through the API as a joined traceability object.
 - Schema gap readiness is available through the API for frontend v0.2 planning views.
 - v0.2 intelligence preview remains directional, disables hard recommendations, and shows guardrails before any role-demand, competency-gap, horizon, or simulator claim.
+- Pilot data requests are available through the API without exposing raw schema-gap internals as the stakeholder surface.
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 - The dashboard supports an action-focused council meeting mode with copyable meeting notes.
 - The dashboard supports stakeholder-specific views without duplicating the underlying packet data.
@@ -257,6 +271,7 @@ The MVP is in a valid local state when:
 - The dashboard shows a filtered "what changed and why" changelog backed by structured monthly-packet data.
 - The dashboard shows what changed since the latest saved review snapshot when one exists.
 - The dashboard shows a directional v0.2 intelligence preview for role demand, competency gaps, horizon review, and curriculum impact without enabling hard recommendations.
+- The dashboard shows pilot data requests by owner with privacy-review flags.
 - The dashboard shows v0.2 intelligence readiness by capability, missing field count, owner, and privacy posture.
 - The dashboard shows a v0.2 field action queue for missing data definitions, source owners, and privacy blockers.
 - The dashboard groups v0.2 field actions into an owner workbench with owner-specific action counts.

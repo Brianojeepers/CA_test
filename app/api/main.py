@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 from decision_spine.services.decision_detail import build_decision_detail
 from decision_spine.services.monthly_packet import build_monthly_packet
+from decision_spine.services.pilot_request_pack import build_pilot_request_pack
 from decision_spine.services.schema_gap import (
     InvalidFieldActionStatus,
     UnknownFieldAction,
@@ -67,6 +68,14 @@ def schema_gap() -> dict[str, Any]:
 def v02_intelligence() -> dict[str, Any]:
     try:
         return build_v02_intelligence_preview()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/pilot-request-pack")
+def pilot_request_pack() -> dict[str, Any]:
+    try:
+        return build_pilot_request_pack()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
