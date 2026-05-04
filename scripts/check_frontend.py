@@ -15,6 +15,7 @@ WEB_DIR = ROOT / "web"
 
 REQUIRED_IDS = {
     "generated-date",
+    "copy-stakeholder-brief",
     "refresh-button",
     "status-banner",
     "stakeholder-views",
@@ -72,6 +73,7 @@ REQUIRED_FILES = [
     "render/insights.js",
     "render/meetingNotes.js",
     "render/recommendation.js",
+    "render/stakeholderBrief.js",
     "render/summary.js",
     "render/table.js",
     "render/views.js",
@@ -171,6 +173,19 @@ def check_changelog_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing changelog style: {token}")
 
 
+def check_stakeholder_brief_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    brief_js = (WEB_DIR / "render" / "stakeholderBrief.js").read_text(encoding="utf-8")
+
+    for token in ("copy-stakeholder-brief", "buildStakeholderBrief"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing stakeholder brief token: {token}")
+
+    for token in ("Primary question", "Key Decisions", "Action Items", "What Changed"):
+        if token not in brief_js:
+            errors.append(f"web/render/stakeholderBrief.js is missing brief token: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -197,6 +212,7 @@ def main() -> int:
         check_insight_trust_contract(errors)
         check_recommendation_contract(errors)
         check_changelog_contract(errors)
+        check_stakeholder_brief_contract(errors)
         check_js_syntax(errors)
 
     if errors:

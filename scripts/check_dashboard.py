@@ -22,6 +22,7 @@ API_BASE_URL = "http://127.0.0.1:8000/api"
 
 EXPECTED_DASHBOARD_TEXT = [
     "Monthly Council Dashboard",
+    "Copy brief",
     "Stakeholder lens",
     "Stakeholder insights",
     "Decision impact",
@@ -102,6 +103,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/insights.js",
             "render/meetingNotes.js",
             "render/recommendation.js",
+            "render/stakeholderBrief.js",
             "render/summary.js",
             "render/table.js",
             "render/views.js",

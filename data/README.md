@@ -137,6 +137,15 @@ python3 scripts/decision_changelog.py
 The decision changelog lists released changes, pending changes, monitor/no-change
 decisions, and any approved decisions missing a release record.
 
+Export concise stakeholder-facing Markdown briefs:
+
+```bash
+python3 scripts/export_stakeholder_packets.py
+```
+
+The generated briefs are written under `outputs/stakeholder_packets/` and are
+ignored by git.
+
 Run the Matching and CSM outcome review:
 
 ```bash

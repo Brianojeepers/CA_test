@@ -9,6 +9,7 @@ import { renderImpactBars } from "./render/impact.js";
 import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
 import { renderRecommendation } from "./render/recommendation.js";
+import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
 import { renderStakeholderContext, renderStakeholderTabs } from "./render/views.js";
@@ -254,6 +255,21 @@ async function loadPacket() {
 }
 
 document.getElementById("refresh-button").addEventListener("click", loadPacket);
+document.getElementById("copy-stakeholder-brief").addEventListener("click", async () => {
+  if (!packet) {
+    setStatus("Stakeholder brief is not ready until the monthly packet loads.", "error");
+    return;
+  }
+  const rows = baseRows();
+  const actions = viewActions(rows);
+  const brief = buildStakeholderBrief(packet, activeView, rows, actions);
+  try {
+    await navigator.clipboard.writeText(brief);
+    setStatus(`${activeView.label} brief copied.`, "ok");
+  } catch {
+    setStatus("Copy failed; use the stakeholder packet export script.", "error");
+  }
+});
 document.getElementById("decision-search").addEventListener("input", (event) => {
   searchQuery = event.target.value.trim().toLowerCase();
   renderDecisionTableFromState();
