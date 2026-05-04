@@ -38,8 +38,32 @@ function statusOptions(selectedStatus) {
     .join("");
 }
 
+function renderEvent(event) {
+  return `
+    <li>
+      <span>${escapeHtml(event.event_date)}</span>
+      <strong>${escapeHtml(statusLabel(event.previous_status))} -> ${escapeHtml(statusLabel(event.next_status))}</strong>
+      <span>${escapeHtml(event.notes)}</span>
+    </li>
+  `;
+}
+
+function renderActionEvents(action) {
+  const events = action.recent_events ?? [];
+  if (!events.length) return "";
+  return `
+    <div class="schema-event-list">
+      <span>Recent activity</span>
+      <ul>${events.map(renderEvent).join("")}</ul>
+    </div>
+  `;
+}
+
 function renderAction(action) {
   const actionStatus = action.action_status ?? "open";
+  const updatedDate = action.status_updated_date
+    ? `<span class="schema-updated">Updated ${escapeHtml(action.status_updated_date)}</span>`
+    : "";
   return `
     <div class="schema-action ${escapeHtml(action.severity)}">
       <div>
@@ -47,8 +71,10 @@ function renderAction(action) {
         <span>${escapeHtml(fieldLabel(action.field))} · ${escapeHtml(action.capability_label)}</span>
       </div>
       <span class="badge ${statusTone(actionStatus)}">${escapeHtml(statusLabel(actionStatus))}</span>
+      ${updatedDate}
       <p>${escapeHtml(action.action_text)}</p>
       ${action.status_notes ? `<p class="schema-status-note">${escapeHtml(action.status_notes)}</p>` : ""}
+      ${renderActionEvents(action)}
       <form class="schema-status-form" data-schema-action-capability="${escapeHtml(action.capability)}" data-schema-action-field="${escapeHtml(action.field)}">
         <label>
           <span>Status</span>
@@ -62,6 +88,24 @@ function renderAction(action) {
         </label>
         <button type="submit" class="secondary-button">Save</button>
       </form>
+    </div>
+  `;
+}
+
+function renderRecentActivity(report) {
+  const events = report.recent_field_action_events ?? [];
+  if (!events.length) {
+    return `
+      <div class="schema-activity">
+        <strong>Recent field-action activity</strong>
+        <span>No status changes recorded yet.</span>
+      </div>
+    `;
+  }
+  return `
+    <div class="schema-activity">
+      <strong>Recent field-action activity</strong>
+      <ul>${events.map(renderEvent).join("")}</ul>
     </div>
   `;
 }
@@ -256,7 +300,7 @@ export function renderSchemaGap(report, onActionUpdate) {
     });
   });
 
-  blockerElement.innerHTML = blockedSources.length
+  const blockerHtml = blockedSources.length
     ? blockedSources
         .map(
           (source) => `
@@ -268,4 +312,5 @@ export function renderSchemaGap(report, onActionUpdate) {
         )
         .join("")
     : '<div class="schema-blocker"><strong>No blocked sources</strong><span>All source contracts are at least pilot-reviewable.</span></div>';
+  blockerElement.innerHTML = renderRecentActivity(report) + blockerHtml;
 }

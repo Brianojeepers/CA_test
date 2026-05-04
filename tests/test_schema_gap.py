@@ -4,8 +4,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from decision_spine.services.schema_gap import (
+    FIELD_ACTION_EVENT_FILE,
     FIELD_ACTION_STATUS_FILE,
+    InvalidFieldActionStatus,
     build_schema_gap_report,
+    load_field_action_event_records,
     load_field_action_statuses,
     load_v02_requirements,
     update_field_action_status,
@@ -111,7 +114,9 @@ class SchemaGapTests(unittest.TestCase):
     def test_update_field_action_status_persists_to_register(self) -> None:
         with TemporaryDirectory() as temp_dir:
             status_path = Path(temp_dir) / "v02_field_action_status.json"
+            event_path = Path(temp_dir) / "v02_field_action_events.json"
             status_path.write_text(FIELD_ACTION_STATUS_FILE.read_text(encoding="utf-8"), encoding="utf-8")
+            event_path.write_text(FIELD_ACTION_EVENT_FILE.read_text(encoding="utf-8"), encoding="utf-8")
 
             update_field_action_status(
                 "role_anchor_demand_index",
@@ -119,6 +124,7 @@ class SchemaGapTests(unittest.TestCase):
                 "in_review",
                 "Market source owner is confirming the pilot extract.",
                 path=status_path,
+                event_path=event_path,
                 updated_date=date(2026, 5, 4),
             )
 
@@ -127,6 +133,36 @@ class SchemaGapTests(unittest.TestCase):
             self.assertEqual(updated["status"], "in_review")
             self.assertEqual(updated["notes"], "Market source owner is confirming the pilot extract.")
             self.assertEqual(updated["updated_date"], "2026-05-04")
+
+            events = load_field_action_event_records(event_path)
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events[0]["event_id"], "FAE-20260504-001")
+            self.assertEqual(events[0]["field"], "demand_volume")
+            self.assertEqual(events[0]["previous_status"], "open")
+            self.assertEqual(events[0]["next_status"], "in_review")
+            self.assertEqual(events[0]["event_date"], "2026-05-04")
+
+    def test_invalid_field_action_status_writes_no_event(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            status_path = Path(temp_dir) / "v02_field_action_status.json"
+            event_path = Path(temp_dir) / "v02_field_action_events.json"
+            status_path.write_text(FIELD_ACTION_STATUS_FILE.read_text(encoding="utf-8"), encoding="utf-8")
+            event_path.write_text("[]", encoding="utf-8")
+            before_statuses = status_path.read_text(encoding="utf-8")
+
+            with self.assertRaises(InvalidFieldActionStatus):
+                update_field_action_status(
+                    "role_anchor_demand_index",
+                    "demand_volume",
+                    "done",
+                    "Invalid status should be rejected.",
+                    path=status_path,
+                    event_path=event_path,
+                    updated_date=date(2026, 5, 4),
+                )
+
+            self.assertEqual(status_path.read_text(encoding="utf-8"), before_statuses)
+            self.assertEqual(load_field_action_event_records(event_path), [])
 
 
 if __name__ == "__main__":

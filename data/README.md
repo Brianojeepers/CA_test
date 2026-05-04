@@ -27,6 +27,7 @@ extracts should live in ignored `data/pilot_extracts/` and pass
 | `source_contracts.json` | Source-owner, privacy, field, freshness, and readiness contracts for real-data pilot extracts. |
 | `v02_intelligence_requirements.json` | Versioned field contract for role-demand, competency-gap, horizon-radar, and simulator expansion. |
 | `v02_field_action_status.json` | Status and notes register for v0.2 field-action resolution, editable through the local dashboard API. |
+| `v02_field_action_events.json` | Append-only audit trail for v0.2 field-action status and notes changes. |
 
 The operating role accountable for turning this evidence into action is defined in
 `docs/signal_intelligence_council.md`.
@@ -43,6 +44,7 @@ The operating role accountable for turning this evidence into action is defined 
 | `evidence_id` | `learner_evidence_summary.json` |
 | `pedagogy_id` | `pedagogy_map.json` |
 | `contract_id` | `source_contracts.json` |
+| `event_id` | `v02_field_action_events.json` |
 
 Pending releases may reference future cohort IDs that are not present in
 `cohort_outcomes.json` yet. The validator treats those as warnings, not failures.

@@ -69,6 +69,7 @@ Primary seed files:
 | `data/source_contracts.json` | Real-data source readiness, ownership, freshness, and privacy contracts. |
 | `data/v02_intelligence_requirements.json` | Versioned field requirements for expanded role-demand, competency-gap, horizon, and impact reasoning. |
 | `data/v02_field_action_status.json` | Lightweight status register for v0.2 field-action resolution tracking. |
+| `data/v02_field_action_events.json` | Append-only audit trail for v0.2 field-action status and note updates. |
 
 Detailed field-level contribution rules live in `data/README.md`.
 
@@ -256,6 +257,7 @@ The MVP is in a valid local state when:
 - The dashboard groups v0.2 field actions into an owner workbench with owner-specific action counts.
 - The dashboard shows v0.2 field-action status badges from `data/v02_field_action_status.json`.
 - The dashboard can update v0.2 field-action status and notes through the local API without hand-editing JSON.
+- The dashboard and schema-gap API expose recent v0.2 field-action activity from the append-only event log.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.

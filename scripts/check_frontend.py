@@ -240,6 +240,8 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         "data-schema-owner",
         "data-schema-action-capability",
         "schema-status-form",
+        "recent_field_action_events",
+        "schema-event-list",
         "v02_requirements",
         "privacy_sensitivity",
         "decision_unlocked",
@@ -255,6 +257,8 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         ".schema-action-heading",
         ".schema-owner-tabs",
         ".schema-status-form",
+        ".schema-event-list",
+        ".schema-activity",
         ".schema-blocker",
     ):
         if token not in styles_css:

@@ -14,6 +14,7 @@ DATA_DIR = ROOT / "data"
 TEMPLATE_DIR = DATA_DIR / "pilot_extract_templates"
 V02_REQUIREMENTS_FILE = DATA_DIR / "v02_intelligence_requirements.json"
 FIELD_ACTION_STATUS_FILE = DATA_DIR / "v02_field_action_status.json"
+FIELD_ACTION_EVENT_FILE = DATA_DIR / "v02_field_action_events.json"
 ACTION_STATUSES = ("open", "in_review", "approved", "blocked", "deferred")
 
 
@@ -285,14 +286,57 @@ def load_field_action_statuses(path: Path | None = None) -> dict[str, dict[str, 
     return by_key
 
 
-def save_field_action_status_records(records: list[dict[str, Any]], path: Path | None = None) -> None:
-    path = path or FIELD_ACTION_STATUS_FILE
+def load_field_action_event_records(path: Path | None = None) -> list[dict[str, Any]]:
+    path = path or FIELD_ACTION_EVENT_FILE
+    if not path.exists():
+        return []
+    return load_json(path)
+
+
+def save_json_records(records: list[dict[str, Any]], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp_path = path.with_suffix(f"{path.suffix}.tmp")
     with temp_path.open("w", encoding="utf-8") as file:
         json.dump(records, file, indent=2)
         file.write("\n")
     temp_path.replace(path)
+
+
+def save_field_action_status_records(records: list[dict[str, Any]], path: Path | None = None) -> None:
+    save_json_records(records, path or FIELD_ACTION_STATUS_FILE)
+
+
+def save_field_action_event_records(records: list[dict[str, Any]], path: Path | None = None) -> None:
+    save_json_records(records, path or FIELD_ACTION_EVENT_FILE)
+
+
+def next_field_action_event_id(events: list[dict[str, Any]], event_date: str) -> str:
+    prefix = f"FAE-{event_date.replace('-', '')}-"
+    suffixes: list[int] = []
+    for event in events:
+        event_id = str(event.get("event_id", ""))
+        if not event_id.startswith(prefix):
+            continue
+        try:
+            suffixes.append(int(event_id.removeprefix(prefix)))
+        except ValueError:
+            continue
+    return f"{prefix}{(max(suffixes) + 1) if suffixes else 1:03d}"
+
+
+def sorted_field_action_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        events,
+        key=lambda event: (str(event.get("event_date", "")), str(event.get("event_id", ""))),
+        reverse=True,
+    )
+
+
+def field_action_events_by_key(events: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    by_key: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for event in sorted_field_action_events(events):
+        by_key[action_key(str(event.get("capability", "")), str(event.get("field", "")))].append(event)
+    return dict(by_key)
 
 
 def fields_in_records(records: list[dict[str, Any]]) -> set[str]:
@@ -455,9 +499,12 @@ def field_action_severity(field_detail: dict[str, Any], requirement: dict[str, A
 def build_field_actions(
     v02_reports: list[dict[str, Any]],
     status_by_key: dict[str, dict[str, Any]] | None = None,
+    events_by_key: dict[str, list[dict[str, Any]]] | None = None,
 ) -> list[dict[str, Any]]:
     if status_by_key is None:
         status_by_key = load_field_action_statuses()
+    if events_by_key is None:
+        events_by_key = field_action_events_by_key(load_field_action_event_records())
     actions: list[dict[str, Any]] = []
     for requirement in v02_reports:
         for field_detail in requirement.get("missing_field_details", []):
@@ -465,7 +512,9 @@ def build_field_actions(
             source_owner = field_detail.get("source_owner") or requirement.get("owner") or "Unassigned"
             privacy = field_detail.get("privacy_sensitivity") or requirement.get("privacy_sensitivity") or "unknown"
             field = field_detail["field"]
-            status = status_by_key.get(action_key(requirement["capability"], field), {})
+            key = action_key(requirement["capability"], field)
+            status = status_by_key.get(key, {})
+            recent_events = events_by_key.get(key, [])[:3]
             action_status = status.get("status", "open")
             action_text = f"{action_prefix} for {field} before using {requirement['label']} in recommendations."
             actions.append(
@@ -481,6 +530,8 @@ def build_field_actions(
                     "action_status": action_status,
                     "status_notes": status.get("notes", ""),
                     "status_updated_date": status.get("updated_date"),
+                    "last_event": recent_events[0] if recent_events else None,
+                    "recent_events": recent_events,
                     "action_text": action_text,
                     "decision_unlocked": field_detail.get("decision_unlocked") or requirement.get("decision_unlocked", ""),
                 }
@@ -545,6 +596,7 @@ def update_field_action_status(
     notes: str | None = None,
     *,
     path: Path | None = None,
+    event_path: Path | None = None,
     updated_date: date | None = None,
 ) -> dict[str, Any]:
     status = status.strip()
@@ -568,14 +620,18 @@ def update_field_action_status(
         raise UnknownFieldAction(f"Unknown current v0.2 field action: {key}")
 
     today = (updated_date or date.today()).isoformat()
+    events = load_field_action_event_records(event_path)
     current_record = status_by_key.get(key)
+    previous_status = str(current_record.get("status", "open")) if current_record else "open"
+    previous_notes = str(current_record.get("notes", "")) if current_record else ""
+    next_notes = notes if notes is not None else previous_notes or action["action_text"]
     if current_record is None:
         current_record = {
             "capability": capability,
             "field": field,
             "owner": action["source_owner"],
             "status": status,
-            "notes": notes or action["action_text"],
+            "notes": next_notes,
             "updated_date": today,
         }
         records.append(current_record)
@@ -583,10 +639,24 @@ def update_field_action_status(
         current_record["owner"] = action["source_owner"]
         current_record["status"] = status
         if notes is not None:
-            current_record["notes"] = notes
+            current_record["notes"] = next_notes
         current_record["updated_date"] = today
 
+    if current_record is not None and (previous_status != status or previous_notes != next_notes):
+        events.append(
+            {
+                "event_id": next_field_action_event_id(events, today),
+                "capability": capability,
+                "field": field,
+                "previous_status": previous_status,
+                "next_status": status,
+                "notes": next_notes,
+                "event_date": today,
+            }
+        )
+
     save_field_action_status_records(records, path)
+    save_field_action_event_records(events, event_path)
     return current_record
 
 
@@ -644,7 +714,9 @@ def build_schema_gap_report() -> dict[str, Any]:
     requirements = load_v02_requirements()
     v02_reports = build_v02_requirement_report(requirements)
     status_by_key = load_field_action_statuses()
-    field_actions = build_field_actions(v02_reports, status_by_key)
+    field_action_events = sorted_field_action_events(load_field_action_event_records())
+    events_by_key = field_action_events_by_key(field_action_events)
+    field_actions = build_field_actions(v02_reports, status_by_key, events_by_key)
     field_actions_by_owner = build_field_actions_by_owner(field_actions)
     source_readiness = build_source_readiness(feed_contract_groups)
     readiness_counts = Counter(item["readiness"] for item in source_readiness)
@@ -666,12 +738,14 @@ def build_schema_gap_report() -> dict[str, Any]:
             "blocked_field_actions": sum(1 for action in field_actions if action["blocked"]),
             "field_action_owner_count": len(field_actions_by_owner),
             "field_action_status_counts": {status: field_action_status_counts[status] for status in ACTION_STATUSES},
+            "field_action_event_count": len(field_action_events),
         },
         "file_reports": file_reports,
         "source_readiness": source_readiness,
         "v02_requirements": v02_reports,
         "field_actions": field_actions,
         "field_actions_by_owner": field_actions_by_owner,
+        "recent_field_action_events": field_action_events[:6],
         "minimum_viable_pilot_fields": build_minimum_viable_pilot_fields(file_reports, requirements),
     }
 
@@ -737,6 +811,16 @@ def render_schema_gap_report_text(report: dict[str, Any]) -> str:
             for status in ACTION_STATUSES
         )
     )
+    lines.append(f"- event_log_entries={report['summary']['field_action_event_count']}")
+
+    lines.extend(["", "Recent Field Action Activity", "----------------------------"])
+    if not report["recent_field_action_events"]:
+        lines.append("- none")
+    for event in report["recent_field_action_events"]:
+        lines.append(
+            f"- {event['event_date']} {event['field']}: "
+            f"{event['previous_status']} -> {event['next_status']} ({event['event_id']})"
+        )
 
     lines.extend(["", "Field Actions", "-------------"])
     for action in report["field_actions"]:

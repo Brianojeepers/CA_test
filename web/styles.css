@@ -533,10 +533,46 @@ select {
   margin: 0;
 }
 
+.schema-updated {
+  grid-column: 1 / -1;
+}
+
 .schema-status-note {
   background: var(--surface);
   border-radius: 6px;
   padding: 8px;
+}
+
+.schema-event-list,
+.schema-activity {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: grid;
+  gap: 6px;
+  grid-column: 1 / -1;
+  padding: 8px;
+}
+
+.schema-event-list ul,
+.schema-activity ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.schema-event-list li,
+.schema-activity li {
+  display: grid;
+  gap: 2px;
+}
+
+.schema-event-list strong,
+.schema-activity strong {
+  color: var(--text);
+  font-size: 13px;
 }
 
 .schema-status-form {

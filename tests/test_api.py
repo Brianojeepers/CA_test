@@ -17,16 +17,21 @@ class ApiTests(unittest.TestCase):
         self.client = TestClient(app)
 
     @contextmanager
-    def temporary_status_register(self) -> Iterator[Path]:
-        original_path = schema_gap_service.FIELD_ACTION_STATUS_FILE
+    def temporary_status_register(self) -> Iterator[tuple[Path, Path]]:
+        original_status_path = schema_gap_service.FIELD_ACTION_STATUS_FILE
+        original_event_path = schema_gap_service.FIELD_ACTION_EVENT_FILE
         with TemporaryDirectory() as temp_dir:
             status_path = Path(temp_dir) / "v02_field_action_status.json"
-            status_path.write_text(original_path.read_text(encoding="utf-8"), encoding="utf-8")
+            event_path = Path(temp_dir) / "v02_field_action_events.json"
+            status_path.write_text(original_status_path.read_text(encoding="utf-8"), encoding="utf-8")
+            event_path.write_text(original_event_path.read_text(encoding="utf-8"), encoding="utf-8")
             schema_gap_service.FIELD_ACTION_STATUS_FILE = status_path
+            schema_gap_service.FIELD_ACTION_EVENT_FILE = event_path
             try:
-                yield status_path
+                yield status_path, event_path
             finally:
-                schema_gap_service.FIELD_ACTION_STATUS_FILE = original_path
+                schema_gap_service.FIELD_ACTION_STATUS_FILE = original_status_path
+                schema_gap_service.FIELD_ACTION_EVENT_FILE = original_event_path
 
     def test_health_endpoint(self) -> None:
         response = self.client.get("/api/health")
@@ -59,7 +64,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["v02_requirements"][0]["capability"], "role_anchor_demand_index")
 
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
-        with self.temporary_status_register() as status_path:
+        with self.temporary_status_register() as (status_path, event_path):
             response = self.client.patch(
                 "/api/schema-gap/actions/role_anchor_demand_index/demand_volume",
                 json={
@@ -72,26 +77,37 @@ class ApiTests(unittest.TestCase):
             payload = response.json()
             self.assertEqual(payload["summary"]["field_action_status_counts"]["open"], 17)
             self.assertEqual(payload["summary"]["field_action_status_counts"]["in_review"], 1)
+            self.assertEqual(payload["summary"]["field_action_event_count"], 1)
             actions = {item["field"]: item for item in payload["field_actions"]}
             self.assertEqual(actions["demand_volume"]["action_status"], "in_review")
             self.assertEqual(
                 actions["demand_volume"]["status_notes"],
                 "Market source owner is confirming the pilot extract.",
             )
+            self.assertEqual(actions["demand_volume"]["last_event"]["next_status"], "in_review")
+            self.assertEqual(payload["recent_field_action_events"][0]["field"], "demand_volume")
 
             records = json.loads(status_path.read_text(encoding="utf-8"))
             updated = next(item for item in records if item["field"] == "demand_volume")
             self.assertEqual(updated["status"], "in_review")
             self.assertEqual(updated["updated_date"], date.today().isoformat())
+            events = json.loads(event_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events[0]["previous_status"], "open")
+            self.assertEqual(events[0]["next_status"], "in_review")
 
     def test_schema_gap_action_status_update_rejects_invalid_status(self) -> None:
-        with self.temporary_status_register():
+        with self.temporary_status_register() as (status_path, event_path):
+            before_statuses = status_path.read_text(encoding="utf-8")
+            before_events = event_path.read_text(encoding="utf-8")
             response = self.client.patch(
                 "/api/schema-gap/actions/role_anchor_demand_index/demand_volume",
                 json={"status": "done", "notes": "Not a supported status."},
             )
 
-        self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(status_path.read_text(encoding="utf-8"), before_statuses)
+            self.assertEqual(event_path.read_text(encoding="utf-8"), before_events)
 
     def test_schema_gap_action_status_update_rejects_unknown_action(self) -> None:
         with self.temporary_status_register():

@@ -199,6 +199,7 @@ def validate_all() -> ValidationResult:
         learner_evidence = load_optional_json("learner_evidence_summary.json")
         v02_requirements = load_optional_json_document("v02_intelligence_requirements.json")
         v02_action_statuses = load_optional_json("v02_field_action_status.json")
+        v02_action_events = load_optional_json("v02_field_action_events.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -434,6 +435,23 @@ def validate_all() -> ValidationResult:
             },
             "field",
         )
+    if v02_action_events:
+        require_unique_ids(result, "v02_field_action_events.json", v02_action_events, "event_id")
+        require_fields(
+            result,
+            "v02_field_action_events.json",
+            v02_action_events,
+            {
+                "event_id",
+                "capability",
+                "field",
+                "previous_status",
+                "next_status",
+                "notes",
+                "event_date",
+            },
+            "event_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -442,6 +460,8 @@ def validate_all() -> ValidationResult:
     validate_dates(result, "predictions.json", predictions, "prediction_id", {"issued_date", "scoring_date"})
     if v02_action_statuses:
         validate_dates(result, "v02_field_action_status.json", v02_action_statuses, "field", {"updated_date"})
+    if v02_action_events:
+        validate_dates(result, "v02_field_action_events.json", v02_action_events, "event_id", {"event_date"})
 
     validate_enum(result, "signals.json", signals, "signal_id", "status", {"green", "amber", "red"})
     validate_enum(result, "signals.json", signals, "signal_id", "confidence", {"low", "medium", "high"})
@@ -458,6 +478,23 @@ def validate_all() -> ValidationResult:
             [status],
             "field",
             "status",
+            {"open", "in_review", "approved", "blocked", "deferred"},
+        )
+    for event in v02_action_events:
+        validate_enum(
+            result,
+            "v02_field_action_events.json",
+            [event],
+            "event_id",
+            "previous_status",
+            {"open", "in_review", "approved", "blocked", "deferred"},
+        )
+        validate_enum(
+            result,
+            "v02_field_action_events.json",
+            [event],
+            "event_id",
+            "next_status",
             {"open", "in_review", "approved", "blocked", "deferred"},
         )
 
@@ -765,7 +802,7 @@ def validate_all() -> ValidationResult:
                 "active competency has no learner evidence yet",
             )
 
-    if v02_requirements or v02_action_statuses:
+    if v02_requirements or v02_action_statuses or v02_action_events:
         requirements = v02_requirements.get("requirements")
         known_v02_fields: set[tuple[str, str]] = set()
         if v02_requirements and not isinstance(requirements, list):
@@ -810,6 +847,17 @@ def validate_all() -> ValidationResult:
                     not isinstance(status[field_name_key], str) or not status[field_name_key].strip()
                 ):
                     result.error("v02_field_action_status.json", sid, field_name_key, "must be a non-empty string")
+        for event in v02_action_events:
+            capability = event.get("capability")
+            field_name = event.get("field")
+            event_id = record_id(event, "event_id")
+            if known_v02_fields and (capability, field_name) not in known_v02_fields:
+                result.error("v02_field_action_events.json", event_id, "field", "event references unknown v0.2 field")
+            for field_name_key in ("event_id", "capability", "field", "previous_status", "next_status", "notes"):
+                if field_name_key in event and (
+                    not isinstance(event[field_name_key], str) or not event[field_name_key].strip()
+                ):
+                    result.error("v02_field_action_events.json", event_id, field_name_key, "must be a non-empty string")
 
     expected_files = {
         "signals.json",
