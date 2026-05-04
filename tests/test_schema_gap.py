@@ -55,6 +55,7 @@ class SchemaGapTests(unittest.TestCase):
 
         self.assertEqual(report["summary"]["field_action_count"], 18)
         self.assertEqual(len(report["field_actions"]), 18)
+        self.assertEqual(report["summary"]["blocked_field_actions"], 2)
 
     def test_privacy_sensitive_learner_actions_are_blocked(self) -> None:
         report = build_schema_gap_report()
@@ -71,6 +72,16 @@ class SchemaGapTests(unittest.TestCase):
 
         self.assertEqual(actions["demand_volume"]["source_owner"], "Market Intelligence")
         self.assertEqual(actions["demand_volume"]["severity"], "amber")
+
+    def test_field_actions_are_grouped_by_owner(self) -> None:
+        report = build_schema_gap_report()
+        owner_groups = {item["owner"]: item for item in report["field_actions_by_owner"]}
+
+        self.assertIn("Market Intelligence", owner_groups)
+        self.assertEqual(owner_groups["Market Intelligence"]["action_count"], 6)
+        self.assertEqual(owner_groups["Market Intelligence"]["amber"], 6)
+        self.assertEqual(owner_groups["Market Intelligence"]["blocked"], 0)
+        self.assertEqual(report["summary"]["field_action_owner_count"], len(owner_groups))
 
 
 if __name__ == "__main__":

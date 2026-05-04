@@ -41,6 +41,8 @@ REQUIRED_IDS = {
     "schema-gap-list",
     "schema-gap-actions",
     "schema-gap-blockers",
+    "schema-owner-summary",
+    "schema-owner-tabs",
     "impact-filter",
     "decision-heading",
     "decision-question",
@@ -225,7 +227,10 @@ def check_schema_gap_contract(errors: list[str]) -> None:
     for token in (
         "schema-gap-summary",
         "field_actions",
+        "field_actions_by_owner",
         "schema-gap-actions",
+        "schema-owner-tabs",
+        "data-schema-owner",
         "v02_requirements",
         "privacy_sensitivity",
         "decision_unlocked",
@@ -233,7 +238,15 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         if token not in schema_gap_js:
             errors.append(f"web/render/schemaGap.js is missing schema gap token: {token}")
 
-    for token in (".schema-gap-panel", ".schema-gap-list", ".schema-card", ".schema-action", ".schema-blocker"):
+    for token in (
+        ".schema-gap-panel",
+        ".schema-gap-list",
+        ".schema-card",
+        ".schema-action",
+        ".schema-action-heading",
+        ".schema-owner-tabs",
+        ".schema-blocker",
+    ):
         if token not in styles_css:
             errors.append(f"web/styles.css is missing schema gap style: {token}")
 

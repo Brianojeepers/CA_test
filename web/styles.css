@@ -474,9 +474,21 @@ select {
   padding-top: 14px;
 }
 
+.schema-action-heading {
+  align-items: start;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
 .schema-action-section h3 {
   font-size: 15px;
   margin: 0 0 10px;
+}
+
+.schema-owner-tabs {
+  justify-content: flex-end;
+  max-width: 780px;
 }
 
 .schema-action {
@@ -1100,6 +1112,7 @@ tbody tr.no-results:hover {
   .review-diff-list,
   .changelog-list,
   .schema-gap-list,
+  .schema-action-heading,
   .workspace,
   .lower-grid {
     grid-template-columns: 1fr;
@@ -1112,7 +1125,8 @@ tbody tr.no-results:hover {
 
 @media (max-width: 720px) {
   .topbar,
-  .section-heading {
+  .section-heading,
+  .schema-action-heading {
     align-items: stretch;
     flex-direction: column;
   }

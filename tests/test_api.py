@@ -32,8 +32,10 @@ class ApiTests(unittest.TestCase):
         payload = response.json()
         self.assertEqual(payload["summary"]["v02_gap_count"], 18)
         self.assertEqual(payload["summary"]["field_action_count"], 18)
+        self.assertEqual(payload["summary"]["blocked_field_actions"], 2)
         self.assertIn("v02_requirements", payload)
         self.assertIn("field_actions", payload)
+        self.assertIn("field_actions_by_owner", payload)
         self.assertEqual(payload["v02_requirements"][0]["capability"], "role_anchor_demand_index")
 
     def test_decision_detail_endpoint_returns_traceability(self) -> None:

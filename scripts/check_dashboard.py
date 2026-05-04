@@ -28,7 +28,7 @@ EXPECTED_DASHBOARD_TEXT = [
     "Since last snapshot",
     "v0.2 readiness",
     "Intelligence capability readiness",
-    "Field action queue",
+    "Owner workbench",
     "Decision impact",
     "Action queue",
     "Recommended action",
@@ -168,6 +168,8 @@ def check_api(errors: list[str]) -> None:
         errors.append("schema gap endpoint returned no v0.2 gap count")
     if len(schema_gap.get("field_actions", [])) != schema_gap.get("summary", {}).get("field_action_count"):
         errors.append("schema gap endpoint field action count does not match summary")
+    if not schema_gap.get("field_actions_by_owner"):
+        errors.append("schema gap endpoint returned no owner workbench groups")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

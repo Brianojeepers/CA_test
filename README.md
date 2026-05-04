@@ -145,9 +145,9 @@ Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet` and
 `http://127.0.0.1:8000/api/schema-gap`.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
-decision recommendations, review snapshot diffs, v0.2 readiness cards, v0.2
-field actions, changelog filtering, copyable stakeholder briefs, action mode, and
-the council notes panel during monthly review.
+decision recommendations, review snapshot diffs, v0.2 readiness cards, a v0.2
+owner workbench, changelog filtering, copyable stakeholder briefs, action mode,
+and the council notes panel during monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.

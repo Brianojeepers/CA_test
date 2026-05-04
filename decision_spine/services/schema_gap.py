@@ -447,6 +447,35 @@ def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any
     )
 
 
+def action_counts(actions: list[dict[str, Any]]) -> dict[str, int]:
+    counts = Counter(action["severity"] for action in actions)
+    return {
+        "action_count": len(actions),
+        "red": counts["red"],
+        "amber": counts["amber"],
+        "blocked": sum(1 for action in actions if action["blocked"]),
+    }
+
+
+def build_field_actions_by_owner(field_actions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    actions_by_owner: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for action in field_actions:
+        actions_by_owner[action["source_owner"]].append(action)
+
+    owner_groups: list[dict[str, Any]] = []
+    for owner, actions in sorted(actions_by_owner.items()):
+        counts = action_counts(actions)
+        owner_groups.append(
+            {
+                "owner": owner,
+                **counts,
+                "top_action": actions[0],
+                "actions": actions,
+            }
+        )
+    return owner_groups
+
+
 def build_minimum_viable_pilot_fields(
     file_reports: list[dict[str, Any]],
     requirements: list[dict[str, Any]] | None = None,
@@ -501,6 +530,7 @@ def build_schema_gap_report() -> dict[str, Any]:
     requirements = load_v02_requirements()
     v02_reports = build_v02_requirement_report(requirements)
     field_actions = build_field_actions(v02_reports)
+    field_actions_by_owner = build_field_actions_by_owner(field_actions)
     source_readiness = build_source_readiness(feed_contract_groups)
     readiness_counts = Counter(item["readiness"] for item in source_readiness)
 
@@ -517,11 +547,14 @@ def build_schema_gap_report() -> dict[str, Any]:
             "v02_gap_count": sum(len(report["missing_fields"]) for report in v02_reports),
             "field_action_count": len(field_actions),
             "red_field_actions": sum(1 for action in field_actions if action["severity"] == "red"),
+            "blocked_field_actions": sum(1 for action in field_actions if action["blocked"]),
+            "field_action_owner_count": len(field_actions_by_owner),
         },
         "file_reports": file_reports,
         "source_readiness": source_readiness,
         "v02_requirements": v02_reports,
         "field_actions": field_actions,
+        "field_actions_by_owner": field_actions_by_owner,
         "minimum_viable_pilot_fields": build_minimum_viable_pilot_fields(file_reports, requirements),
     }
 
@@ -567,6 +600,15 @@ def render_schema_gap_report_text(report: dict[str, Any]) -> str:
         lines.append(
             f"- {requirement['label']} ({requirement['file']}): "
             f"coverage={requirement['coverage']:.0%}; missing={format_list(requirement['missing_fields'])}"
+        )
+
+    lines.extend(["", "Owner Workbench", "---------------"])
+    for owner_group in report["field_actions_by_owner"]:
+        top_action = owner_group["top_action"]
+        lines.append(
+            f"- {owner_group['owner']}: actions={owner_group['action_count']} "
+            f"red={owner_group['red']} amber={owner_group['amber']} blocked={owner_group['blocked']} "
+            f"top={top_action['field']} ({top_action['capability_label']})"
         )
 
     lines.extend(["", "Field Actions", "-------------"])

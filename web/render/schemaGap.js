@@ -15,6 +15,8 @@ function fieldLabel(field) {
   return field.replaceAll("_", " ");
 }
 
+let activeSchemaOwner = "all";
+
 function renderAction(action) {
   const blockedText = action.blocked ? "Blocked" : "Needs definition";
   return `
@@ -27,6 +29,59 @@ function renderAction(action) {
       <p>${escapeHtml(action.action_text)}</p>
     </div>
   `;
+}
+
+function ownerGroups(report) {
+  return report.field_actions_by_owner ?? [];
+}
+
+function ownerActions(report) {
+  if (activeSchemaOwner === "all") {
+    return report.field_actions ?? [];
+  }
+  return ownerGroups(report).find((group) => group.owner === activeSchemaOwner)?.actions ?? [];
+}
+
+function allOwnerCounts(report) {
+  const actions = report.field_actions ?? [];
+  return {
+    action_count: actions.length,
+    red: actions.filter((action) => action.severity === "red").length,
+    amber: actions.filter((action) => action.severity === "amber").length,
+    blocked: actions.filter((action) => action.blocked).length,
+  };
+}
+
+function selectedOwnerSummary(report) {
+  const selected =
+    activeSchemaOwner === "all"
+      ? { owner: "All owners", ...allOwnerCounts(report), top_action: ownerActions(report)[0] }
+      : ownerGroups(report).find((group) => group.owner === activeSchemaOwner);
+  if (!selected) {
+    return "No owner actions for the selected view.";
+  }
+  const top = selected.top_action ? ` Top action: ${fieldLabel(selected.top_action.field)}.` : "";
+  return `${selected.owner}: ${selected.action_count} action(s), ${selected.red} red, ${selected.amber} amber, ${selected.blocked} blocked.${top}`;
+}
+
+function renderOwnerTabs(report) {
+  const groups = ownerGroups(report);
+  if (activeSchemaOwner !== "all" && !groups.some((group) => group.owner === activeSchemaOwner)) {
+    activeSchemaOwner = "all";
+  }
+  const tabs = [
+    { owner: "all", label: "All owners", count: report.field_actions?.length ?? 0 },
+    ...groups.map((group) => ({ owner: group.owner, label: group.owner, count: group.action_count })),
+  ];
+  return tabs
+    .map(
+      (tab) => `
+        <button type="button" class="${tab.owner === activeSchemaOwner ? "active" : ""}" data-schema-owner="${escapeHtml(tab.owner)}">
+          ${escapeHtml(tab.label)} (${tab.count})
+        </button>
+      `,
+    )
+    .join("");
 }
 
 function statusForRequirement(requirement) {
@@ -99,13 +154,17 @@ function renderCapabilityCard(requirement) {
 export function renderSchemaGap(report) {
   const summaryElement = document.getElementById("schema-gap-summary");
   const listElement = document.getElementById("schema-gap-list");
+  const ownerTabsElement = document.getElementById("schema-owner-tabs");
+  const ownerSummaryElement = document.getElementById("schema-owner-summary");
   const actionsElement = document.getElementById("schema-gap-actions");
   const blockerElement = document.getElementById("schema-gap-blockers");
-  if (!summaryElement || !listElement || !actionsElement || !blockerElement) return;
+  if (!summaryElement || !listElement || !ownerTabsElement || !ownerSummaryElement || !actionsElement || !blockerElement) return;
 
   if (!report) {
     summaryElement.textContent = "Loading v0.2 readiness...";
     listElement.innerHTML = "";
+    ownerTabsElement.innerHTML = "";
+    ownerSummaryElement.textContent = "Loading owner actions...";
     actionsElement.innerHTML = "";
     blockerElement.innerHTML = "";
     return;
@@ -118,9 +177,21 @@ export function renderSchemaGap(report) {
   summaryElement.textContent = `${missingCount} missing v0.2 field(s) across ${requirements.length} capability contracts. ${fieldActions.length} field action(s) queued. ${blockedSources.length} source(s) remain blocked.`;
 
   listElement.innerHTML = requirements.map(renderCapabilityCard).join("");
-  actionsElement.innerHTML = fieldActions.length
-    ? fieldActions.slice(0, 8).map(renderAction).join("")
+  ownerTabsElement.innerHTML = renderOwnerTabs(report);
+  ownerSummaryElement.textContent = selectedOwnerSummary(report);
+
+  const scopedActions = ownerActions(report);
+  actionsElement.innerHTML = scopedActions.length
+    ? scopedActions.slice(0, activeSchemaOwner === "all" ? 8 : scopedActions.length).map(renderAction).join("")
     : '<div class="schema-action green"><strong>No field actions</strong><p>All v0.2 fields are covered by the pilot shape.</p></div>';
+
+  ownerTabsElement.querySelectorAll("[data-schema-owner]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeSchemaOwner = button.dataset.schemaOwner ?? "all";
+      renderSchemaGap(report);
+    });
+  });
+
   blockerElement.innerHTML = blockedSources.length
     ? blockedSources
         .map(
