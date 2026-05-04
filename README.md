@@ -107,6 +107,7 @@ python3 -m http.server 3000 --directory web
 
 Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`.
+Use action mode and the council notes panel during monthly review.
 
 ## Before Committing
 

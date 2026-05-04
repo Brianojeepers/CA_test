@@ -185,7 +185,8 @@ select {
 }
 
 .segmented button,
-.button {
+.button,
+.secondary-button {
   border: 1px solid transparent;
   border-radius: 7px;
   cursor: pointer;
@@ -210,6 +211,20 @@ select {
   color: #fff;
   min-height: 38px;
   padding: 8px 14px;
+}
+
+.secondary-button {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text);
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.secondary-button.active {
+  background: var(--blue-bg);
+  border-color: #aabfe4;
+  color: var(--blue);
 }
 
 .meta-pill,
@@ -265,7 +280,7 @@ select {
   border-radius: 8px;
   display: grid;
   gap: 12px;
-  grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px);
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) minmax(180px, auto);
   padding: 14px;
 }
 
@@ -286,6 +301,11 @@ select {
   color: var(--text);
   min-height: 38px;
   padding: 8px 10px;
+}
+
+.meeting-controls {
+  display: flex;
+  gap: 8px;
 }
 
 .impact-bars {
@@ -453,6 +473,17 @@ tbody tr.selected {
   margin: 0;
 }
 
+.trace-section.recommendation {
+  background: var(--blue-bg);
+  border: 1px solid #cfdbf1;
+  border-radius: 7px;
+  padding: 12px;
+}
+
+.trace-section.recommendation p + p {
+  margin-top: 7px;
+}
+
 .trace-list {
   display: grid;
   gap: 8px;
@@ -524,6 +555,21 @@ tbody tr.selected {
   padding: 10px;
 }
 
+.meeting-notes {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--neutral);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+  max-height: 280px;
+  overflow: auto;
+  padding: 10px;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 1040px) {
   .summary-grid,
   .workspace,
@@ -559,6 +605,10 @@ tbody tr.selected {
 
   .controls-panel {
     grid-template-columns: 1fr;
+  }
+
+  .meeting-controls {
+    flex-direction: column;
   }
 
   th:nth-child(3),

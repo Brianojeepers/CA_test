@@ -93,6 +93,74 @@ def validation_warnings_or_raise() -> list[str]:
     return validation.warnings
 
 
+def recommendation_for_status(
+    status: str,
+    releases: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
+    cohorts: list[dict[str, Any]],
+) -> dict[str, str]:
+    if status == "positive_signal":
+        return {
+            "priority": "low",
+            "recommended_action": "Consider amplifying the change while continuing retention monitoring.",
+            "evidence_basis": "Released implementation has positive learner or cohort evidence.",
+            "blocker_or_risk": "No immediate blocker; avoid overstating causality.",
+            "next_review_trigger": "Next placement or retention refresh.",
+        }
+    if status == "evidence_emerging":
+        return {
+            "priority": "medium",
+            "recommended_action": "Keep the decision on the review calendar and tighten evidence quality.",
+            "evidence_basis": "Learner evidence is promising, but outcome maturity or confidence is incomplete.",
+            "blocker_or_risk": "Placement, retention, or confidence is not mature enough for a stronger claim.",
+            "next_review_trigger": "Placement window, retention window, or next learner-evidence aggregate closes.",
+        }
+    if status == "too_early":
+        pending_releases = [item for item in releases if item["release_status"] != "released"]
+        if pending_releases:
+            release_names = ", ".join(item["release_id"] for item in pending_releases)
+            return {
+                "priority": "high",
+                "recommended_action": "Unblock implementation before judging impact.",
+                "evidence_basis": "At least one linked release is not complete.",
+                "blocker_or_risk": f"Pending release: {release_names}.",
+                "next_review_trigger": "Release status changes to released or pilot evidence becomes available.",
+            }
+        return {
+            "priority": "medium",
+            "recommended_action": "Wait for evidence and outcome windows before escalating the decision.",
+            "evidence_basis": "Implementation exists, but learner or outcome evidence is still pending.",
+            "blocker_or_risk": "Evidence window has not matured.",
+            "next_review_trigger": "Learner evidence, placement, or retention data becomes available.",
+        }
+    if status == "needs_attention":
+        suppressed = any(item.get("suppression_applied") for item in evidence)
+        low_sample = any(item.get("readiness_level") == "insufficient_sample" for item in evidence)
+        pending_outcomes = any(item["placement_rate"] is None or item["retention_90d_rate"] is None for item in cohorts)
+        risk_parts = []
+        if suppressed:
+            risk_parts.append("suppressed evidence")
+        if low_sample:
+            risk_parts.append("insufficient sample")
+        if pending_outcomes:
+            risk_parts.append("pending outcomes")
+        risk_text = ", ".join(risk_parts) if risk_parts else "readiness or outcome risk"
+        return {
+            "priority": "high",
+            "recommended_action": "Review release quality, rubric thresholds, sample size, and outcome signals.",
+            "evidence_basis": "Evidence or outcomes indicate risk rather than a confident positive signal.",
+            "blocker_or_risk": risk_text,
+            "next_review_trigger": "Corrective action is logged or the next non-suppressed evidence aggregate is available.",
+        }
+    return {
+        "priority": "medium",
+        "recommended_action": "Add learner evidence or cohort outcome linkage before making an impact claim.",
+        "evidence_basis": "Decision has traceability, but no relevant learner or cohort evidence is linked.",
+        "blocker_or_risk": "Missing outcome evidence.",
+        "next_review_trigger": "Evidence or cohort outcome record is linked.",
+    }
+
+
 def build_decision_impact_rows(
     decisions: list[dict[str, Any]],
     releases: list[dict[str, Any]],
@@ -157,12 +225,19 @@ def build_decision_impact_rows(
                 "owner": decision["owner"],
                 "summary": decision["decision_summary"],
                 "decision_type": decision["decision_type"],
+                "signal_ids": decision["signal_ids"],
                 "release_refs": [
                     {"release_id": release["release_id"], "status": release["release_status"]}
                     for release in linked_releases
                 ],
                 "competency_ids": [competency["competency_id"] for competency in linked_competencies],
                 "evidence_ids": [item["evidence_id"] for item in linked_evidence],
+                "recommendation": recommendation_for_status(
+                    status,
+                    linked_releases,
+                    linked_evidence,
+                    linked_cohorts,
+                ),
             }
         )
     return rows

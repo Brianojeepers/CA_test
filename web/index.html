@@ -67,6 +67,10 @@
                 <option value="all">All owners</option>
               </select>
             </label>
+            <div class="meeting-controls">
+              <button id="action-mode-button" class="secondary-button" type="button">Action mode</button>
+              <button id="copy-meeting-notes" class="secondary-button" type="button">Copy notes</button>
+            </div>
           </section>
 
           <section class="impact-visual" aria-label="Decision impact distribution">
@@ -109,6 +113,11 @@
           <section class="panel">
             <p class="eyebrow">Data warnings</p>
             <div id="warning-list" class="warning-list"></div>
+          </section>
+
+          <section class="panel">
+            <p class="eyebrow">Council notes</p>
+            <pre id="meeting-notes" class="meeting-notes"></pre>
           </section>
         </aside>
       </section>

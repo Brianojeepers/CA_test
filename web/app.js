@@ -27,6 +27,7 @@ let selectedDecisionId = null;
 let activeFilter = "all";
 let activeOwner = "all";
 let searchQuery = "";
+let actionMode = false;
 let decisionDetails = {};
 
 function formatPercent(value) {
@@ -70,6 +71,7 @@ async function loadPacket() {
       throw new Error(`API returned ${response.status}`);
     }
     packet = await response.json();
+    decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
     if (selectedDecisionId) {
@@ -128,6 +130,10 @@ function renderOwnerFilter() {
   ].join("");
 }
 
+function actionDecisionIds() {
+  return new Set(packet.actions.map((action) => action.decision_id).filter(Boolean));
+}
+
 function renderImpactBars() {
   const counts = packet.decision_impact.counts;
   const max = Math.max(...Object.values(counts), 1);
@@ -148,7 +154,9 @@ function renderImpactBars() {
 }
 
 function filteredRows() {
-  return packet.decision_impact.rows.filter((row) => {
+  const actionIds = actionDecisionIds();
+  const rows = packet.decision_impact.rows.filter((row) => {
+    if (actionMode && !actionIds.has(row.decision_id) && row.status !== "needs_attention") return false;
     if (activeFilter !== "all" && row.status !== activeFilter) return false;
     if (activeOwner !== "all" && row.owner !== activeOwner) return false;
     if (!searchQuery) return true;
@@ -159,6 +167,7 @@ function filteredRows() {
       row.owner,
       row.summary,
       row.decision_type,
+      ...row.signal_ids,
       ...row.release_refs.flatMap((release) => [release.release_id, release.status]),
       ...(detail?.signals ?? []).flatMap((signal) => [signal.signal_id, signal.signal_theme]),
       ...(detail?.competencies ?? []).flatMap((competency) => [
@@ -170,6 +179,19 @@ function filteredRows() {
       .join(" ")
       .toLowerCase();
     return haystack.includes(searchQuery);
+  });
+  if (!actionMode) return rows;
+  const order = {
+    needs_attention: 0,
+    too_early: 1,
+    evidence_emerging: 2,
+    no_outcome_data: 3,
+    positive_signal: 4,
+  };
+  return rows.sort((a, b) => {
+    const aAction = actionIds.has(a.decision_id) ? -1 : 0;
+    const bAction = actionIds.has(b.decision_id) ? -1 : 0;
+    return aAction - bAction || order[a.status] - order[b.status] || a.decision_id.localeCompare(b.decision_id);
   });
 }
 
@@ -226,6 +248,12 @@ function renderActions() {
       selectDecision(item.dataset.actionDecisionId);
     });
   });
+}
+
+function renderMeetingControls() {
+  const button = document.getElementById("action-mode-button");
+  button.classList.toggle("active", actionMode);
+  button.textContent = actionMode ? "Exit action mode" : "Action mode";
 }
 
 async function loadDecisionDetail(decisionId) {
@@ -295,6 +323,13 @@ function renderDecisionDetail() {
       <h3>Why this status?</h3>
       <p>${escapeHtml(statusExplanations[row.status])}</p>
     </section>
+    <section class="trace-section recommendation">
+      <h3>Council recommendation</h3>
+      <p><strong>Action:</strong> ${escapeHtml(row.recommendation.recommended_action)}</p>
+      <p><strong>Basis:</strong> ${escapeHtml(row.recommendation.evidence_basis)}</p>
+      <p><strong>Risk:</strong> ${escapeHtml(row.recommendation.blocker_or_risk)}</p>
+      <p><strong>Review trigger:</strong> ${escapeHtml(row.recommendation.next_review_trigger)}</p>
+    </section>
     <section class="trace-section">
       <h3>Rationale</h3>
       <p>${escapeHtml(decision.rationale)}</p>
@@ -338,6 +373,44 @@ function renderDecisionDetail() {
   `;
 }
 
+function actionRowsForMeeting() {
+  const actionIds = actionDecisionIds();
+  return packet.decision_impact.rows
+    .filter((row) => actionIds.has(row.decision_id) || row.status === "needs_attention")
+    .sort((a, b) => {
+      const aAction = actionIds.has(a.decision_id) ? -1 : 0;
+      const bAction = actionIds.has(b.decision_id) ? -1 : 0;
+      return aAction - bAction || a.decision_id.localeCompare(b.decision_id);
+    });
+}
+
+function buildMeetingNotes() {
+  if (!packet) return "## Council Actions This Month\n\n- Monthly packet data has not loaded yet.";
+  const rows = actionRowsForMeeting();
+  const lines = ["## Council Actions This Month", ""];
+  if (!rows.length) {
+    lines.push("- No decision actions currently require council review.");
+    return lines.join("\n");
+  }
+  rows.forEach((row) => {
+    const relatedActions = packet.actions.filter((action) => action.decision_id === row.decision_id);
+    lines.push(`- ${row.decision_id} (${row.status}, owner: ${row.owner})`);
+    lines.push(`  - Decision: ${row.summary}`);
+    lines.push(`  - Recommended action: ${row.recommendation.recommended_action}`);
+    lines.push(`  - Evidence basis: ${row.recommendation.evidence_basis}`);
+    lines.push(`  - Risk/blocker: ${row.recommendation.blocker_or_risk}`);
+    lines.push(`  - Review trigger: ${row.recommendation.next_review_trigger}`);
+    relatedActions.forEach((action) => {
+      lines.push(`  - Current action item: ${action.text}`);
+    });
+  });
+  return lines.join("\n");
+}
+
+function renderMeetingNotes() {
+  document.getElementById("meeting-notes").textContent = buildMeetingNotes();
+}
+
 function renderWarnings() {
   const warnings = packet.data_trust.warnings;
   const list = document.getElementById("warning-list");
@@ -373,6 +446,7 @@ function render() {
   renderSummary();
   renderFilters();
   renderOwnerFilter();
+  renderMeetingControls();
   renderImpactBars();
   renderDecisionTable();
   renderActions();
@@ -380,6 +454,7 @@ function render() {
   renderDrilldowns();
   renderKnownLimits();
   renderWarnings();
+  renderMeetingNotes();
 }
 
 document.getElementById("refresh-button").addEventListener("click", loadPacket);
@@ -390,5 +465,19 @@ document.getElementById("decision-search").addEventListener("input", (event) => 
 document.getElementById("owner-filter").addEventListener("change", (event) => {
   activeOwner = event.target.value;
   renderDecisionTable();
+});
+document.getElementById("action-mode-button").addEventListener("click", () => {
+  actionMode = !actionMode;
+  renderMeetingControls();
+  renderDecisionTable();
+});
+document.getElementById("copy-meeting-notes").addEventListener("click", async () => {
+  const notes = buildMeetingNotes();
+  try {
+    await navigator.clipboard.writeText(notes);
+    setStatus("Council meeting notes copied.", "ok");
+  } catch {
+    setStatus("Copy failed; select text from the Council notes panel.", "error");
+  }
 });
 loadPacket();

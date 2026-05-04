@@ -139,7 +139,7 @@ Frontend prototype:
 | Surface | Requirement |
 | --- | --- |
 | `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, drill-downs, and known limits. |
-| `web/app.js` | Fetch `GET /api/monthly-packet` and support filtering/selecting decision impact records. |
+| `web/app.js` | Fetch `GET /api/monthly-packet`, support filtering/selecting decision impact records, and generate council meeting notes from action decisions. |
 
 Stakeholder scripts:
 
@@ -218,6 +218,7 @@ The MVP is in a valid local state when:
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
 - Decision detail is available through the API as a joined traceability object.
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
+- The dashboard supports an action-focused council meeting mode with copyable meeting notes.
 
 ## 10. Tests
 
