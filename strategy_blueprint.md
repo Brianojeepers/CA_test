@@ -22,6 +22,19 @@ A layered system:
 - **Decision layer**: recommended curriculum deltas with expected placement impact.
 - **Activation layer**: updates to curriculum maps, assessment rubrics, matcher playbooks.
 
+### Current MVP implementation
+The first working version is intentionally smaller than the target architecture. It proves the operating loop before live ingestion or predictive modeling:
+
+- Seed JSON data for `signals -> decisions -> releases -> cohort outcomes -> prediction learning`.
+- `scripts/validate_data.py` for validation-first trust in joins, dates, statuses, and temporal cohort warnings.
+- `scripts/report_kpis.py` for K1-K7 KPI status.
+- `scripts/council_review.py` for action queues: decisions needed, release accountability, traceability, and prediction follow-ups.
+- `scripts/signal_review.py` for signal-to-action review: act now, act tracked, monitor, do not act.
+- `scripts/credential_requirements.py` for Assessment Ops credential and assessment actions.
+- `docs/real_data_readiness.md` for the controlled path from synthetic seed data to real pilot extracts.
+
+This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
+
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**
    - Job posts by role, region, seniority, industry.
@@ -146,19 +159,25 @@ The council charter for this operating owner is defined in `docs/signal_intellig
 ## 9) 90-day rollout plan
 
 ### Days 0–30: foundation
-- Define ontology + metric definitions.
-- Stand up ingestion for top-priority data sources.
-- Build initial RDI and CGI.
+- Stabilize the local Decision Spine MVP.
+- Validate seed data and document contribution rules.
+- Run signal review, council review, KPI report, and credential requirements views.
+- Define the real-data readiness gate and minimum viable pilot extract.
+- Confirm source-system owners for signals, decisions, releases, outcomes, and predictions.
 
 ### Days 31–60: activation
-- Connect intelligence outputs to curriculum map.
-- Ship decision changelog.
-- Pilot monthly council review.
+- Pilot monthly council review using the action queues.
+- Introduce a small anonymized real-data extract if approved.
+- Connect validated signals to Assessment Ops and Developer Learning workflows.
+- Add decision changelog output for stakeholder communication.
+- Identify gaps between seed schema and real source systems.
 
 ### Days 61–90: optimization
-- Add horizon radar and basic forecast models.
-- Integrate placement outcomes loop.
-- Launch matcher-facing views and recommendation summaries.
+- Mature the placement and retention feedback loop.
+- Add matcher-facing and Sales-facing evidence summaries.
+- Begin role-anchor demand and competency-gap prototypes once source quality is proven.
+- Add horizon radar and prediction scoring improvements.
+- Decide whether to move from local scripts to an internal service, dashboard, or scheduled workflow.
 
 ## 10) Practical next steps for your existing dashboard
 1. Keep current narrative UX, but back every panel with live metric queries.
