@@ -532,6 +532,7 @@ tbody tr.no-results:hover {
 
 .action-list,
 .decision-detail,
+.decision-recommendation,
 .drilldown-grid,
 .limit-list {
   display: grid;
@@ -570,6 +571,78 @@ tbody tr.no-results:hover {
 .decision-detail {
   color: var(--muted);
   line-height: 1.45;
+}
+
+.decision-recommendation {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.recommendation-verdict {
+  border-left: 4px solid var(--neutral);
+  border-radius: 7px;
+  padding: 12px;
+}
+
+.recommendation-verdict.green {
+  background: var(--green-bg);
+  border-left-color: var(--green);
+}
+
+.recommendation-verdict.amber {
+  background: var(--amber-bg);
+  border-left-color: var(--amber);
+}
+
+.recommendation-verdict.red {
+  background: var(--red-bg);
+  border-left-color: var(--red);
+}
+
+.recommendation-verdict.neutral {
+  background: var(--neutral-bg);
+}
+
+.recommendation-verdict strong {
+  color: var(--text);
+  display: block;
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.recommendation-verdict p {
+  margin: 0;
+}
+
+.recommendation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recommendation-reasons {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.recommendation-reasons div {
+  background: #f8fafc;
+  border-radius: 7px;
+  padding: 10px;
+}
+
+.recommendation-reasons dt {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 760;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.recommendation-reasons dd {
+  margin: 0;
 }
 
 .muted-copy {
@@ -621,22 +694,11 @@ tbody tr.no-results:hover {
   margin: 0;
 }
 
-.trace-section.recommendation {
-  background: var(--blue-bg);
-  border: 1px solid #cfdbf1;
-  border-radius: 7px;
-  padding: 12px;
-}
-
 .trace-section.view-lens {
   background: #f8fafc;
   border: 1px solid var(--border);
   border-radius: 7px;
   padding: 12px;
-}
-
-.trace-section.recommendation p + p {
-  margin-top: 7px;
 }
 
 .trace-list {

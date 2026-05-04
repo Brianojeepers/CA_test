@@ -54,13 +54,6 @@ export function renderDecisionDetail(packet, selectedDecisionId, fullDetail, vie
           </section>`
         : ""
     }
-    <section class="trace-section recommendation">
-      <h3>Council recommendation</h3>
-      <p><strong>Action:</strong> ${escapeHtml(row.recommendation.recommended_action)}</p>
-      <p><strong>Basis:</strong> ${escapeHtml(row.recommendation.evidence_basis)}</p>
-      <p><strong>Risk:</strong> ${escapeHtml(row.recommendation.blocker_or_risk)}</p>
-      <p><strong>Review trigger:</strong> ${escapeHtml(row.recommendation.next_review_trigger)}</p>
-    </section>
     <section class="trace-section">
       <h3>Rationale</h3>
       <p>${escapeHtml(decision.rationale)}</p>

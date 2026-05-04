@@ -26,6 +26,7 @@ EXPECTED_DASHBOARD_TEXT = [
     "Stakeholder insights",
     "Decision impact",
     "Action queue",
+    "Recommended action",
     "Selected decision",
     "Council notes",
 ]
@@ -98,6 +99,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/impact.js",
             "render/insights.js",
             "render/meetingNotes.js",
+            "render/recommendation.js",
             "render/summary.js",
             "render/table.js",
             "render/views.js",

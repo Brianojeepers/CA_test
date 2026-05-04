@@ -7,6 +7,7 @@ import { renderFilters, renderMeetingControls, renderOwnerFilter } from "./rende
 import { renderImpactBars } from "./render/impact.js";
 import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
+import { renderRecommendation } from "./render/recommendation.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
 import { renderStakeholderContext, renderStakeholderTabs } from "./render/views.js";
@@ -98,6 +99,7 @@ function renderDecisionTableFromState() {
 }
 
 function renderSelectedDecisionDetail() {
+  renderRecommendation(packet, selectedDecisionId, activeView);
   renderDecisionDetail(packet, selectedDecisionId, decisionDetails[selectedDecisionId], activeView);
 }
 

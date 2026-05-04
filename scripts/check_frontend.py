@@ -44,6 +44,7 @@ REQUIRED_IDS = {
     "decision-table",
     "action-heading",
     "action-list",
+    "recommendation-panel",
     "decision-detail",
     "warning-list",
     "meeting-notes",
@@ -65,6 +66,7 @@ REQUIRED_FILES = [
     "render/impact.js",
     "render/insights.js",
     "render/meetingNotes.js",
+    "render/recommendation.js",
     "render/summary.js",
     "render/table.js",
     "render/views.js",
@@ -128,6 +130,24 @@ def check_insight_trust_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing insight trust style: {token}")
 
 
+def check_recommendation_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    recommendation_js = (WEB_DIR / "render" / "recommendation.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("renderRecommendation",):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing recommendation panel token: {token}")
+
+    for token in ("recommendation-panel", "Keep / Amplify", "Update / Monitor", "Wait", "Update / Consider Deprecation"):
+        if token not in recommendation_js:
+            errors.append(f"web/render/recommendation.js is missing decision action token: {token}")
+
+    for token in (".decision-recommendation", ".recommendation-verdict", ".recommendation-reasons"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing recommendation style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -152,6 +172,7 @@ def main() -> int:
         check_html_contract(errors)
         check_api_contract(errors)
         check_insight_trust_contract(errors)
+        check_recommendation_contract(errors)
         check_js_syntax(errors)
 
     if errors:
