@@ -42,9 +42,27 @@ def validate_or_exit() -> None:
         print(f"Data validation warning: {warning}", file=sys.stderr)
 
 
-def offer_readiness(signal: dict[str, Any], releases: list[dict[str, Any]]) -> str:
-    if signal["status"] == "green" and any(release["release_status"] == "released" for release in releases):
+def has_readiness_evidence(
+    competencies: list[dict[str, Any]], evidence_by_competency: dict[str, list[dict[str, Any]]]
+) -> bool:
+    return any(
+        evidence["readiness_level"] in {"ready", "emerging"} and not evidence["suppression_applied"]
+        for competency in competencies
+        for evidence in evidence_by_competency.get(competency["competency_id"], [])
+    )
+
+
+def offer_readiness(
+    signal: dict[str, Any],
+    releases: list[dict[str, Any]],
+    competencies: list[dict[str, Any]],
+    evidence_by_competency: dict[str, list[dict[str, Any]]],
+) -> str:
+    released = any(release["release_status"] == "released" for release in releases)
+    if signal["status"] == "green" and released and has_readiness_evidence(competencies, evidence_by_competency):
         return "ready_for_offer_design"
+    if signal["status"] == "green" and released:
+        return "validated_but_readiness_pending"
     if signal["status"] == "green":
         return "validated_but_release_pending"
     if signal["status"] == "amber":
@@ -57,6 +75,8 @@ def recommendation_for(readiness: str, signal: dict[str, Any]) -> str:
         return f"Use as an input to client training design for {signal['role_archetype']} capability gaps."
     if readiness == "validated_but_release_pending":
         return "Track as a future offer candidate; internal artifact is not released yet."
+    if readiness == "validated_but_readiness_pending":
+        return "Hold for offer design until aggregated readiness evidence is stronger."
     if readiness == "monitor":
         return "Do not package as standalone training yet; keep as embedded or exploratory content."
     return "Exclude from training offer packaging until commercial pull improves."
@@ -84,6 +104,7 @@ def report_offer_inputs(
     signals: list[dict[str, Any]],
     releases_by_signal: dict[str, list[dict[str, Any]]],
     competencies_by_signal: dict[str, list[dict[str, Any]]],
+    evidence_by_competency: dict[str, list[dict[str, Any]]],
 ) -> None:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for signal in signals:
@@ -94,7 +115,7 @@ def report_offer_inputs(
         for signal in sorted(grouped[archetype], key=lambda item: item["signal_strength_score"], reverse=True):
             releases = releases_by_signal.get(signal["signal_id"], [])
             competencies = competencies_by_signal.get(signal["signal_id"], [])
-            readiness = offer_readiness(signal, releases)
+            readiness = offer_readiness(signal, releases, competencies, evidence_by_competency)
             regulated = "yes" if signal["client_segment"] in {"Financial services", "Healthcare"} else "no"
             print(
                 f"- {signal['signal_id']} [{readiness}] {signal['signal_theme']} | "
@@ -115,6 +136,7 @@ def main() -> None:
     signals = load_json("signals.json")
     releases = load_json("releases.json")
     competencies = load_json("role_competencies.json")
+    evidence = load_json("learner_evidence_summary.json")
 
     releases_by_signal: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for release in releases:
@@ -126,10 +148,14 @@ def main() -> None:
         for signal_id in competency["linked_signal_ids"]:
             competencies_by_signal[signal_id].append(competency)
 
+    evidence_by_competency: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in evidence:
+        evidence_by_competency[item["competency_id"]].append(item)
+
     print("Decision Spine Training Offer Inputs")
     print(f"Generated: {TODAY.isoformat()}")
     print("V1 limitation: produces training-offer inputs only; no product, pricing, or client diagnostic data.")
-    report_offer_inputs(signals, releases_by_signal, competencies_by_signal)
+    report_offer_inputs(signals, releases_by_signal, competencies_by_signal, evidence_by_competency)
 
 
 if __name__ == "__main__":

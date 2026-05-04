@@ -99,7 +99,7 @@ def impact_status(
     has_pending = any(item["readiness_level"] == "pending" for item in evidence)
     has_pending_outcome = any(cohort["placement_rate"] is None or cohort["retention_90d_rate"] is None for cohort in cohorts)
 
-    if has_positive_readiness and has_positive_outcome:
+    if has_positive_readiness and has_positive_outcome and not has_pending_outcome:
         return "positive_signal"
     if has_positive_readiness:
         return "evidence_emerging"

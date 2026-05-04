@@ -57,8 +57,11 @@ def delivery_status(release: dict[str, Any], cohort: dict[str, Any] | None) -> s
         return "coordination_needed"
     release_date = parse_date(release["release_date"])
     cohort_start = parse_date(cohort["cohort_start_date"])
+    credential_date = parse_date(cohort["credential_issued_date"])
+    if release_date and credential_date and release_date > credential_date:
+        return "late_for_credential_window"
     if release_date and cohort_start and release_date > cohort_start:
-        return "late_for_cohort_start"
+        return "in_cohort_timing_review"
     return "aligned"
 
 
@@ -67,7 +70,8 @@ def action_for(status: str) -> str:
         "aligned": "no delivery action required",
         "future_cohort": "confirm target cohort window when calendar data exists",
         "coordination_needed": "coordinate owner, target cohort, and release readiness",
-        "late_for_cohort_start": "review whether change missed active cohort start",
+        "in_cohort_timing_review": "confirm whether release landed before the relevant module or assessment week",
+        "late_for_credential_window": "review whether change missed credential issuance window",
         "data_quality_issue": "fix released item with unknown cohort_id",
     }
     return actions[status]
@@ -98,7 +102,14 @@ def report_delivery_windows(
             f"  action={action_for(status)}"
         )
 
-    for status in ("coordination_needed", "future_cohort", "late_for_cohort_start", "data_quality_issue", "aligned"):
+    for status in (
+        "coordination_needed",
+        "future_cohort",
+        "in_cohort_timing_review",
+        "late_for_credential_window",
+        "data_quality_issue",
+        "aligned",
+    ):
         print_section(status.replace("_", " ").title())
         items = by_status.get(status, [])
         if not items:
