@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "version": "0.2.0",
+  "purpose": "Field-level requirements for the expanded Decision Spine intelligence MVP.",
+  "requirements": [
+    {
+      "capability": "role_anchor_demand_index",
+      "label": "Role Anchor Demand Index",
+      "file": "signals.json",
+      "owner": "Signal Intelligence Council",
+      "privacy_sensitivity": "commercial_summary",
+      "decision_unlocked": "Rank role anchors by demand strength, durability, and placement relevance.",
+      "required_fields": [
+        {
+          "field": "role_archetype",
+          "purpose": "Groups signals into comparable role anchors.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Compare demand across role anchors."
+        },
+        {
+          "field": "geography",
+          "purpose": "Separates regional demand patterns.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Tune role priority by region."
+        },
+        {
+          "field": "horizon_window",
+          "purpose": "Distinguishes immediate demand from future preparation.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Separate teach-now and prepare-next signals."
+        },
+        {
+          "field": "source_date",
+          "purpose": "Supports freshness checks.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Discount stale demand evidence."
+        },
+        {
+          "field": "source_classes",
+          "purpose": "Tracks evidence diversity.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Avoid over-weighting one source class."
+        },
+        {
+          "field": "confidence",
+          "purpose": "Captures analyst confidence in the signal.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Qualify demand rankings."
+        },
+        {
+          "field": "signal_strength_score",
+          "purpose": "Provides current composite signal strength.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Compare signals on a common scale."
+        },
+        {
+          "field": "demand_volume",
+          "purpose": "Measures current demand count or normalized demand level.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Prioritize high-volume role anchors."
+        },
+        {
+          "field": "demand_growth_rate",
+          "purpose": "Measures demand acceleration or decline.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Identify rising demand before it becomes baseline."
+        },
+        {
+          "field": "hiring_velocity",
+          "purpose": "Captures speed of demand conversion.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Distinguish urgent hiring markets from slow interest."
+        },
+        {
+          "field": "compensation_pressure",
+          "purpose": "Approximates willingness to pay for the capability.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Prioritize high-value role anchors."
+        },
+        {
+          "field": "strategic_durability_score",
+          "purpose": "Filters durable demand from short-lived hype.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Avoid over-investing in transient signals."
+        },
+        {
+          "field": "placement_conversion_alignment",
+          "purpose": "Links demand to feasible placement conversion.",
+          "source_owner": "Matching and CSM",
+          "privacy_sensitivity": "aggregate_outcome",
+          "decision_unlocked": "Prioritize roles where trained talent can convert."
+        }
+      ]
+    },
+    {
+      "capability": "competency_gap_index_market_side",
+      "label": "Competency Gap Index - market side",
+      "file": "role_competencies.json",
+      "owner": "Learning Architecture",
+      "privacy_sensitivity": "low",
+      "decision_unlocked": "Determine which role competencies need teach-now, monitor, or deprecate treatment.",
+      "required_fields": [
+        {
+          "field": "role_archetype",
+          "purpose": "Links competencies to role anchors.",
+          "source_owner": "Learning Architecture",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Group gaps by target role."
+        },
+        {
+          "field": "competency_cluster",
+          "purpose": "Groups capabilities into teachable clusters.",
+          "source_owner": "Learning Architecture",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Plan curriculum coverage by cluster."
+        },
+        {
+          "field": "capability",
+          "purpose": "Names the capability being assessed.",
+          "source_owner": "Learning Architecture",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Map evidence to a precise skill."
+        },
+        {
+          "field": "target_proficiency",
+          "purpose": "States the expected proficiency level.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Compare teaching target to market need."
+        },
+        {
+          "field": "market_priority",
+          "purpose": "Ranks the market priority of the competency.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Sequence gap remediation."
+        },
+        {
+          "field": "horizon_window",
+          "purpose": "Places the competency in an adoption horizon.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Separate immediate gaps from future bets."
+        },
+        {
+          "field": "market_required_proficiency",
+          "purpose": "Captures the proficiency the market appears to require.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Calculate market-side gap severity."
+        },
+        {
+          "field": "tool_decay_risk",
+          "purpose": "Flags skills whose shelf life is short.",
+          "source_owner": "Learning Architecture",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Avoid over-investing in rapidly decaying tools."
+        },
+        {
+          "field": "deprecation_signal",
+          "purpose": "Captures evidence that a capability should be reduced or removed.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Decide when to deprecate curriculum coverage."
+        }
+      ]
+    },
+    {
+      "capability": "competency_gap_index_learner_side",
+      "label": "Competency Gap Index - learner side",
+      "file": "learner_evidence_summary.json",
+      "owner": "Assessment Ops",
+      "privacy_sensitivity": "aggregate_learner",
+      "decision_unlocked": "Compare market-required proficiency with aggregated learner evidence.",
+      "required_fields": [
+        {
+          "field": "competency_id",
+          "purpose": "Links evidence to a competency.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Join learner evidence to competency targets."
+        },
+        {
+          "field": "cohort_id",
+          "purpose": "Keeps evidence at cohort level.",
+          "source_owner": "Data and Analytics",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Review readiness without learner-level records."
+        },
+        {
+          "field": "sample_size",
+          "purpose": "Shows whether evidence is statistically usable.",
+          "source_owner": "Data and Analytics",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Suppress weak or unsafe evidence."
+        },
+        {
+          "field": "readiness_rate",
+          "purpose": "Captures proportion meeting the evidence threshold.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Estimate cohort readiness."
+        },
+        {
+          "field": "readiness_level",
+          "purpose": "Summarizes readiness into a reviewable category.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Route ready, emerging, or blocked competencies."
+        },
+        {
+          "field": "demonstrated_proficiency",
+          "purpose": "States the proficiency demonstrated by the cohort.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Compare learner evidence to target proficiency."
+        },
+        {
+          "field": "proficiency_gap_score",
+          "purpose": "Quantifies the gap between market need and learner demonstration.",
+          "source_owner": "Data and Analytics",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Rank competency gaps."
+        },
+        {
+          "field": "evidence_confidence",
+          "purpose": "Qualifies evidence trustworthiness.",
+          "source_owner": "Assessment Ops",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Prevent over-confident readiness claims."
+        },
+        {
+          "field": "privacy_posture",
+          "purpose": "Records whether the aggregate can be used.",
+          "source_owner": "Data Privacy",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Block unsafe evidence use."
+        }
+      ]
+    },
+    {
+      "capability": "horizon_radar",
+      "label": "Horizon Radar",
+      "file": "predictions.json",
+      "owner": "Signal Intelligence Council",
+      "privacy_sensitivity": "low",
+      "decision_unlocked": "Track weak, accelerating, baseline, and commoditizing signals by horizon.",
+      "required_fields": [
+        {
+          "field": "prediction_id",
+          "purpose": "Identifies the forecast record.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Audit forecast learning."
+        },
+        {
+          "field": "issued_date",
+          "purpose": "Records when the forecast was made.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Score prediction timeliness."
+        },
+        {
+          "field": "horizon_window",
+          "purpose": "Places the forecast in a planning horizon.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Separate near-term action from watchlist items."
+        },
+        {
+          "field": "confidence",
+          "purpose": "Captures forecast confidence.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Qualify horizon recommendations."
+        },
+        {
+          "field": "outcome",
+          "purpose": "Records prediction outcome when scored.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Measure forecast quality."
+        },
+        {
+          "field": "accuracy_score",
+          "purpose": "Quantifies forecast accuracy.",
+          "source_owner": "Data and Analytics",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Calibrate future horizon judgments."
+        },
+        {
+          "field": "maturity_stage",
+          "purpose": "Classifies signal maturity.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Distinguish emerging, accelerating, baseline, and commoditizing signals."
+        },
+        {
+          "field": "weak_signal_theme",
+          "purpose": "Names the early pattern being watched.",
+          "source_owner": "Market Intelligence",
+          "privacy_sensitivity": "commercial_summary",
+          "decision_unlocked": "Maintain a clear watchlist."
+        },
+        {
+          "field": "review_due_date",
+          "purpose": "Schedules horizon review.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Keep weak-signal review timely."
+        }
+      ]
+    },
+    {
+      "capability": "curriculum_impact_simulator",
+      "label": "Curriculum Impact Simulator",
+      "file": "releases.json",
+      "owner": "Learning and Delivery",
+      "privacy_sensitivity": "aggregate_outcome",
+      "decision_unlocked": "Estimate cost and expected placement or extension impact for proposed curriculum changes.",
+      "required_fields": [
+        {
+          "field": "decision_id",
+          "purpose": "Links simulation inputs to a decision.",
+          "source_owner": "Signal Intelligence Council",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Audit why the simulation exists."
+        },
+        {
+          "field": "release_date",
+          "purpose": "Anchors timing for the change.",
+          "source_owner": "Learning Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Measure implementation timing."
+        },
+        {
+          "field": "change_type",
+          "purpose": "Classifies the type of curriculum change.",
+          "source_owner": "Learning Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Compare impact by change type."
+        },
+        {
+          "field": "change_scope",
+          "purpose": "Captures size of the change.",
+          "source_owner": "Learning Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Estimate delivery load."
+        },
+        {
+          "field": "programme",
+          "purpose": "Identifies the affected programme.",
+          "source_owner": "Learning Ops",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Route simulation to the right owner."
+        },
+        {
+          "field": "cohort_id",
+          "purpose": "Links impact assumptions to a cohort.",
+          "source_owner": "Learning Ops",
+          "privacy_sensitivity": "aggregate_learner",
+          "decision_unlocked": "Connect changes to outcome windows."
+        },
+        {
+          "field": "estimated_learner_time_delta",
+          "purpose": "Estimates learner time added or removed.",
+          "source_owner": "Learning Design",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Balance impact against learner load."
+        },
+        {
+          "field": "instructional_capacity_cost",
+          "purpose": "Estimates delivery or assessment capacity required.",
+          "source_owner": "Delivery",
+          "privacy_sensitivity": "low",
+          "decision_unlocked": "Decide whether the change is operationally feasible."
+        },
+        {
+          "field": "expected_placement_lift",
+          "purpose": "States expected placement conversion improvement.",
+          "source_owner": "Matching and CSM",
+          "privacy_sensitivity": "aggregate_outcome",
+          "decision_unlocked": "Prioritize changes with placement upside."
+        },
+        {
+          "field": "expected_extension_lift",
+          "purpose": "States expected extension or retention improvement.",
+          "source_owner": "Matching and CSM",
+          "privacy_sensitivity": "aggregate_outcome",
+          "decision_unlocked": "Prioritize changes with post-placement upside."
+        }
+      ]
+    }
+  ]
+}

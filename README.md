@@ -79,6 +79,9 @@ Review seed, pilot-template, source-contract, and v0.2 intelligence schema gaps:
 python3 scripts/schema_gap_review.py
 ```
 
+The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
+is explained in `docs/v02_pilot_schema.md`.
+
 Run the core operating packet:
 
 ```bash

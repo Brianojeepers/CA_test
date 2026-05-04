@@ -11,6 +11,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 TEMPLATE_DIR = DATA_DIR / "pilot_extract_templates"
+V02_REQUIREMENTS_FILE = DATA_DIR / "v02_intelligence_requirements.json"
 
 
 CURRENT_SCHEMA_FIELDS: dict[str, tuple[str, ...]] = {
@@ -201,101 +202,56 @@ FIELD_ALIASES: dict[str, dict[str, tuple[str, ...]]] = {
 }
 
 
-V02_INTELLIGENCE_REQUIREMENTS: tuple[dict[str, Any], ...] = (
-    {
-        "capability": "role_anchor_demand_index",
-        "label": "Role Anchor Demand Index",
-        "file": "signals.json",
-        "required_fields": (
-            "role_archetype",
-            "geography",
-            "horizon_window",
-            "source_date",
-            "source_classes",
-            "confidence",
-            "signal_strength_score",
-            "demand_volume",
-            "demand_growth_rate",
-            "hiring_velocity",
-            "compensation_pressure",
-            "strategic_durability_score",
-            "placement_conversion_alignment",
-        ),
-    },
-    {
-        "capability": "competency_gap_index_market_side",
-        "label": "Competency Gap Index - market side",
-        "file": "role_competencies.json",
-        "required_fields": (
-            "role_archetype",
-            "competency_cluster",
-            "capability",
-            "target_proficiency",
-            "market_priority",
-            "horizon_window",
-            "market_required_proficiency",
-            "tool_decay_risk",
-            "deprecation_signal",
-        ),
-    },
-    {
-        "capability": "competency_gap_index_learner_side",
-        "label": "Competency Gap Index - learner side",
-        "file": "learner_evidence_summary.json",
-        "required_fields": (
-            "competency_id",
-            "cohort_id",
-            "sample_size",
-            "readiness_rate",
-            "readiness_level",
-            "demonstrated_proficiency",
-            "proficiency_gap_score",
-            "evidence_confidence",
-            "privacy_posture",
-        ),
-    },
-    {
-        "capability": "horizon_radar",
-        "label": "Horizon Radar",
-        "file": "predictions.json",
-        "required_fields": (
-            "prediction_id",
-            "issued_date",
-            "horizon_window",
-            "confidence",
-            "outcome",
-            "accuracy_score",
-            "maturity_stage",
-            "weak_signal_theme",
-            "review_due_date",
-        ),
-    },
-    {
-        "capability": "curriculum_impact_simulator",
-        "label": "Curriculum Impact Simulator",
-        "file": "releases.json",
-        "required_fields": (
-            "decision_id",
-            "release_date",
-            "change_type",
-            "change_scope",
-            "programme",
-            "cohort_id",
-            "estimated_learner_time_delta",
-            "instructional_capacity_cost",
-            "expected_placement_lift",
-            "expected_extension_lift",
-        ),
-    },
-)
-
-
 def load_json(path: Path) -> list[dict[str, Any]]:
     with path.open(encoding="utf-8") as file:
         data = json.load(file)
     if not isinstance(data, list):
         raise ValueError(f"{path}: expected top-level JSON list")
     return data
+
+
+def load_json_document(path: Path) -> dict[str, Any]:
+    with path.open(encoding="utf-8") as file:
+        data = json.load(file)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level JSON object")
+    return data
+
+
+def load_v02_requirements(path: Path = V02_REQUIREMENTS_FILE) -> list[dict[str, Any]]:
+    document = load_json_document(path)
+    requirements = document.get("requirements")
+    if not isinstance(requirements, list):
+        raise ValueError(f"{path}: requirements must be a list")
+
+    normalized: list[dict[str, Any]] = []
+    for requirement in requirements:
+        if not isinstance(requirement, dict):
+            raise ValueError(f"{path}: each requirement must be an object")
+        fields = requirement.get("required_fields")
+        if not isinstance(fields, list) or not fields:
+            raise ValueError(f"{path}: {requirement.get('capability', '<unknown>')}: required_fields must be a non-empty list")
+
+        field_names: list[str] = []
+        field_details: list[dict[str, Any]] = []
+        for field in fields:
+            if isinstance(field, str):
+                field_names.append(field)
+                field_details.append({"field": field})
+                continue
+            if not isinstance(field, dict) or not isinstance(field.get("field"), str) or not field["field"].strip():
+                raise ValueError(f"{path}: {requirement.get('capability', '<unknown>')}: invalid field entry")
+            field_names.append(field["field"])
+            field_details.append(field)
+
+        normalized.append(
+            {
+                **requirement,
+                "required_fields": tuple(field_names),
+                "field_details": field_details,
+            }
+        )
+    return normalized
 
 
 def fields_in_records(records: list[dict[str, Any]]) -> set[str]:
@@ -401,10 +357,10 @@ def build_file_report(
     }
 
 
-def build_v02_requirement_report() -> list[dict[str, Any]]:
+def build_v02_requirement_report(requirements: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     contracts = contracts_by_primary_file()
     reports: list[dict[str, Any]] = []
-    for requirement in V02_INTELLIGENCE_REQUIREMENTS:
+    for requirement in requirements or load_v02_requirements():
         filename = requirement["file"]
         seed_fields = load_fields(filename)
         template_fields = load_fields(filename, template=True)
@@ -417,7 +373,11 @@ def build_v02_requirement_report() -> list[dict[str, Any]]:
                 "capability": requirement["capability"],
                 "label": requirement["label"],
                 "file": filename,
+                "owner": requirement.get("owner", ""),
+                "privacy_sensitivity": requirement.get("privacy_sensitivity", ""),
+                "decision_unlocked": requirement.get("decision_unlocked", ""),
                 "required_fields": sorted(required),
+                "field_details": sorted(requirement.get("field_details", []), key=lambda item: item["field"]),
                 "covered_fields": sorted(field for field in required if is_field_covered(field, available_fields, filename)),
                 "missing_fields": missing,
                 "coverage": round((len(required) - len(missing)) / len(required), 2),
@@ -426,9 +386,12 @@ def build_v02_requirement_report() -> list[dict[str, Any]]:
     return reports
 
 
-def build_minimum_viable_pilot_fields(file_reports: list[dict[str, Any]]) -> dict[str, list[str]]:
+def build_minimum_viable_pilot_fields(
+    file_reports: list[dict[str, Any]],
+    requirements: list[dict[str, Any]] | None = None,
+) -> dict[str, list[str]]:
     v02_by_file: dict[str, set[str]] = defaultdict(set)
-    for requirement in V02_INTELLIGENCE_REQUIREMENTS:
+    for requirement in requirements or load_v02_requirements():
         v02_by_file[requirement["file"]].update(requirement["required_fields"])
 
     fields_by_file: dict[str, list[str]] = {}
@@ -474,7 +437,8 @@ def build_schema_gap_report() -> dict[str, Any]:
         )
         for filename in filenames
     ]
-    v02_reports = build_v02_requirement_report()
+    requirements = load_v02_requirements()
+    v02_reports = build_v02_requirement_report(requirements)
     source_readiness = build_source_readiness(feed_contract_groups)
     readiness_counts = Counter(item["readiness"] for item in source_readiness)
 
@@ -493,7 +457,7 @@ def build_schema_gap_report() -> dict[str, Any]:
         "file_reports": file_reports,
         "source_readiness": source_readiness,
         "v02_requirements": v02_reports,
-        "minimum_viable_pilot_fields": build_minimum_viable_pilot_fields(file_reports),
+        "minimum_viable_pilot_fields": build_minimum_viable_pilot_fields(file_reports, requirements),
     }
 
 

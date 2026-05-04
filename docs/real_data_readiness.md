@@ -91,6 +91,9 @@ source contracts cover the fields required for the broader intelligence engine.
 It should be used to decide the minimum viable pilot extract before requesting
 new data.
 
+The v0.2 field contract lives in `data/v02_intelligence_requirements.json`; the
+plain-English pilot schema is documented in `docs/v02_pilot_schema.md`.
+
 ## Pilot Extract Templates
 
 Pilot extract templates live in:

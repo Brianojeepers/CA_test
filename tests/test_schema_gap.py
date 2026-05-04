@@ -1,6 +1,6 @@
 import unittest
 
-from decision_spine.services.schema_gap import build_schema_gap_report
+from decision_spine.services.schema_gap import build_schema_gap_report, load_v02_requirements
 
 
 class SchemaGapTests(unittest.TestCase):
@@ -30,6 +30,11 @@ class SchemaGapTests(unittest.TestCase):
             "proficiency_gap_score",
             requirements["competency_gap_index_learner_side"]["missing_fields"],
         )
+        self.assertEqual(requirements["role_anchor_demand_index"]["owner"], "Signal Intelligence Council")
+        self.assertEqual(
+            requirements["curriculum_impact_simulator"]["decision_unlocked"],
+            "Estimate cost and expected placement or extension impact for proposed curriculum changes.",
+        )
 
     def test_minimum_viable_pilot_fields_include_future_intelligence_inputs(self) -> None:
         report = build_schema_gap_report()
@@ -37,6 +42,13 @@ class SchemaGapTests(unittest.TestCase):
 
         self.assertIn("demand_volume", signal_fields)
         self.assertIn("signal_strength_score", signal_fields)
+
+    def test_v02_requirements_are_loaded_from_data_contract(self) -> None:
+        requirements = load_v02_requirements()
+        role_demand = next(item for item in requirements if item["capability"] == "role_anchor_demand_index")
+
+        self.assertIn("demand_growth_rate", role_demand["required_fields"])
+        self.assertTrue(all("source_owner" in field for field in role_demand["field_details"]))
 
 
 if __name__ == "__main__":

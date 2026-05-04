@@ -67,6 +67,7 @@ Primary seed files:
 | `data/learner_evidence_summary.json` | Aggregated learner evidence by competency and cohort. |
 | `data/pedagogy_map.json` | Bloom/Dreyfus/performance framing for selected decisions and releases. |
 | `data/source_contracts.json` | Real-data source readiness, ownership, freshness, and privacy contracts. |
+| `data/v02_intelligence_requirements.json` | Versioned field requirements for expanded role-demand, competency-gap, horizon, and impact reasoning. |
 
 Detailed field-level contribution rules live in `data/README.md`.
 
@@ -78,7 +79,9 @@ Real-data readiness and source obligations live in:
 - `docs/real_data_readiness.md`
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
+- `docs/v02_pilot_schema.md`
 - `data/source_contracts.json`
+- `data/v02_intelligence_requirements.json`
 
 ## 5. Validation Rules
 

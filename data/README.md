@@ -25,6 +25,7 @@ extracts should live in ignored `data/pilot_extracts/` and pass
 | `learner_evidence_summary.json` | Aggregated proficiency evidence by competency and cohort. |
 | `pedagogy_map.json` | Optional pedagogical framing for selected learning, credential, and assessment changes. |
 | `source_contracts.json` | Source-owner, privacy, field, freshness, and readiness contracts for real-data pilot extracts. |
+| `v02_intelligence_requirements.json` | Versioned field contract for role-demand, competency-gap, horizon-radar, and simulator expansion. |
 
 The operating role accountable for turning this evidence into action is defined in
 `docs/signal_intelligence_council.md`.
@@ -266,3 +267,6 @@ python3 scripts/schema_gap_review.py
 The schema gap review compares seed fields, pilot templates, source-contract
 fields, and v0.2 intelligence requirements so the next product step has a clear
 minimum viable pilot extract instead of a vague data wishlist.
+
+The v0.2 requirement contract lives in `v02_intelligence_requirements.json` and
+is explained in `docs/v02_pilot_schema.md`.

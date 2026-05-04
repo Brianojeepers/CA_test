@@ -82,6 +82,8 @@ The review should answer:
 - What concrete action is needed next for each source?
 - Which v0.2 intelligence fields are still missing from the pilot shape?
 
+The v0.2 field contract lives in `data/v02_intelligence_requirements.json`.
+
 This should be read alongside `docs/real_data_readiness.md`. The readiness doc
 sets the guardrails; the contract register turns those guardrails into source-by-
 source obligations.
