@@ -1,9 +1,9 @@
 import { escapeHtml } from "../format.js";
 
-export function renderActions(actions, onSelectDecision) {
+export function renderActions(actions, onSelectDecision, emptyLabel = "No current action items.") {
   const list = document.getElementById("action-list");
   if (!actions.length) {
-    list.innerHTML = "<p>No current action items.</p>";
+    list.innerHTML = `<p>${escapeHtml(emptyLabel)}</p>`;
     return;
   }
   list.innerHTML = actions

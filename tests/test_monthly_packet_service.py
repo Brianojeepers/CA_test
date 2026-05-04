@@ -19,6 +19,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("known_limits", packet)
         self.assertIn("recommendation", packet["decision_impact"]["rows"][0])
         self.assertIn("signal_ids", packet["decision_impact"]["rows"][0])
+        self.assertIn("partner_functions", packet["decision_impact"]["rows"][0])
 
     def test_markdown_renderer_uses_structured_packet(self) -> None:
         markdown = render_monthly_packet_markdown(build_monthly_packet())

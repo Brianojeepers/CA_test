@@ -223,6 +223,7 @@ def build_decision_impact_rows(
                 "decision_id": decision["decision_id"],
                 "status": status,
                 "owner": decision["owner"],
+                "partner_functions": decision["partner_functions"],
                 "summary": decision["decision_summary"],
                 "decision_type": decision["decision_type"],
                 "signal_ids": decision["signal_ids"],

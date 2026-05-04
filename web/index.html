@@ -23,6 +23,30 @@
         Connecting to the API...
       </section>
 
+      <section class="view-panel" aria-label="Stakeholder view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Stakeholder lens</p>
+            <h2 id="view-title">Council Review</h2>
+          </div>
+          <div id="stakeholder-views" class="segmented view-tabs" aria-label="Stakeholder dashboard views"></div>
+        </div>
+        <p id="view-description" class="view-description">
+          Decision owners, evidence maturity, and unblockers for the monthly review.
+        </p>
+        <div class="view-context-grid">
+          <div class="view-question">
+            <span class="metric-label">Primary question</span>
+            <strong id="view-primary-question">Which decisions need action, patience, or amplification this month?</strong>
+          </div>
+          <ul id="view-focus-list" class="view-focus-list"></ul>
+          <div class="view-counts">
+            <span id="view-scope-count" class="meta-pill">0 decision(s) in scope</span>
+            <span id="view-action-count" class="meta-pill">0 action(s)</span>
+          </div>
+        </div>
+      </section>
+
       <section class="summary-grid" aria-label="Executive summary">
         <article class="metric-card">
           <span class="metric-label">Data Trust</span>
@@ -42,7 +66,7 @@
         <article class="metric-card">
           <span class="metric-label">Actions</span>
           <strong id="action-count">-</strong>
-          <small>Items needing council attention</small>
+          <small id="action-caption">Items needing council attention</small>
         </article>
       </section>
 
@@ -51,7 +75,8 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Decision impact</p>
-              <h2>What is ready, early, or blocked?</h2>
+              <h2 id="decision-heading">Council decision impact</h2>
+              <p id="decision-question" class="section-question">Which decisions need action, patience, or amplification this month?</p>
             </div>
             <div id="impact-filter" class="segmented" aria-label="Filter decisions by impact status"></div>
           </div>
@@ -97,7 +122,7 @@
             <div class="section-heading compact">
               <div>
                 <p class="eyebrow">Action queue</p>
-                <h2>Needs attention</h2>
+                <h2 id="action-heading">Council actions</h2>
               </div>
             </div>
             <div id="action-list" class="action-list"></div>

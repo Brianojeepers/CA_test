@@ -1,6 +1,6 @@
 import { formatPercent } from "../format.js";
 
-export function renderSummary(packet) {
+export function renderSummary(packet, viewRows, viewActions) {
   const trust = packet.data_trust;
   const signal = packet.kpi_posture.signal_strength;
   const prediction = packet.kpi_posture.prediction_accuracy;
@@ -13,5 +13,6 @@ export function renderSummary(packet) {
     `Green ${signal.green} / Amber ${signal.amber} / Red ${signal.red}`;
   document.getElementById("prediction-accuracy").textContent = formatPercent(prediction.value);
   document.getElementById("prediction-scored").textContent = `${prediction.scored_count} scored predictions`;
-  document.getElementById("action-count").textContent = packet.actions.length;
+  document.getElementById("action-count").textContent = viewActions.length;
+  document.getElementById("action-caption").textContent = `${viewRows.length} decision(s) in this stakeholder view`;
 }

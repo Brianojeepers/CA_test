@@ -17,8 +17,8 @@ export function renderFilters(packet, activeFilter, onFilterChange) {
   });
 }
 
-export function renderOwnerFilter(packet, activeOwner) {
-  const owners = [...new Set(packet.decision_impact.rows.map((row) => row.owner))].sort();
+export function renderOwnerFilter(rows, activeOwner) {
+  const owners = [...new Set(rows.map((row) => row.owner))].sort();
   const select = document.getElementById("owner-filter");
   select.innerHTML = [
     '<option value="all">All owners</option>',

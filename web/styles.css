@@ -111,12 +111,71 @@ select {
 }
 
 .metric-card,
+.view-panel,
 .panel,
 .table-panel,
 .impact-visual {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+}
+
+.view-panel {
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.view-tabs {
+  max-width: 720px;
+}
+
+.view-description,
+.section-question {
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 8px 0 0;
+}
+
+.view-context-grid {
+  align-items: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(280px, 1fr) minmax(220px, 0.6fr) auto;
+  margin-top: 14px;
+}
+
+.view-question,
+.view-focus-list,
+.view-counts {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  margin: 0;
+  padding: 12px;
+}
+
+.view-question strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.view-focus-list {
+  display: grid;
+  gap: 7px;
+  list-style: none;
+}
+
+.view-focus-list li {
+  color: var(--neutral);
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.view-counts {
+  align-content: start;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
 }
 
 .metric-card {
@@ -367,6 +426,14 @@ tbody tr.selected {
   background: #f8fafc;
 }
 
+tbody tr.no-results {
+  cursor: default;
+}
+
+tbody tr.no-results:hover {
+  background: transparent;
+}
+
 .decision-id {
   display: block;
   font-weight: 760;
@@ -480,6 +547,13 @@ tbody tr.selected {
   padding: 12px;
 }
 
+.trace-section.view-lens {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 12px;
+}
+
 .trace-section.recommendation p + p {
   margin-top: 7px;
 }
@@ -572,6 +646,7 @@ tbody tr.selected {
 
 @media (max-width: 1040px) {
   .summary-grid,
+  .view-context-grid,
   .workspace,
   .lower-grid {
     grid-template-columns: 1fr;
@@ -594,6 +669,7 @@ tbody tr.selected {
   }
 
   .summary-grid,
+  .view-context-grid,
   .side-column,
   .drilldown-grid {
     grid-template-columns: 1fr;

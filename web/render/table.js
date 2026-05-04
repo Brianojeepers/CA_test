@@ -1,6 +1,15 @@
 import { badge, escapeHtml, statusLabels } from "../format.js";
 
-export function renderDecisionTable(rows, selectedDecisionId, onSelectDecision) {
+export function renderDecisionTable(rows, selectedDecisionId, onSelectDecision, emptyLabel) {
+  if (!rows.length) {
+    document.getElementById("decision-table").innerHTML = `
+      <tr class="no-results">
+        <td colspan="4">${escapeHtml(emptyLabel)}</td>
+      </tr>
+    `;
+    return;
+  }
+
   document.getElementById("decision-table").innerHTML = rows
     .map((row) => {
       const selected = row.decision_id === selectedDecisionId ? "selected" : "";

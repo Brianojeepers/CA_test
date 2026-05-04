@@ -1,6 +1,6 @@
 import { badge, escapeHtml, formatPercent, listItems, statusExplanations, statusLabels } from "../format.js";
 
-export function renderDecisionDetail(packet, selectedDecisionId, fullDetail) {
+export function renderDecisionDetail(packet, selectedDecisionId, fullDetail, view) {
   const row = packet.decision_impact.rows.find((item) => item.decision_id === selectedDecisionId);
   const detail = document.getElementById("decision-detail");
   if (!row) {
@@ -46,6 +46,14 @@ export function renderDecisionDetail(packet, selectedDecisionId, fullDetail) {
       <h3>Why this status?</h3>
       <p>${escapeHtml(statusExplanations[row.status])}</p>
     </section>
+    ${
+      view?.detailLens
+        ? `<section class="trace-section view-lens">
+            <h3>${escapeHtml(view.label)} lens</h3>
+            <p>${escapeHtml(view.detailLens)}</p>
+          </section>`
+        : ""
+    }
     <section class="trace-section recommendation">
       <h3>Council recommendation</h3>
       <p><strong>Action:</strong> ${escapeHtml(row.recommendation.recommended_action)}</p>
