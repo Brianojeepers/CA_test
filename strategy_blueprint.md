@@ -102,7 +102,7 @@ Output: “teach now / monitor / deprecate” recommendation.
 - Re-baseline assessment framework.
 
 ## 6) Governance model
-- **Intelligence Council** (Academy, Matching, Data, Delivery, Client Success).
+- **Signal Intelligence Council** (Academy, Matching, Data, Delivery, Client Success) as the operating owner for signal quality, horizon judgment, credential integrity inputs, and placement outcome learning.
 - Decision log with:
   - evidence used,
   - confidence,
@@ -110,6 +110,8 @@ Output: “teach now / monitor / deprecate” recommendation.
   - owner,
   - review date.
 - “No source, no change” rule for curriculum updates.
+
+The council charter for this operating owner is defined in `docs/signal_intelligence_council.md`.
 
 ## 7) Technical architecture (pragmatic)
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This dictionary defines the first seven KPIs for the AI Talent Strategy Decision Spine MVP.
+This dictionary defines the first seven KPIs for the Decision Spine MVP.
 
 The MVP workflow is:
 
@@ -36,13 +36,13 @@ The goal is to make each KPI decision-useful, auditable, and clear enough for cr
 
 | ID | KPI | Primary Owner | Grain | Refresh | Red Trigger |
 | --- | --- | --- | --- | --- | --- |
-| K1 | Signal Strength Score | Research / AI Talent Strategy | Per signal | Weekly | Audit scoring consistency and evidence tags. |
-| K2 | Signal-to-Decision Time | AI Talent Strategy | Per green signal | Weekly | Review stalled items and assign owner plus due date. |
+| K1 | Signal Strength Score | Research / Signal Intelligence Council | Per signal | Weekly | Audit scoring consistency and evidence tags. |
+| K2 | Signal-to-Decision Time | Signal Intelligence Council | Per green signal | Weekly | Review stalled items and assign owner plus due date. |
 | K3 | Decision-to-Release Time | Learning | Per decision | Weekly | Re-plan blocked release with dependency owner. |
 | K4 | Curriculum/Credential Changes per Quarter | Learning + Assessment Ops | Quarterly | Monthly check, quarterly close | Run change-debt review and commit one market-traceable change. |
 | K5 | Placement Rate Delta | Matching + CSM | Per cohort | Monthly | Run placement funnel diagnostic. |
 | K6 | 90-Day Retention Delta | CSM + Talent Experience | Per placement, aggregated by cohort | Monthly lagged | Pull client feedback and review screening or credential thresholds. |
-| K7 | Prediction Accuracy at 6 Months | Research / AI Talent Strategy | Per prediction | Monthly batch | Run prediction post-mortem and recalibrate signal weighting. |
+| K7 | Prediction Accuracy at 6 Months | Research / Signal Intelligence Council | Per prediction | Monthly batch | Run prediction post-mortem and recalibrate signal weighting. |
 
 ## K1: Signal Strength Score
 
@@ -51,7 +51,7 @@ The goal is to make each KPI decision-useful, auditable, and clear enough for cr
 | Business question | How strong is the evidence that a market shift requires a curriculum, credential, or positioning response? |
 | Formula | Weighted score from 0 to 100: `SourceDiversity`, `Recency`, `Corroboration`, and `CommercialPull`, each weighted 25% in v1. |
 | Component logic | `SourceDiversity`: distinct source classes capped at 5 and scaled 0-100. `Recency`: decay over 90 days. `Corroboration`: independent sightings capped at 10 and scaled 0-100. `CommercialPull`: named client demand scored 0 or 100. |
-| Owner | Research / AI Talent Strategy. |
+| Owner | Research / Signal Intelligence Council. |
 | Grain | Per signal, aggregated into a monthly signal register summary. |
 | Dimensions | Signal type, source class, role archetype, geography, client segment, horizon window. |
 | Sources | Manual signal register in v1; later job feeds, CRM notes, client feedback, win/loss notes, and vetting feedback. |
@@ -69,7 +69,7 @@ The goal is to make each KPI decision-useful, auditable, and clear enough for cr
 | --- | --- |
 | Business question | How long does it take to move from validated market signal to documented decision? |
 | Formula | `DecisionSignedDate - SignalThresholdDate`, in calendar days. |
-| Owner | AI Talent Strategy. |
+| Owner | Signal Intelligence Council. |
 | Grain | Per green signal. |
 | Dimensions | Signal type, decision class, owner, function, horizon window. |
 | Sources | Signal register and decision register. |
@@ -159,7 +159,7 @@ The goal is to make each KPI decision-useful, auditable, and clear enough for cr
 | --- | --- |
 | Business question | Are horizon predictions being validated by market movement six months later? |
 | Formula | `confirmed_predictions / scored_predictions`, where scored predictions are those whose six-month scoring window has been reached. |
-| Owner | Research / AI Talent Strategy. |
+| Owner | Research / Signal Intelligence Council. |
 | Grain | Per prediction. |
 | Dimensions | Signal type, horizon class, confidence tag, source mix, role archetype. |
 | Sources | Prediction register, signal register, placement outcomes, external market evidence. |
@@ -171,4 +171,3 @@ The goal is to make each KPI decision-useful, auditable, and clear enough for cr
 | Inconclusive handling | Exclude from the numerator and denominator, but monitor inconclusive rate as a data quality flag. If inconclusive rate exceeds 30%, review prediction-writing standards. |
 | Data confidence | Low until at least two six-month scoring batches are complete. |
 | Caveat | Treat the first year as calibration rather than performance judgment. |
-

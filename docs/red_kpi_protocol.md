@@ -32,9 +32,9 @@ The KPI owner completes diagnosis and logs:
 - One directly accountable owner.
 - One due date.
 - One measurable recovery indicator.
-- Escalation decision: stay with owner, escalate to function lead, or escalate to KPI Council.
+- Escalation decision: stay with owner, escalate to function lead, or escalate to Signal Intelligence Council.
 
-If no action is logged by day 7, escalation to the KPI Council chair is automatic.
+If no action is logged by day 7, escalation to the Signal Intelligence Council chair is automatic.
 
 ## Required Within 30 Days
 
@@ -49,7 +49,7 @@ If the KPI remains red after 30 days, choose one of the following:
 
 - Revise the intervention.
 - Declare a structural issue and open a metric design review.
-- Escalate to KPI Council for cross-functional decision.
+- Escalate to Signal Intelligence Council for cross-functional decision.
 
 ## Red Case Template
 
@@ -80,13 +80,12 @@ Decision:
 
 If a red KPI has no logged action within seven days, escalation is automatic.
 
-If the same KPI is red for two consecutive cycles without a completed diagnosis, the KPI Council must decide whether the issue is operational or whether the metric definition itself needs redesign.
+If the same KPI is red for two consecutive cycles without a completed diagnosis, the Signal Intelligence Council must decide whether the issue is operational or whether the metric definition itself needs redesign.
 
 ## Severity Guidance
 
 | Severity | Description | Default Escalation |
 | --- | --- | --- |
-| S1 | Red KPI affects credential integrity, premium authorization, or client trust. | KPI Council immediately. |
+| S1 | Red KPI affects credential integrity, premium authorization, or client trust. | Signal Intelligence Council immediately. |
 | S2 | Red KPI affects placement, retention, or release commitments. | Function lead within seven days. |
 | S3 | Red KPI appears to be a data quality or process issue. | KPI owner manages for one cycle. |
-

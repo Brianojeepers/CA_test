@@ -14,16 +14,16 @@ This dashboard is guilty until proven decision-useful.
 
 | ID | Failure Mode | Category | Early Warning Signal | Mitigation | Owner |
 | --- | --- | --- | --- | --- | --- |
-| R1 | KPI definitions drift by function. | Governance | The same KPI is reported differently in different meetings. | Version-controlled KPI dictionary with monthly sign-off. | AI Talent Strategy |
+| R1 | KPI definitions drift by function. | Governance | The same KPI is reported differently in different meetings. | Version-controlled KPI dictionary with monthly sign-off. | Signal Intelligence Council |
 | R2 | Signal scoring becomes subjective storytelling. | Design | Different reviewers produce materially different scores for the same signal. | Use a scoring rubric and run biweekly calibration on sample signals. | Research |
 | R3 | Outcome KPIs over-attribute impact to learning changes. | Analytics | Positive placement or retention deltas appear without exposure verification. | Require exposure flags and confounder notes in outcome readouts. | Matching + CSM |
-| R4 | Decision log is incomplete. | Data | High volume of missing timestamps, owners, or linked signals. | Make decision register fields mandatory; use a no-ID, no-report rule. | AI Talent Strategy |
+| R4 | Decision log is incomplete. | Data | High volume of missing timestamps, owners, or linked signals. | Make decision register fields mandatory; use a no-ID, no-report rule. | Signal Intelligence Council |
 | R5 | Small sample noise drives false action. | Analytics | Large cohort-to-cohort movement with low `n`. | Suppress standalone deltas below `n = 25`; use three-cohort rolling baseline. | Matching |
-| R6 | Teams game the metric. | Incentive | KPI improves without corresponding operational evidence. | Maintain audit trails and run random monthly audit of five records. | KPI Council |
+| R6 | Teams game the metric. | Incentive | KPI improves without corresponding operational evidence. | Maintain audit trails and run random monthly audit of five records. | Signal Intelligence Council |
 | R7 | Red KPIs create no action. | Adoption | Same KPI remains red across cycles with no logged owner task. | Enforce red KPI protocol with seven-day escalation. | KPI Owners |
 | R8 | Prediction accuracy becomes unfalsifiable. | Design | `Inconclusive` outcomes dominate prediction scoring. | Require confirming and contradicting criteria when predictions are issued. | Research |
-| R9 | External demand cycles are mistaken for internal success or failure. | Analytics | Outcome swings align with broad market shifts rather than programme changes. | Add market context notes to every monthly outcome readout. | AI Talent Strategy |
-| R10 | Dashboard becomes reporting theater. | Adoption | Meetings discuss charts but no decisions change. | Track decisions influenced and retire metrics that do not affect action. | AI Talent Strategy |
+| R9 | External demand cycles are mistaken for internal success or failure. | Analytics | Outcome swings align with broad market shifts rather than programme changes. | Add market context notes to every monthly outcome readout. | Signal Intelligence Council |
+| R10 | Dashboard becomes reporting theater. | Adoption | Meetings discuss charts but no decisions change. | Track decisions influenced and retire metrics that do not affect action. | Signal Intelligence Council |
 
 ## Cross-Cutting Safeguards
 
@@ -52,4 +52,3 @@ Keep and mature a KPI if it meets at least two of the following conditions:
 - It helps disconfirm or refine an existing market assumption.
 - It is cited in a curriculum, credential, commercial, or matching decision.
 - It becomes more reliable as source systems improve.
-

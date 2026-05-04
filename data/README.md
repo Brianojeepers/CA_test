@@ -14,6 +14,9 @@ The sample data is intentionally small and hand-readable. It is not production d
 | `cohort_outcomes.json` | Cohort-level placement and retention metrics for pre/post comparisons. |
 | `predictions.json` | Horizon predictions with six-month scoring fields. |
 
+The operating role accountable for turning this evidence into action is defined in
+`docs/signal_intelligence_council.md`.
+
 ## Join Keys
 
 | Key | Used In |
@@ -39,3 +42,13 @@ These files are enough to build a first local dashboard or script that calculate
 - 90-Day Retention Delta.
 - Prediction Accuracy at 6 Months.
 
+## Local KPI Report
+
+Run the first MVP report from the repository root:
+
+```bash
+python3 scripts/report_kpis.py
+```
+
+The report reads these seed files and prints the current Decision Spine KPI status,
+including threshold colors, pending releases, outcome deltas, and prediction scoring.

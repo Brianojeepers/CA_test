@@ -5,7 +5,7 @@
     "decision_signed_date": "2026-02-02",
     "decision_type": "curriculum",
     "decision_status": "approved",
-    "owner": "AI Talent Strategy",
+    "owner": "Signal Intelligence Council",
     "partner_functions": ["Learning", "Assessment Ops", "Solutions"],
     "decision_summary": "Add an evaluation engineering block to the AI Builder curriculum.",
     "rationale": "High-confidence client demand for builders who can test, monitor, and explain agent behavior.",
@@ -65,4 +65,3 @@
     "complexity_tier": "low"
   }
 ]
-
