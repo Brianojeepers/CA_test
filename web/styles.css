@@ -103,7 +103,8 @@ select {
   color: var(--red);
 }
 
-.summary-grid {
+.summary-grid,
+.insight-grid {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -111,6 +112,7 @@ select {
 }
 
 .metric-card,
+.insight-card,
 .view-panel,
 .panel,
 .table-panel,
@@ -181,6 +183,37 @@ select {
 .metric-card {
   min-height: 118px;
   padding: 16px;
+}
+
+.insight-card {
+  border-left: 4px solid var(--neutral);
+  min-height: 130px;
+  padding: 16px;
+}
+
+.insight-card strong {
+  display: block;
+  font-size: 32px;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+
+.insight-card small {
+  color: var(--muted);
+  display: block;
+  line-height: 1.35;
+}
+
+.insight-card.green {
+  border-left-color: var(--green);
+}
+
+.insight-card.amber {
+  border-left-color: var(--amber);
+}
+
+.insight-card.red {
+  border-left-color: var(--red);
 }
 
 .metric-label {
@@ -646,6 +679,7 @@ tbody tr.no-results:hover {
 
 @media (max-width: 1040px) {
   .summary-grid,
+  .insight-grid,
   .view-context-grid,
   .workspace,
   .lower-grid {
@@ -669,6 +703,7 @@ tbody tr.no-results:hover {
   }
 
   .summary-grid,
+  .insight-grid,
   .view-context-grid,
   .side-column,
   .drilldown-grid {

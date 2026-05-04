@@ -5,6 +5,7 @@ import { renderDecisionDetail } from "./render/detail.js";
 import { renderDrilldowns, renderKnownLimits } from "./render/drilldowns.js";
 import { renderFilters, renderMeetingControls, renderOwnerFilter } from "./render/filters.js";
 import { renderImpactBars } from "./render/impact.js";
+import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
@@ -149,6 +150,7 @@ function render() {
   }
   renderStakeholderTabs(stakeholderViews, activeView, handleViewChange);
   renderStakeholderContext(activeView, rows, actions);
+  renderInsights(activeView, rows, actions, packet);
   renderSummary(packet, rows, actions);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);

@@ -119,7 +119,8 @@ python3 -m http.server 3000 --directory web
 
 Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`.
-Use stakeholder views, action mode, and the council notes panel during monthly review.
+Use stakeholder views, insight cards, action mode, and the council notes panel
+during monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.

@@ -14,6 +14,28 @@ export const stakeholderViews = [
     description: "Decision owners, evidence maturity, and unblockers for the monthly review.",
     primaryQuestion: "Which decisions need action, patience, or amplification this month?",
     focus: ["Action queue", "Decision impact", "Traceability"],
+    insightCards: [
+      {
+        label: "Council actions",
+        metric: "actions",
+        description: "Items that should be explicitly reviewed in the monthly council flow.",
+      },
+      {
+        label: "Blocked or early",
+        metric: "blocked",
+        description: "Decisions that need implementation, evidence, or outcome windows to mature.",
+      },
+      {
+        label: "Needs attention",
+        metric: "needsAttention",
+        description: "Decisions where evidence quality, sample size, or outcomes require review.",
+      },
+      {
+        label: "Evidence emerging",
+        metric: "emerging",
+        description: "Promising but not yet strong enough for confident amplification.",
+      },
+    ],
     emptyLabel: "No council decisions match the current filters.",
   },
   {
@@ -23,6 +45,28 @@ export const stakeholderViews = [
     description: "Curriculum changes, learner-readiness evidence, and pedagogy-linked delivery risk.",
     primaryQuestion: "Which learning changes need evidence, iteration, or stronger implementation quality?",
     focus: ["Curriculum releases", "Readiness evidence", "Pedagogy links"],
+    insightCards: [
+      {
+        label: "Curriculum scope",
+        metric: "curriculum",
+        description: "Learning changes currently visible in this stakeholder lens.",
+      },
+      {
+        label: "Evidence needs",
+        metric: "evidenceNeeds",
+        description: "Changes that still need learner evidence, outcome maturity, or corrective review.",
+      },
+      {
+        label: "Readiness risk",
+        metric: "needsAttention",
+        description: "Learning changes where current evidence should trigger iteration.",
+      },
+      {
+        label: "Competency links",
+        metric: "competencies",
+        description: "Traceable competency targets connected to the in-scope decisions.",
+      },
+    ],
     decisionTypes: ["curriculum"],
     owners: ["Learning"],
     emptyLabel: "No learning-owned or curriculum decisions match the current filters.",
@@ -36,6 +80,28 @@ export const stakeholderViews = [
     description: "Credential and assessment changes that need rubric, simulation, or evidence review.",
     primaryQuestion: "Which assessment decisions need implementation or readiness evidence before confidence increases?",
     focus: ["Credential thresholds", "Assessment releases", "Readiness risk"],
+    insightCards: [
+      {
+        label: "Assessment scope",
+        metric: "assessment",
+        description: "Credential or assessment decisions in scope for Assessment Ops.",
+      },
+      {
+        label: "Implementation pending",
+        metric: "blocked",
+        description: "Assessment decisions too early to judge because release or evidence windows are immature.",
+      },
+      {
+        label: "High-priority review",
+        metric: "highPriority",
+        description: "Rows with high-priority recommendations or explicit action items.",
+      },
+      {
+        label: "Evidence records",
+        metric: "evidence",
+        description: "Learner evidence rows linked to in-scope decisions.",
+      },
+    ],
     decisionTypes: ["credential", "assessment"],
     owners: ["Assessment Ops"],
     emptyLabel: "No assessment decisions match the current filters.",
@@ -49,6 +115,28 @@ export const stakeholderViews = [
     description: "Placement-facing signals, outcome maturity, and client-success risks tied to active decisions.",
     primaryQuestion: "Which decisions are ready to influence matching narratives, and which need more outcome evidence?",
     focus: ["Placement evidence", "Client-facing risk", "Outcome maturity"],
+    insightCards: [
+      {
+        label: "Client-facing scope",
+        metric: "rows",
+        description: "Decisions linked to Matching or CSM responsibilities.",
+      },
+      {
+        label: "Use with caution",
+        metric: "clientCaution",
+        description: "Decisions that should not yet drive strong placement claims.",
+      },
+      {
+        label: "Evidence emerging",
+        metric: "emerging",
+        description: "Changes with early signs that may support guarded matching narratives.",
+      },
+      {
+        label: "Outcome gaps",
+        metric: "outcomeGaps",
+        description: "Rows where evidence or outcomes are still limiting confidence.",
+      },
+    ],
     partnerFunctions: ["Matching", "CSM"],
     emptyLabel: "No Matching or CSM-linked decisions match the current filters.",
     detailLens:
@@ -61,6 +149,28 @@ export const stakeholderViews = [
     description: "Market-backed claims, positioning readiness, and decisions connected to commercial pull.",
     primaryQuestion: "Which signals can support client conversations without overstating evidence?",
     focus: ["Market signal", "Positioning readiness", "Commercial risk"],
+    insightCards: [
+      {
+        label: "Signals in scope",
+        metric: "signals",
+        description: "Unique market signals connected to client-facing decisions.",
+      },
+      {
+        label: "Claim-ready candidates",
+        metric: "claimReady",
+        description: "Rows with at least emerging evidence for careful positioning.",
+      },
+      {
+        label: "Positioning caution",
+        metric: "clientCaution",
+        description: "Rows where Sales or Solutions should avoid overclaiming impact.",
+      },
+      {
+        label: "Commercial actions",
+        metric: "actions",
+        description: "Items that affect client-facing readiness or unblockers.",
+      },
+    ],
     partnerFunctions: ["Solutions"],
     emptyLabel: "No Solutions-linked decisions match the current filters.",
     detailLens:
@@ -73,6 +183,28 @@ export const stakeholderViews = [
     description: "Evidence gaps, validation warnings, source limitations, and measurement readiness.",
     primaryQuestion: "Where is the evidence strong enough to trust, and where is the data still limiting judgment?",
     focus: ["Data trust", "Evidence maturity", "Measurement gaps"],
+    insightCards: [
+      {
+        label: "Validation warnings",
+        metric: "warnings",
+        description: "Current data-quality warnings that should frame interpretation.",
+      },
+      {
+        label: "Measurement gaps",
+        metric: "outcomeGaps",
+        description: "Rows where missing or immature outcomes still limit judgment.",
+      },
+      {
+        label: "Evidence records",
+        metric: "evidence",
+        description: "Learner evidence rows linked to this evidence-risk lens.",
+      },
+      {
+        label: "High-priority review",
+        metric: "highPriority",
+        description: "Rows where the data story needs active review.",
+      },
+    ],
     statuses: ["evidence_emerging", "too_early", "needs_attention", "no_outcome_data"],
     emptyLabel: "No evidence-risk decisions match the current filters.",
     detailLens:
