@@ -138,11 +138,11 @@ Frontend prototype:
 
 | Surface | Requirement |
 | --- | --- |
-| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, drill-downs, and known limits. |
+| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, changelog review, drill-downs, and known limits. |
 | `web/app.js` | Coordinate dashboard state, filtering, decision selection, and council meeting controls. |
 | `web/api.js` | Fetch `GET /api/monthly-packet` and `GET /api/decisions/{decision_id}`. |
 | `web/stakeholders.js` | Define stakeholder-specific dashboard lenses and row/action filtering. |
-| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 | `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 
@@ -227,6 +227,7 @@ The MVP is in a valid local state when:
 - The dashboard supports stakeholder-specific views without duplicating the underlying packet data.
 - The dashboard shows clickable role-specific insight cards with trust/source badges before the audit table.
 - The dashboard translates each selected decision into a stakeholder action: keep/amplify, update/monitor, wait, or corrective review.
+- The dashboard shows a filtered "what changed and why" changelog backed by structured monthly-packet data.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.
 - With the local API and static server running, `python3 scripts/check_dashboard.py` passes.
 

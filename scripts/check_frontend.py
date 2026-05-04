@@ -46,6 +46,10 @@ REQUIRED_IDS = {
     "action-list",
     "recommendation-panel",
     "decision-detail",
+    "changelog-title",
+    "changelog-basis",
+    "changelog-filter",
+    "changelog-list",
     "warning-list",
     "meeting-notes",
     "drilldowns",
@@ -60,6 +64,7 @@ REQUIRED_FILES = [
     "format.js",
     "stakeholders.js",
     "render/actions.js",
+    "render/changelog.js",
     "render/detail.js",
     "render/drilldowns.js",
     "render/filters.js",
@@ -148,6 +153,24 @@ def check_recommendation_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing recommendation style: {token}")
 
 
+def check_changelog_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    changelog_js = (WEB_DIR / "render" / "changelog.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("renderChangelog", "activeChangelogCategory"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing changelog token: {token}")
+
+    for token in ("data-changelog-category", "data-changelog-decision-id", "changelog-list"):
+        if token not in changelog_js:
+            errors.append(f"web/render/changelog.js is missing changelog token: {token}")
+
+    for token in (".changelog-panel", ".changelog-list", ".changelog-item"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing changelog style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -173,6 +196,7 @@ def main() -> int:
         check_api_contract(errors)
         check_insight_trust_contract(errors)
         check_recommendation_contract(errors)
+        check_changelog_contract(errors)
         check_js_syntax(errors)
 
     if errors:

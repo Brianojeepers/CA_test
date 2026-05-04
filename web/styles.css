@@ -409,6 +409,11 @@ select {
   color: var(--neutral);
 }
 
+.badge.neutral {
+  background: var(--neutral-bg);
+  color: var(--neutral);
+}
+
 .impact-visual {
   padding: 18px;
 }
@@ -727,6 +732,63 @@ tbody tr.no-results:hover {
   margin-top: 18px;
 }
 
+.changelog-panel {
+  margin-top: 18px;
+}
+
+.changelog-list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.changelog-item {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--neutral);
+  border-radius: 7px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  line-height: 1.4;
+  padding: 12px;
+  text-align: left;
+}
+
+.changelog-item.clickable {
+  cursor: pointer;
+}
+
+.changelog-item.green {
+  border-left-color: var(--green);
+}
+
+.changelog-item.amber {
+  border-left-color: var(--amber);
+}
+
+.changelog-item.red {
+  border-left-color: var(--red);
+}
+
+.changelog-item.clickable:hover,
+.changelog-item.clickable:focus-visible {
+  box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.12);
+  outline: 0;
+}
+
+.changelog-item strong {
+  color: var(--text);
+}
+
+.changelog-item-top {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .drilldown-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -791,6 +853,7 @@ tbody tr.no-results:hover {
   .summary-grid,
   .insight-grid,
   .view-context-grid,
+  .changelog-list,
   .workspace,
   .lower-grid {
     grid-template-columns: 1fr;

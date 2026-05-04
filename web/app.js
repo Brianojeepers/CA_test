@@ -1,6 +1,7 @@
 import { fetchDecisionDetail, fetchMonthlyPacket } from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
+import { renderChangelog } from "./render/changelog.js";
 import { renderDecisionDetail } from "./render/detail.js";
 import { renderDrilldowns, renderKnownLimits } from "./render/drilldowns.js";
 import { renderFilters, renderMeetingControls, renderOwnerFilter } from "./render/filters.js";
@@ -26,6 +27,7 @@ let selectedDecisionId = null;
 let activeView = defaultView();
 let activeFilter = "all";
 let activeOwner = "all";
+let activeChangelogCategory = "all";
 let searchQuery = "";
 let actionMode = false;
 let decisionDetails = {};
@@ -114,6 +116,7 @@ function handleViewChange(nextViewId) {
   activeView = viewById(nextViewId);
   activeFilter = "all";
   activeOwner = "all";
+  activeChangelogCategory = "all";
   searchQuery = "";
   actionMode = false;
   document.getElementById("decision-search").value = "";
@@ -121,6 +124,17 @@ function handleViewChange(nextViewId) {
   if (selectedDecisionId) {
     loadDecisionDetail(selectedDecisionId);
   }
+}
+
+function handleChangelogCategoryChange(nextCategory) {
+  activeChangelogCategory = nextCategory ?? "all";
+  renderChangelog(
+    packet.decision_changelog,
+    activeChangelogCategory,
+    handleChangelogCategoryChange,
+    selectDecision,
+    new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
+  );
 }
 
 function focusPanel(target) {
@@ -210,6 +224,13 @@ function render() {
   renderDecisionTableFromState();
   renderActions(actions, selectDecision, `No ${activeView.label} actions for the current view.`);
   renderSelectedDecisionDetail();
+  renderChangelog(
+    packet.decision_changelog,
+    activeChangelogCategory,
+    handleChangelogCategoryChange,
+    selectDecision,
+    new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
+  );
   renderDrilldowns(packet.stakeholder_drilldowns);
   renderKnownLimits(packet.known_limits);
   renderWarnings(packet.data_trust.warnings);

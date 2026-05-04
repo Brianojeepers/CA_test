@@ -322,6 +322,115 @@ def build_action_items(
     return items
 
 
+def signal_themes(signal_ids: list[str], signals_by_id: dict[str, dict[str, Any]]) -> list[str]:
+    return [signals_by_id[signal_id]["signal_theme"] for signal_id in signal_ids if signal_id in signals_by_id]
+
+
+def changelog_release_item(
+    release: dict[str, Any],
+    decision: dict[str, Any],
+    signals_by_id: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    signal_ids = release["linked_signal_ids"]
+    category = "released" if release["release_status"] == "released" else "pending"
+    return {
+        "category": category,
+        "category_label": "Released" if category == "released" else "Pending",
+        "severity": "green" if category == "released" else "amber",
+        "item_id": release["release_id"],
+        "decision_id": decision["decision_id"],
+        "title": f"{release['artifact']} ({release['programme']})",
+        "status": release["release_status"],
+        "date": release["release_date"] or decision["decision_signed_date"],
+        "owner": decision["owner"],
+        "summary": decision["decision_summary"],
+        "why_it_matters": decision.get("rationale") or " ".join(
+            signals_by_id[signal_id]["summary"] for signal_id in signal_ids if signal_id in signals_by_id
+        ),
+        "signal_ids": signal_ids,
+        "signal_themes": signal_themes(signal_ids, signals_by_id),
+        "next_step": (
+            "Review early learner and outcome evidence before amplifying claims."
+            if category == "released"
+            else "Track implementation unblockers and confirm release timing."
+        ),
+    }
+
+
+def build_decision_changelog(
+    signals: list[dict[str, Any]],
+    decisions: list[dict[str, Any]],
+    releases: list[dict[str, Any]],
+) -> dict[str, Any]:
+    signals_by_id = {signal["signal_id"]: signal for signal in signals}
+    decisions_by_id = {decision["decision_id"]: decision for decision in decisions}
+    releases_by_decision: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for release in releases:
+        releases_by_decision[release["decision_id"]].append(release)
+
+    items: list[dict[str, Any]] = []
+    for release in releases:
+        decision = decisions_by_id[release["decision_id"]]
+        items.append(changelog_release_item(release, decision, signals_by_id))
+
+    for decision in decisions:
+        if decision["decision_type"] == "monitor" or decision["decision_status"] in {"watch", "rejected", "deferred"}:
+            items.append(
+                {
+                    "category": "monitor",
+                    "category_label": "Monitor / no change",
+                    "severity": "neutral",
+                    "item_id": decision["decision_id"],
+                    "decision_id": decision["decision_id"],
+                    "title": decision["decision_summary"],
+                    "status": decision["decision_status"],
+                    "date": decision["decision_signed_date"],
+                    "owner": decision["owner"],
+                    "summary": "No release change was made from this signal set.",
+                    "why_it_matters": decision.get("rationale") or "Continue monitoring signal strength.",
+                    "signal_ids": decision["signal_ids"],
+                    "signal_themes": signal_themes(decision["signal_ids"], signals_by_id),
+                    "next_step": "Continue signal monitoring before creating a release.",
+                }
+            )
+        if decision["decision_status"] == "approved" and not releases_by_decision.get(decision["decision_id"]):
+            items.append(
+                {
+                    "category": "missing_release",
+                    "category_label": "Missing release",
+                    "severity": "red",
+                    "item_id": decision["decision_id"],
+                    "decision_id": decision["decision_id"],
+                    "title": decision["decision_summary"],
+                    "status": decision["decision_status"],
+                    "date": decision["decision_signed_date"],
+                    "owner": decision["owner"],
+                    "summary": "Approved decision has no release record.",
+                    "why_it_matters": decision.get("rationale") or "Traceability is incomplete until a release is logged.",
+                    "signal_ids": decision["signal_ids"],
+                    "signal_themes": signal_themes(decision["signal_ids"], signals_by_id),
+                    "next_step": "Create release record or explicitly park the decision.",
+                }
+            )
+
+    order = {"released": 0, "pending": 1, "missing_release": 2, "monitor": 3}
+    items.sort(key=lambda item: (order[item["category"]], item["date"] or "", item["item_id"]))
+    counts = Counter(item["category"] for item in items)
+    categories = [
+        {"id": "all", "label": "All", "count": len(items)},
+        {"id": "released", "label": "Released", "count": counts["released"]},
+        {"id": "pending", "label": "Pending", "count": counts["pending"]},
+        {"id": "monitor", "label": "Monitor", "count": counts["monitor"]},
+        {"id": "missing_release", "label": "Missing release", "count": counts["missing_release"]},
+    ]
+    return {
+        "title": "What changed and why",
+        "basis": "Current packet change set; persisted prior-review snapshots are not available yet.",
+        "categories": categories,
+        "items": items,
+    }
+
+
 def build_monthly_packet() -> dict[str, Any]:
     warnings = validation_warnings_or_raise()
     signals = load_json("signals.json")
@@ -352,6 +461,7 @@ def build_monthly_packet() -> dict[str, Any]:
     impact_rows = build_decision_impact_rows(decisions, releases, competencies, evidence, cohorts)
     impact_counts = Counter(row["status"] for row in impact_rows)
     action_items = build_action_items(signals, decisions, releases)
+    decision_changelog = build_decision_changelog(signals, decisions, releases)
 
     return {
         "generated_date": TODAY.isoformat(),
@@ -387,6 +497,7 @@ def build_monthly_packet() -> dict[str, Any]:
             "rows": impact_rows,
         },
         "actions": action_items,
+        "decision_changelog": decision_changelog,
         "stakeholder_drilldowns": STAKEHOLDER_DRILLDOWNS,
         "known_limits": KNOWN_LIMITS,
     }
@@ -445,6 +556,15 @@ def render_monthly_packet_markdown(packet: dict[str, Any]) -> str:
     else:
         lines.append("- None.")
 
+    lines.extend(["", "## What Changed And Why", ""])
+    for item in packet["decision_changelog"]["items"]:
+        lines.append(
+            f"- `{item['category']}` `{item['item_id']}` {item['title']} "
+            f"(decision={item['decision_id']}, owner={item['owner']})"
+        )
+        lines.append(f"  - Why: {item['why_it_matters']}")
+        lines.append(f"  - Next: {item['next_step']}")
+
     lines.extend(["", "## Stakeholder Drill-Downs", ""])
     for item in packet["stakeholder_drilldowns"]:
         lines.append(f"- {item['label']}: `{item['command']}`")
@@ -499,4 +619,13 @@ def render_monthly_packet_text(packet: dict[str, Any]) -> str:
             lines.append(f"- {item['text']}")
     else:
         lines.append("- none")
+    lines.extend(
+        [
+            "",
+            "What Changed And Why",
+            "--------------------",
+        ]
+    )
+    for item in packet["decision_changelog"]["items"][:6]:
+        lines.append(f"- {item['category']} {item['item_id']}: {item['title']} -> {item['next_step']}")
     return "\n".join(lines)
