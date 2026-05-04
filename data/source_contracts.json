@@ -158,6 +158,42 @@
     "next_action": "Review the initial competency register with Learning, Assessment Ops, Matching, and Solutions before adding gap scores."
   },
   {
+    "contract_id": "SRC-2026-007",
+    "data_domain": "learner_evidence",
+    "candidate_source": "Aggregated assessment artifacts, credential reviews, simulations, and portfolio review summaries",
+    "source_owner": "Assessment Ops",
+    "privacy_owner": "Talent Data Privacy",
+    "feeds_files": ["learner_evidence_summary.json"],
+    "minimum_grain": "Aggregated cohort or programme evidence by competency with no individual learner identifiers",
+    "required_fields": [
+      "competency_id",
+      "cohort_id",
+      "programme",
+      "role_archetype",
+      "evidence_type",
+      "evidence_window",
+      "sample_size",
+      "meets_threshold_count",
+      "readiness_rate",
+      "readiness_level",
+      "evidence_confidence",
+      "privacy_posture",
+      "suppression_applied",
+      "evidence_summary",
+      "next_action"
+    ],
+    "privacy_posture": "Aggregate evidence only; exclude learner identifiers, raw submissions, reviewer comments, and client assignment details.",
+    "freshness_sla": "Monthly after assessment or credential review windows close.",
+    "pilot_status": "privacy_review_required",
+    "readiness": "red",
+    "blockers": [
+      "Minimum sample-size suppression rule needs approval.",
+      "Allowed evidence summaries need privacy review before real extracts are stored.",
+      "Rubric threshold definitions are not normalized across competency types."
+    ],
+    "next_action": "Approve aggregate suppression rules and test 2-4 synthetic evidence rows before any real learner-derived extract."
+  },
+  {
     "contract_id": "SRC-2026-005",
     "data_domain": "prediction_register",
     "candidate_source": "Council horizon review and research prediction register",

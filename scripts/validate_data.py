@@ -185,6 +185,7 @@ def validate_all() -> ValidationResult:
         pedagogy = load_optional_json("pedagogy_map.json")
         source_contracts = load_optional_json("source_contracts.json")
         role_competencies = load_optional_json("role_competencies.json")
+        learner_evidence = load_optional_json("learner_evidence_summary.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -200,6 +201,8 @@ def validate_all() -> ValidationResult:
         require_unique_ids(result, "source_contracts.json", source_contracts, "contract_id")
     if role_competencies:
         require_unique_ids(result, "role_competencies.json", role_competencies, "competency_id")
+    if learner_evidence:
+        require_unique_ids(result, "learner_evidence_summary.json", learner_evidence, "evidence_id")
 
     require_fields(
         result,
@@ -378,6 +381,31 @@ def validate_all() -> ValidationResult:
             },
             "competency_id",
         )
+    if learner_evidence:
+        require_fields(
+            result,
+            "learner_evidence_summary.json",
+            learner_evidence,
+            {
+                "evidence_id",
+                "competency_id",
+                "cohort_id",
+                "programme",
+                "role_archetype",
+                "evidence_type",
+                "evidence_window",
+                "sample_size",
+                "meets_threshold_count",
+                "readiness_rate",
+                "readiness_level",
+                "evidence_confidence",
+                "privacy_posture",
+                "suppression_applied",
+                "evidence_summary",
+                "next_action",
+            },
+            "evidence_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -438,6 +466,7 @@ def validate_all() -> ValidationResult:
     decision_ids = {decision.get("decision_id") for decision in decisions}
     release_ids = {release.get("release_id") for release in releases}
     cohort_ids = {cohort.get("cohort_id") for cohort in cohorts}
+    competency_ids = {competency.get("competency_id") for competency in role_competencies}
 
     for decision in decisions:
         validate_list_of_ids(result, "decisions.json", decision, "decision_id", "signal_ids", signal_ids)
@@ -568,6 +597,136 @@ def validate_all() -> ValidationResult:
                 "green signal has no competency mapping yet",
             )
 
+    for item in learner_evidence:
+        eid = record_id(item, "evidence_id")
+        if item.get("competency_id") not in competency_ids:
+            result.error(
+                "learner_evidence_summary.json",
+                eid,
+                "competency_id",
+                f"unknown ID {item.get('competency_id')!r}",
+            )
+        if item.get("cohort_id") not in cohort_ids:
+            result.error(
+                "learner_evidence_summary.json",
+                eid,
+                "cohort_id",
+                f"unknown ID {item.get('cohort_id')!r}",
+            )
+        validate_enum(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "evidence_type",
+            {"assessment_artifact", "credential_review", "simulation_result", "portfolio_review", "placement_signal"},
+        )
+        validate_enum(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "readiness_level",
+            {"ready", "emerging", "not_ready", "pending", "insufficient_sample"},
+        )
+        validate_enum(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "evidence_confidence",
+            {"low", "medium", "high"},
+        )
+        validate_enum(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "privacy_posture",
+            {"aggregated", "suppressed"},
+        )
+        validate_number(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "sample_size",
+            minimum=0,
+        )
+        validate_number(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "meets_threshold_count",
+            nullable=True,
+            minimum=0,
+        )
+        validate_number(
+            result,
+            "learner_evidence_summary.json",
+            [item],
+            "evidence_id",
+            "readiness_rate",
+            nullable=True,
+            minimum=0,
+            maximum=1,
+        )
+        if not isinstance(item.get("suppression_applied"), bool):
+            result.error("learner_evidence_summary.json", eid, "suppression_applied", "must be a boolean")
+        sample_size = item.get("sample_size")
+        threshold_count = item.get("meets_threshold_count")
+        readiness_rate = item.get("readiness_rate")
+        if isinstance(sample_size, (int, float)) and isinstance(threshold_count, (int, float)):
+            if threshold_count > sample_size:
+                result.error(
+                    "learner_evidence_summary.json",
+                    eid,
+                    "meets_threshold_count",
+                    "cannot exceed sample_size",
+                )
+            expected_rate = round(threshold_count / sample_size, 3) if sample_size else None
+            if readiness_rate is not None and expected_rate is not None and abs(readiness_rate - expected_rate) > 0.001:
+                result.warning(
+                    "learner_evidence_summary.json",
+                    eid,
+                    "readiness_rate",
+                    f"does not match meets_threshold_count/sample_size ({expected_rate})",
+                )
+        if item.get("readiness_level") in {"pending", "insufficient_sample"} and readiness_rate is not None:
+            result.warning(
+                "learner_evidence_summary.json",
+                eid,
+                "readiness_rate",
+                "pending or insufficient-sample evidence should usually have null readiness_rate",
+            )
+        if item.get("readiness_level") == "insufficient_sample" and not item.get("suppression_applied"):
+            result.warning(
+                "learner_evidence_summary.json",
+                eid,
+                "suppression_applied",
+                "insufficient sample should be suppressed or rolled up",
+            )
+        for field_name in (
+            "programme",
+            "role_archetype",
+            "evidence_window",
+            "evidence_summary",
+            "next_action",
+        ):
+            if field_name in item and (not isinstance(item[field_name], str) or not item[field_name].strip()):
+                result.error("learner_evidence_summary.json", eid, field_name, "must be a non-empty string")
+
+    evidence_competencies = {item.get("competency_id") for item in learner_evidence}
+    for competency in role_competencies:
+        if competency["status"] == "active" and competency["competency_id"] not in evidence_competencies:
+            result.warning(
+                "learner_evidence_summary.json",
+                competency["competency_id"],
+                "competency_id",
+                "active competency has no learner evidence yet",
+            )
+
     expected_files = {
         "signals.json",
         "decisions.json",
@@ -576,6 +735,7 @@ def validate_all() -> ValidationResult:
         "predictions.json",
         "pedagogy_map.json",
         "role_competencies.json",
+        "learner_evidence_summary.json",
     }
     for contract in source_contracts:
         cid = record_id(contract, "contract_id")

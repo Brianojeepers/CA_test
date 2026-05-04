@@ -18,6 +18,7 @@ with real source data.
 | `cohort_outcomes.json` | Cohort-level placement and retention metrics for pre/post comparisons. |
 | `predictions.json` | Horizon predictions with six-month scoring fields. |
 | `role_competencies.json` | Role-archetype competency targets linked to signals, decisions, releases, and pedagogy. |
+| `learner_evidence_summary.json` | Aggregated proficiency evidence by competency and cohort. |
 | `pedagogy_map.json` | Optional pedagogical framing for selected learning, credential, and assessment changes. |
 | `source_contracts.json` | Source-owner, privacy, field, freshness, and readiness contracts for real-data pilot extracts. |
 
@@ -33,6 +34,7 @@ The operating role accountable for turning this evidence into action is defined 
 | `cohort_id` | `releases.json`, `cohort_outcomes.json` |
 | `prediction_id` | `predictions.json` |
 | `competency_id` | `role_competencies.json` |
+| `evidence_id` | `learner_evidence_summary.json` |
 | `pedagogy_id` | `pedagogy_map.json` |
 | `contract_id` | `source_contracts.json` |
 
@@ -170,6 +172,17 @@ python3 scripts/competency_gap_review.py
 The competency gap review groups role-archetype capability targets by market
 priority, linked signals, releases, pedagogy, and gap hypothesis. See
 `docs/competency_ontology.md` for the ontology rules.
+
+Run the proficiency readiness review:
+
+```bash
+python3 scripts/proficiency_readiness_review.py
+```
+
+The proficiency readiness review shows aggregated learner evidence by competency
+and cohort, including pending evidence, insufficient samples, suppression flags,
+and next actions. See `docs/learner_evidence_model.md` for the privacy-safe
+evidence model.
 
 Run the real-data source contract review:
 

@@ -112,6 +112,7 @@ def report_file_coverage(contracts: list[dict[str, Any]]) -> None:
         "predictions.json",
         "pedagogy_map.json",
         "role_competencies.json",
+        "learner_evidence_summary.json",
     ]
     for filename in expected:
         linked = by_file.get(filename, [])

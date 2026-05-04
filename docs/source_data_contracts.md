@@ -29,6 +29,7 @@ The working register lives in `data/source_contracts.json`.
 | Decision log | `decisions.json` | Council ownership and status definitions must be confirmed. |
 | Release log | `releases.json`, `pedagogy_map.json` | Release definitions must be consistent across curriculum and assessment. |
 | Competency ontology | `role_competencies.json` | Role and capability definitions must be owner-approved before they drive gap scoring. |
+| Learner evidence | `learner_evidence_summary.json` | Aggregated evidence can support readiness claims only after privacy and suppression rules are clear. |
 | Cohort outcomes | `cohort_outcomes.json` | Privacy review and aggregation thresholds are blocking. |
 | Prediction register | `predictions.json` | Ready for small manual pilot once council predictions are written. |
 
