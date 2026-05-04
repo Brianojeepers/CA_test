@@ -143,6 +143,7 @@ Frontend prototype:
 | `web/api.js` | Fetch `GET /api/monthly-packet` and `GET /api/decisions/{decision_id}`. |
 | `web/render/*.js` | Render summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
+| `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 
 Stakeholder scripts:
 
@@ -223,6 +224,7 @@ The MVP is in a valid local state when:
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 - The dashboard supports an action-focused council meeting mode with copyable meeting notes.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.
+- With the local API and static server running, `python3 scripts/check_dashboard.py` passes.
 
 ## 10. Tests
 

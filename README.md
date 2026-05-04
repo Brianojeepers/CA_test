@@ -49,6 +49,12 @@ Check the static dashboard wiring and JavaScript syntax:
 python3 scripts/check_frontend.py
 ```
 
+Smoke-test the local dashboard/API contract after starting both servers:
+
+```bash
+python3 scripts/check_dashboard.py
+```
+
 Run the full local check suite:
 
 ```bash
@@ -116,6 +122,8 @@ Open `http://127.0.0.1:3000`. The page consumes
 Use action mode and the council notes panel during monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 rendering modules under `web/render/`.
+With both servers running, `python3 scripts/check_dashboard.py` verifies the
+served dashboard assets and API contract.
 
 ## Before Committing
 
@@ -152,6 +160,7 @@ outcome data exists.
 | `scripts/source_contract_review.py` | Real-data source readiness and privacy gate. |
 | `scripts/validate_pilot_extract.py` | Dry-run validator for pilot extract templates or ignored local extracts. |
 | `scripts/check_frontend.py` | Static dashboard contract and JavaScript syntax check. |
+| `scripts/check_dashboard.py` | Live local dashboard/API smoke check. |
 
 More stakeholder-specific scripts are documented in `data/README.md`.
 
