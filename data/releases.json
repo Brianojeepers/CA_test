@@ -1,0 +1,55 @@
+[
+  {
+    "release_id": "REL-2026-001",
+    "decision_id": "DEC-2026-001",
+    "release_date": "2026-03-04",
+    "release_status": "released",
+    "change_type": "curriculum_module",
+    "change_scope": "learning_outcome",
+    "programme": "AI Builder",
+    "artifact": "Evaluation Engineering Block",
+    "cohort_id": "COH-2026-03-BUILDER",
+    "market_traceable": true,
+    "linked_signal_ids": ["SIG-2026-001"]
+  },
+  {
+    "release_id": "REL-2026-002",
+    "decision_id": "DEC-2026-002",
+    "release_date": "2026-04-23",
+    "release_status": "released",
+    "change_type": "credential_requirement",
+    "change_scope": "credential_threshold",
+    "programme": "AI Scaler",
+    "artifact": "Integration Architecture Evidence Requirement",
+    "cohort_id": "COH-2026-04-SCALER",
+    "market_traceable": true,
+    "linked_signal_ids": ["SIG-2026-002"]
+  },
+  {
+    "release_id": "REL-2026-003",
+    "decision_id": "DEC-2026-004",
+    "release_date": null,
+    "release_status": "in_progress",
+    "change_type": "assessment_blueprint",
+    "change_scope": "assessment_criterion",
+    "programme": "AI Scaler",
+    "artifact": "AI Security and Privacy Simulation Checks",
+    "cohort_id": "COH-2026-06-SCALER",
+    "market_traceable": true,
+    "linked_signal_ids": ["SIG-2026-004"]
+  },
+  {
+    "release_id": "REL-2026-004",
+    "decision_id": "DEC-2026-005",
+    "release_date": "2026-04-10",
+    "release_status": "released",
+    "change_type": "curriculum_module",
+    "change_scope": "learning_outcome",
+    "programme": "AI Prototyper",
+    "artifact": "Multimodal Prototype Sprint",
+    "cohort_id": "COH-2026-04-PROTOTYPER",
+    "market_traceable": true,
+    "linked_signal_ids": ["SIG-2026-005"]
+  }
+]
+

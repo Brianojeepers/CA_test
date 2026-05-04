@@ -1,0 +1,68 @@
+[
+  {
+    "decision_id": "DEC-2026-001",
+    "signal_ids": ["SIG-2026-001"],
+    "decision_signed_date": "2026-02-02",
+    "decision_type": "curriculum",
+    "decision_status": "approved",
+    "owner": "AI Talent Strategy",
+    "partner_functions": ["Learning", "Assessment Ops", "Solutions"],
+    "decision_summary": "Add an evaluation engineering block to the AI Builder curriculum.",
+    "rationale": "High-confidence client demand for builders who can test, monitor, and explain agent behavior.",
+    "alternatives_considered": ["Monitor until next quarter", "Add only an optional reading list"],
+    "complexity_tier": "medium"
+  },
+  {
+    "decision_id": "DEC-2026-002",
+    "signal_ids": ["SIG-2026-002"],
+    "decision_signed_date": "2026-02-21",
+    "decision_type": "credential",
+    "decision_status": "approved",
+    "owner": "Assessment Ops",
+    "partner_functions": ["Learning", "Matching"],
+    "decision_summary": "Add integration architecture evidence to Scaler credential requirements.",
+    "rationale": "Clients need proof that Scalers can connect AI capabilities to production workflows and governance constraints.",
+    "alternatives_considered": ["Add a matching-only tag", "Defer to next full credential version"],
+    "complexity_tier": "high"
+  },
+  {
+    "decision_id": "DEC-2026-003",
+    "signal_ids": ["SIG-2026-003"],
+    "decision_signed_date": "2026-02-19",
+    "decision_type": "monitor",
+    "decision_status": "watch",
+    "owner": "Research",
+    "partner_functions": ["Learning"],
+    "decision_summary": "Do not create a dedicated prompt library module yet; continue monitoring.",
+    "rationale": "Signal is visible but lacks named commercial pull and may be absorbed into broader workflow design.",
+    "alternatives_considered": ["Add module immediately", "Deprecate prompt practices from current content"],
+    "complexity_tier": "low"
+  },
+  {
+    "decision_id": "DEC-2026-004",
+    "signal_ids": ["SIG-2026-004"],
+    "decision_signed_date": "2026-04-16",
+    "decision_type": "assessment",
+    "decision_status": "approved",
+    "owner": "Assessment Ops",
+    "partner_functions": ["Learning", "CSM", "Solutions"],
+    "decision_summary": "Add AI security and privacy checks to Scaler simulations.",
+    "rationale": "Regulated clients are asking for clear evidence of data handling and risk controls.",
+    "alternatives_considered": ["Create separate governance credential", "Handle only in interview prep"],
+    "complexity_tier": "medium"
+  },
+  {
+    "decision_id": "DEC-2026-005",
+    "signal_ids": ["SIG-2026-005"],
+    "decision_signed_date": "2026-03-29",
+    "decision_type": "curriculum",
+    "decision_status": "approved",
+    "owner": "Learning",
+    "partner_functions": ["Talent Experience", "Solutions"],
+    "decision_summary": "Add multimodal prototype sprint to Prototyper learning pathway.",
+    "rationale": "Recent client demand indicates that prototype portfolios need richer modalities than text-only workflows.",
+    "alternatives_considered": ["Use optional community challenge", "Wait for more placement data"],
+    "complexity_tier": "low"
+  }
+]
+

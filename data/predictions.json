@@ -1,0 +1,59 @@
+[
+  {
+    "prediction_id": "PRED-2025-001",
+    "issued_date": "2025-08-15",
+    "scoring_date": "2026-02-15",
+    "linked_signal_ids": ["SIG-2026-001"],
+    "claim": "Demand for AI builders with evaluation and observability skills will become a baseline requirement in enterprise AI roles.",
+    "horizon_class": "6 months",
+    "confidence_tag": "reasoned_inference",
+    "confirming_criterion": "At least 30% of sampled enterprise AI builder roles mention evaluation, monitoring, observability, or quality controls.",
+    "contradicting_criterion": "Fewer than 10% of sampled enterprise AI builder roles mention these requirements.",
+    "outcome": "confirmed",
+    "accuracy_score": 1,
+    "scoring_notes": "Sample review found evaluation or observability language in 36% of enterprise AI builder postings."
+  },
+  {
+    "prediction_id": "PRED-2025-002",
+    "issued_date": "2025-09-01",
+    "scoring_date": "2026-03-01",
+    "linked_signal_ids": ["SIG-2026-003"],
+    "claim": "Standalone prompt library maintenance will become a distinct premium hiring requirement.",
+    "horizon_class": "6 months",
+    "confidence_tag": "plausible",
+    "confirming_criterion": "At least 20% of sampled premium AI roles list prompt library maintenance as a standalone responsibility.",
+    "contradicting_criterion": "Prompt library work appears mostly as a subtask within broader workflow or product roles.",
+    "outcome": "contradicted",
+    "accuracy_score": 0,
+    "scoring_notes": "Evidence suggests prompt practices matter, but are embedded in broader product and evaluation workflows."
+  },
+  {
+    "prediction_id": "PRED-2025-003",
+    "issued_date": "2025-10-20",
+    "scoring_date": "2026-04-20",
+    "linked_signal_ids": ["SIG-2026-002", "SIG-2026-004"],
+    "claim": "AI Scaler demand will shift toward integration, governance, and deployment readiness rather than model experimentation.",
+    "horizon_class": "6 months",
+    "confidence_tag": "evidenced",
+    "confirming_criterion": "Scaler role evidence increasingly references integration architecture, security, privacy, reliability, or governance.",
+    "contradicting_criterion": "Scaler role evidence remains centered mainly on model experimentation and prototyping.",
+    "outcome": "confirmed",
+    "accuracy_score": 1,
+    "scoring_notes": "Client RFPs and job evidence show rising integration and governance language."
+  },
+  {
+    "prediction_id": "PRED-2026-001",
+    "issued_date": "2026-03-18",
+    "scoring_date": "2026-09-18",
+    "linked_signal_ids": ["SIG-2026-005"],
+    "claim": "Multimodal prototyping will become a common differentiator for Prototyper placements in consumer product teams.",
+    "horizon_class": "6 months",
+    "confidence_tag": "reasoned_inference",
+    "confirming_criterion": "Consumer product roles and client briefs increasingly ask for text, image, speech, or video workflow prototypes.",
+    "contradicting_criterion": "Consumer product roles continue to ask primarily for text-only assistant prototypes.",
+    "outcome": "pending",
+    "accuracy_score": null,
+    "scoring_notes": null
+  }
+]
+
