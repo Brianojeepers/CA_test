@@ -1,5 +1,7 @@
 # Decision Spine MVP Specification
 
+MVP spec version: `0.1.0`
+
 ## 1. Purpose
 
 The Decision Spine MVP is a local, file-based operating system for translating
