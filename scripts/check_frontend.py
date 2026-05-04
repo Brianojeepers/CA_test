@@ -115,6 +115,19 @@ def check_api_contract(errors: list[str]) -> None:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
 
 
+def check_insight_trust_contract(errors: list[str]) -> None:
+    insights_js = (WEB_DIR / "render" / "insights.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("sourceCoverageForRows", "confidenceForRows", "maturityForRows", "trust-badges"):
+        if token not in insights_js:
+            errors.append(f"web/render/insights.js is missing insight trust token: {token}")
+
+    for token in (".trust-badges", ".trust-badge"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing insight trust style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -138,6 +151,7 @@ def main() -> int:
     if not errors:
         check_html_contract(errors)
         check_api_contract(errors)
+        check_insight_trust_contract(errors)
         check_js_syntax(errors)
 
     if errors:

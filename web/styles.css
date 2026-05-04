@@ -189,6 +189,8 @@ select {
   border-left: 4px solid var(--neutral);
   color: var(--text);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
   min-height: 130px;
   padding: 16px;
   text-align: left;
@@ -204,6 +206,7 @@ select {
 .insight-card small {
   color: var(--muted);
   display: block;
+  flex: 1;
   line-height: 1.35;
 }
 
@@ -223,6 +226,42 @@ select {
 .insight-card:focus-visible {
   box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.12);
   outline: 0;
+}
+
+.trust-badges {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.trust-badge {
+  align-items: center;
+  background: var(--neutral-bg);
+  border-radius: 999px;
+  color: var(--neutral);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 760;
+  line-height: 1.2;
+  min-height: 24px;
+  padding: 4px 8px;
+}
+
+.trust-badge.green {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.trust-badge.amber {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.trust-badge.red {
+  background: var(--red-bg);
+  color: var(--red);
 }
 
 .metric-label {
