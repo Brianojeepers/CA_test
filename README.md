@@ -43,6 +43,12 @@ Compile scripts and tests:
 PYTHONPYCACHEPREFIX=/private/tmp/ca_test_pycache python3 -m py_compile scripts/*.py tests/*.py
 ```
 
+Run the full local check suite:
+
+```bash
+python3 scripts/run_checks.py
+```
+
 Run the core operating packet:
 
 ```bash
@@ -60,9 +66,7 @@ python3 scripts/decision_impact_review.py
 Run:
 
 ```bash
-python3 scripts/validate_data.py
-python3 -m unittest discover -s tests
-PYTHONPYCACHEPREFIX=/private/tmp/ca_test_pycache python3 -m py_compile scripts/*.py tests/*.py
+python3 scripts/run_checks.py
 ```
 
 Expected current validation warning:
