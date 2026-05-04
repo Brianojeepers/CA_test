@@ -9,7 +9,7 @@ market evidence into academy decisions, releases, competency targets, learner
 evidence reviews, outcome reviews, and prediction learning.
 
 It exists to prove the operating loop before introducing live ingestion,
-learner-level data, dashboards, APIs, or scheduled workflows.
+learner-level data, production dashboards, deployed APIs, or scheduled workflows.
 
 ## 2. Scope
 
@@ -32,7 +32,7 @@ Out of scope:
 - Learner-level records.
 - CRM/account-level commercial data.
 - Live job-market ingestion.
-- Dashboard UI.
+- Production dashboard UI beyond the local static prototype.
 - API/service deployment.
 - Automated writes to downstream systems.
 
@@ -139,7 +139,10 @@ Frontend prototype:
 | Surface | Requirement |
 | --- | --- |
 | `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, drill-downs, and known limits. |
-| `web/app.js` | Fetch `GET /api/monthly-packet`, support filtering/selecting decision impact records, and generate council meeting notes from action decisions. |
+| `web/app.js` | Coordinate dashboard state, filtering, decision selection, and council meeting controls. |
+| `web/api.js` | Fetch `GET /api/monthly-packet` and `GET /api/decisions/{decision_id}`. |
+| `web/render/*.js` | Render summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 
 Stakeholder scripts:
 
@@ -219,6 +222,7 @@ The MVP is in a valid local state when:
 - Decision detail is available through the API as a joined traceability object.
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 - The dashboard supports an action-focused council meeting mode with copyable meeting notes.
+- Frontend module wiring passes `python3 scripts/check_frontend.py`.
 
 ## 10. Tests
 
@@ -255,5 +259,5 @@ Next stages should focus on:
 - cohort calendar data,
 - stronger learner evidence thresholds,
 - output exports for stakeholder-specific packets,
-- dashboard or internal service layer,
+- dashboard interaction depth and stakeholder-specific views,
 - scheduled ingestion and source freshness monitoring.

@@ -10,7 +10,7 @@ signals -> decisions -> releases -> competencies -> learner evidence -> outcomes
 ```
 
 The goal is to test the operating model before introducing live ingestion,
-learner-level data, dashboards, or production services.
+learner-level data, production dashboards, or production services.
 
 ## Current Scope
 
@@ -41,6 +41,12 @@ Compile scripts and tests:
 
 ```bash
 PYTHONPYCACHEPREFIX=/private/tmp/ca_test_pycache python3 -m py_compile scripts/*.py tests/*.py
+```
+
+Check the static dashboard wiring and JavaScript syntax:
+
+```bash
+python3 scripts/check_frontend.py
 ```
 
 Run the full local check suite:
@@ -108,6 +114,8 @@ python3 -m http.server 3000 --directory web
 Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`.
 Use action mode and the council notes panel during monthly review.
+The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
+rendering modules under `web/render/`.
 
 ## Before Committing
 
@@ -118,7 +126,7 @@ python3 scripts/run_checks.py
 ```
 
 This includes seed-data validation, pilot-template dry-run validation, regression
-tests, and compile checks.
+tests, frontend contract checks, and compile checks.
 
 Expected current validation warning:
 
@@ -143,6 +151,7 @@ outcome data exists.
 | `scripts/proficiency_readiness_review.py` | Aggregated learner evidence by competency and cohort. |
 | `scripts/source_contract_review.py` | Real-data source readiness and privacy gate. |
 | `scripts/validate_pilot_extract.py` | Dry-run validator for pilot extract templates or ignored local extracts. |
+| `scripts/check_frontend.py` | Static dashboard contract and JavaScript syntax check. |
 
 More stakeholder-specific scripts are documented in `data/README.md`.
 
