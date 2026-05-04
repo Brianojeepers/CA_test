@@ -8,6 +8,14 @@ export async function fetchMonthlyPacket() {
   return response.json();
 }
 
+export async function fetchSchemaGap() {
+  const response = await fetch(`${API_BASE_URL}/schema-gap`);
+  if (!response.ok) {
+    throw new Error(`API returned ${response.status}`);
+  }
+  return response.json();
+}
+
 export async function fetchDecisionDetail(decisionId) {
   const response = await fetch(`${API_BASE_URL}/decisions/${encodeURIComponent(decisionId)}`);
   if (!response.ok) {

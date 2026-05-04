@@ -149,6 +149,7 @@ API surface:
 | --- | --- |
 | `GET /api/health` | Return API health as `{ "status": "ok" }`. |
 | `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
+| `GET /api/schema-gap` | Return seed, pilot-template, source-contract, and v0.2 intelligence field readiness. |
 | `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
 
 Frontend prototype:
@@ -240,6 +241,7 @@ The MVP is in a valid local state when:
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
 - Decision detail is available through the API as a joined traceability object.
+- Schema gap readiness is available through the API for frontend v0.2 planning views.
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 - The dashboard supports an action-focused council meeting mode with copyable meeting notes.
 - The dashboard supports stakeholder-specific views without duplicating the underlying packet data.
@@ -247,6 +249,7 @@ The MVP is in a valid local state when:
 - The dashboard translates each selected decision into a stakeholder action: keep/amplify, update/monitor, wait, or corrective review.
 - The dashboard shows a filtered "what changed and why" changelog backed by structured monthly-packet data.
 - The dashboard shows what changed since the latest saved review snapshot when one exists.
+- The dashboard shows v0.2 intelligence readiness by capability, missing field count, owner, and privacy posture.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.

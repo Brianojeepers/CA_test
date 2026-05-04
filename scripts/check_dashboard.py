@@ -26,6 +26,8 @@ EXPECTED_DASHBOARD_TEXT = [
     "Stakeholder lens",
     "Stakeholder insights",
     "Since last snapshot",
+    "v0.2 readiness",
+    "Intelligence capability readiness",
     "Decision impact",
     "Action queue",
     "Recommended action",
@@ -105,6 +107,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/meetingNotes.js",
             "render/recommendation.js",
             "render/reviewDiff.js",
+            "render/schemaGap.js",
             "render/stakeholderBrief.js",
             "render/summary.js",
             "render/table.js",
@@ -150,6 +153,18 @@ def check_api(errors: list[str]) -> None:
         errors.append("monthly packet returned no decision changelog items")
     if not review_diff.get("snapshot_status"):
         errors.append("monthly packet returned no review diff status")
+
+    try:
+        schema_gap = fetch_json(f"{API_BASE_URL}/schema-gap", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    requirements = schema_gap.get("v02_requirements", [])
+    if not requirements:
+        errors.append("schema gap endpoint returned no v0.2 requirements")
+    if schema_gap.get("summary", {}).get("v02_gap_count") is None:
+        errors.append("schema gap endpoint returned no v0.2 gap count")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

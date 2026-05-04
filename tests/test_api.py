@@ -25,6 +25,15 @@ class ApiTests(unittest.TestCase):
         self.assertIn("decision_impact", payload)
         self.assertIn("actions", payload)
 
+    def test_schema_gap_endpoint_returns_v02_readiness(self) -> None:
+        response = self.client.get("/api/schema-gap")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["v02_gap_count"], 18)
+        self.assertIn("v02_requirements", payload)
+        self.assertEqual(payload["v02_requirements"][0]["capability"], "role_anchor_demand_index")
+
     def test_decision_detail_endpoint_returns_traceability(self) -> None:
         response = self.client.get("/api/decisions/DEC-2026-001")
 

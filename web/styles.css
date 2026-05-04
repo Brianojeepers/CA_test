@@ -296,6 +296,10 @@ select {
   margin-bottom: 22px;
 }
 
+.schema-gap-panel {
+  margin-bottom: 22px;
+}
+
 .review-diff-counts {
   display: flex;
   flex-wrap: wrap;
@@ -369,6 +373,114 @@ select {
 
 .review-diff-item strong {
   color: var(--text);
+}
+
+.schema-gap-list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.schema-card {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--neutral);
+  border-radius: 7px;
+  display: grid;
+  gap: 12px;
+  min-height: 260px;
+  padding: 12px;
+}
+
+.schema-card.green {
+  border-left-color: var(--green);
+}
+
+.schema-card.amber {
+  border-left-color: var(--amber);
+}
+
+.schema-card.red {
+  border-left-color: var(--red);
+}
+
+.schema-card-top {
+  align-items: start;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.schema-card h3 {
+  font-size: 15px;
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+
+.schema-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.schema-meter {
+  background: var(--surface-muted);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.schema-meter span {
+  background: var(--blue);
+  display: block;
+  height: 100%;
+  min-width: 4px;
+}
+
+.schema-meta,
+.schema-fields,
+.schema-gap-blockers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.schema-meta span,
+.schema-field {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--neutral);
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1.2;
+  padding: 5px 8px;
+}
+
+.schema-next {
+  align-self: end;
+}
+
+.schema-gap-blockers {
+  margin-top: 12px;
+}
+
+.schema-blocker {
+  background: var(--red-bg);
+  border-left: 4px solid var(--red);
+  border-radius: 7px;
+  color: var(--red);
+  display: grid;
+  gap: 4px;
+  line-height: 1.35;
+  min-width: min(100%, 320px);
+  padding: 10px;
+}
+
+.schema-blocker span {
+  font-size: 13px;
 }
 
 .main-column,
@@ -934,6 +1046,7 @@ tbody tr.no-results:hover {
   .view-context-grid,
   .review-diff-list,
   .changelog-list,
+  .schema-gap-list,
   .workspace,
   .lower-grid {
     grid-template-columns: 1fr;

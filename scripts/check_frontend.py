@@ -37,6 +37,9 @@ REQUIRED_IDS = {
     "review-diff-summary",
     "review-diff-counts",
     "review-diff-list",
+    "schema-gap-summary",
+    "schema-gap-list",
+    "schema-gap-blockers",
     "impact-filter",
     "decision-heading",
     "decision-question",
@@ -77,6 +80,7 @@ REQUIRED_FILES = [
     "render/meetingNotes.js",
     "render/recommendation.js",
     "render/reviewDiff.js",
+    "render/schemaGap.js",
     "render/stakeholderBrief.js",
     "render/summary.js",
     "render/table.js",
@@ -123,7 +127,7 @@ def check_html_contract(errors: list[str]) -> None:
 
 def check_api_contract(errors: list[str]) -> None:
     api_js = (WEB_DIR / "api.js").read_text(encoding="utf-8")
-    for endpoint in ("/monthly-packet", "/decisions/"):
+    for endpoint in ("/monthly-packet", "/schema-gap", "/decisions/"):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
 
@@ -208,6 +212,24 @@ def check_review_diff_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing review diff style: {token}")
 
 
+def check_schema_gap_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    schema_gap_js = (WEB_DIR / "render" / "schemaGap.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("fetchSchemaGap", "renderSchemaGap", "schemaGap"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing schema gap token: {token}")
+
+    for token in ("schema-gap-summary", "v02_requirements", "privacy_sensitivity", "decision_unlocked"):
+        if token not in schema_gap_js:
+            errors.append(f"web/render/schemaGap.js is missing schema gap token: {token}")
+
+    for token in (".schema-gap-panel", ".schema-gap-list", ".schema-card", ".schema-blocker"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing schema gap style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -236,6 +258,7 @@ def main() -> int:
         check_changelog_contract(errors)
         check_stakeholder_brief_contract(errors)
         check_review_diff_contract(errors)
+        check_schema_gap_contract(errors)
         check_js_syntax(errors)
 
     if errors:

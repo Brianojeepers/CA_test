@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from decision_spine.services.decision_detail import build_decision_detail
 from decision_spine.services.monthly_packet import build_monthly_packet
+from decision_spine.services.schema_gap import build_schema_gap_report
 
 
 app = FastAPI(
@@ -38,6 +39,14 @@ def health() -> dict[str, str]:
 def monthly_packet() -> dict[str, Any]:
     try:
         return build_monthly_packet()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/schema-gap")
+def schema_gap() -> dict[str, Any]:
+    try:
+        return build_schema_gap_report()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

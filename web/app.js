@@ -1,4 +1,4 @@
-import { fetchDecisionDetail, fetchMonthlyPacket } from "./api.js";
+import { fetchDecisionDetail, fetchMonthlyPacket, fetchSchemaGap } from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
 import { renderChangelog } from "./render/changelog.js";
@@ -10,6 +10,7 @@ import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
 import { renderRecommendation } from "./render/recommendation.js";
 import { renderReviewDiff } from "./render/reviewDiff.js";
+import { renderSchemaGap } from "./render/schemaGap.js";
 import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
@@ -25,6 +26,7 @@ import {
 } from "./stakeholders.js";
 
 let packet = null;
+let schemaGap = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
 let activeFilter = "all";
@@ -224,6 +226,7 @@ function render() {
     selectDecision,
     new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
   );
+  renderSchemaGap(schemaGap);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);
   renderMeetingControls(actionMode);
@@ -247,16 +250,18 @@ function render() {
 async function loadPacket() {
   setStatus("Refreshing monthly packet...");
   try {
-    packet = await fetchMonthlyPacket();
+    const [nextPacket, nextSchemaGap] = await Promise.all([fetchMonthlyPacket(), fetchSchemaGap()]);
+    packet = nextPacket;
+    schemaGap = nextSchemaGap;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
     if (selectedDecisionId) {
       loadDecisionDetail(selectedDecisionId);
     }
-    setStatus("Connected to FastAPI monthly packet endpoint.", "ok");
+    setStatus("Connected to FastAPI monthly packet and schema-gap endpoints.", "ok");
   } catch (error) {
-    setStatus(`Unable to load monthly packet: ${error.message}`, "error");
+    setStatus(`Unable to load dashboard data: ${error.message}`, "error");
   }
 }
 
