@@ -582,12 +582,11 @@ def validate_all() -> ValidationResult:
                 "learning or credential decision has no pedagogy mapping yet",
             )
 
-    competency_signals = {
-        signal_id
-        for item in role_competencies
-        for signal_id in item.get("linked_signal_ids", [])
-        if isinstance(item.get("linked_signal_ids"), list)
-    }
+    competency_signals: set[str] = set()
+    for item in role_competencies:
+        linked_signal_ids = item.get("linked_signal_ids")
+        if isinstance(linked_signal_ids, list):
+            competency_signals.update(linked_signal_ids)
     for signal in signals:
         if signal["status"] == "green" and signal["signal_id"] not in competency_signals:
             result.warning(
