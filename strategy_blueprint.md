@@ -45,6 +45,23 @@ The first working version is intentionally smaller than the target architecture.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
 
+### Expanded MVP boundary (v0.2)
+The next useful MVP is broader than the first dashboard but still short of a
+production intelligence platform. It should prove that the system can support
+role demand, competency gap, horizon, and impact reasoning from governed data
+contracts before we invest in live ingestion or a database migration.
+
+v0.2 should add:
+- a schema gap review that compares seed data, pilot templates, source contracts, and target intelligence fields,
+- a minimum viable pilot extract for role-anchor demand and competency-gap inputs,
+- explicit field requirements for demand volume, demand growth, hiring velocity, compensation pressure, learner demonstrated proficiency, proficiency gap, maturity stage, and curriculum cost/impact assumptions,
+- dashboard surfaces that expose source coverage and confidence before recommendations,
+- a strict rule that expanded intelligence outputs remain directional until real pilot data passes privacy, ownership, and freshness gates.
+
+The first implementation of this boundary is `scripts/schema_gap_review.py`. It
+does not claim the new intelligence features are solved; it tells us which fields
+and source agreements are missing before those features can be trustworthy.
+
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**
    - Job posts by role, region, seniority, industry.
@@ -188,12 +205,12 @@ The council charter for this operating owner is defined in `docs/signal_intellig
 - Introduce a small anonymized real-data extract if approved.
 - Connect validated signals to Assessment Ops and Developer Learning workflows.
 - Add decision changelog output for stakeholder communication.
-- Identify gaps between seed schema and real source systems.
+- Use `scripts/schema_gap_review.py` to identify gaps between seed schema, pilot templates, real source contracts, and v0.2 intelligence requirements.
 
 ### Days 61–90: optimization
 - Mature the placement and retention feedback loop.
 - Add matcher-facing and Sales-facing evidence summaries.
-- Begin role-anchor demand and competency-gap prototypes once source quality is proven.
+- Begin role-anchor demand and competency-gap prototypes only after the schema gap review has a named source owner and privacy posture for every required field.
 - Add horizon radar and prediction scoring improvements.
 - Decide whether to move from local scripts to an internal service, dashboard, or scheduled workflow.
 

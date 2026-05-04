@@ -1,15 +1,17 @@
 # Decision Spine MVP Specification
 
-MVP spec version: `0.1.1`
+MVP spec version: `0.2.0`
 
 ## 1. Purpose
 
 The Decision Spine MVP is a local, file-based operating system for translating
 market evidence into academy decisions, releases, competency targets, learner
-evidence reviews, outcome reviews, and prediction learning.
+evidence reviews, outcome reviews, prediction learning, and the first data
+readiness map for a broader intelligence engine.
 
-It exists to prove the operating loop before introducing live ingestion,
-learner-level data, production dashboards, deployed APIs, or scheduled workflows.
+It exists to prove the operating loop and identify the exact schema gaps before
+introducing live ingestion, learner-level data, production dashboards, deployed
+APIs, scheduled workflows, or real source-system imports.
 
 ## 2. Scope
 
@@ -24,6 +26,7 @@ In scope:
 - FastAPI boundary under `app/api/` for structured JSON access to service-layer data.
 - Static first-pass dashboard prototype under `web/` for stakeholder workflow discovery.
 - Pilot extract templates and dry-run validation.
+- Schema gap review across seed data, pilot templates, source contracts, and v0.2 intelligence requirements.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -35,6 +38,8 @@ Out of scope:
 - Production dashboard UI beyond the local static prototype.
 - API/service deployment.
 - Automated writes to downstream systems.
+- Database schema migration or warehouse models.
+- Role-demand, competency-gap, horizon-radar, or simulator outputs based on real data.
 
 ## 3. Core Operating Loop
 
@@ -120,6 +125,7 @@ Core operating scripts:
 | `scripts/decision_impact_review.py` | Classify approved decisions by impact maturity. |
 | `scripts/source_contract_review.py` | Gate real-data imports by source readiness and privacy posture. |
 | `scripts/validate_pilot_extract.py` | Dry-run pilot extract shape and privacy-risk checks. |
+| `scripts/schema_gap_review.py` | Compare current seed schema, pilot templates, source contracts, and v0.2 intelligence requirements. |
 
 Reusable service layer:
 
@@ -131,6 +137,8 @@ Reusable service layer:
 | `decision_spine.services.review_snapshots.save_review_snapshot` | Persist the current packet as an ignored JSON review snapshot. |
 | `decision_spine.services.stakeholder_packets.build_stakeholder_packet` | Return a concise stakeholder-specific brief from the same monthly-packet data. |
 | `decision_spine.services.stakeholder_packets.render_stakeholder_packet_markdown` | Render stakeholder briefs for Markdown export without recalculating packet data. |
+| `decision_spine.services.schema_gap.build_schema_gap_report` | Return structured schema coverage and v0.2 field-gap data. |
+| `decision_spine.services.schema_gap.render_schema_gap_report_text` | Render schema gap review output for CLI use. |
 
 API surface:
 
@@ -224,6 +232,7 @@ The MVP is in a valid local state when:
 - The original 17 user stories have script or documentation coverage.
 - Real-data import remains blocked unless source contracts are green or explicitly pilot-approved.
 - Pilot extracts pass `scripts/validate_pilot_extract.py` before review.
+- Schema gap review makes source-template, seed-contract, and v0.2 intelligence field gaps explicit before broader product expansion.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -249,7 +258,8 @@ They currently cover:
 - validation warning behavior for future cohorts,
 - decision impact maturity gates,
 - stakeholder readiness gates,
-- delivery-window timing classifications.
+- delivery-window timing classifications,
+- schema gap coverage, alias handling, and v0.2 expansion requirements.
 
 Run:
 
@@ -266,14 +276,15 @@ python3 -m unittest discover -s tests
 - Actual cohort calendar data is unavailable.
 - Client/account-level commercial evidence is unavailable.
 - Training offers and talent profile signals are recommendation inputs only; they do not write to downstream systems.
+- v0.2 intelligence requirements are field-readiness requirements, not implemented forecasting or simulation models.
 
 ## 12. Future Work
 
 Next stages should focus on:
 
 - privacy-reviewed pilot extracts,
+- v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,
-- output exports for stakeholder-specific packets,
 - dashboard interaction depth and stakeholder-specific views,
 - scheduled ingestion and source freshness monitoring.

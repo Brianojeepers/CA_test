@@ -255,3 +255,14 @@ python3 scripts/source_contract_review.py
 The source contract review shows which future source extracts are ready, blocked,
 or usable only for controlled manual sampling. See `docs/source_data_contracts.md`
 and `docs/real_data_readiness.md` before importing real data.
+
+Run the schema gap review before expanding the dashboard into role-demand,
+competency-gap, horizon-radar, or simulator features:
+
+```bash
+python3 scripts/schema_gap_review.py
+```
+
+The schema gap review compares seed fields, pilot templates, source-contract
+fields, and v0.2 intelligence requirements so the next product step has a clear
+minimum viable pilot extract instead of a vague data wishlist.

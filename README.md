@@ -73,6 +73,12 @@ Validate pilot extract templates:
 python3 scripts/validate_pilot_extract.py data/pilot_extract_templates
 ```
 
+Review seed, pilot-template, source-contract, and v0.2 intelligence schema gaps:
+
+```bash
+python3 scripts/schema_gap_review.py
+```
+
 Run the core operating packet:
 
 ```bash
@@ -179,6 +185,7 @@ outcome data exists.
 | `scripts/proficiency_readiness_review.py` | Aggregated learner evidence by competency and cohort. |
 | `scripts/source_contract_review.py` | Real-data source readiness and privacy gate. |
 | `scripts/validate_pilot_extract.py` | Dry-run validator for pilot extract templates or ignored local extracts. |
+| `scripts/schema_gap_review.py` | Field-gap review for seed data, pilot templates, source contracts, and v0.2 intelligence requirements. |
 | `scripts/check_frontend.py` | Static dashboard contract and JavaScript syntax check. |
 | `scripts/check_dashboard.py` | Live local dashboard/API smoke check. |
 

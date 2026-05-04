@@ -68,12 +68,19 @@ Run the contract review before planning a real-data pilot:
 python3 scripts/source_contract_review.py
 ```
 
+Run the schema gap review before expanding the pilot field list:
+
+```bash
+python3 scripts/schema_gap_review.py
+```
+
 The review should answer:
 
 - Which sources are ready enough to pilot?
 - Which sources are blocked by privacy or ownership?
 - Which MVP files have at least one candidate source?
 - What concrete action is needed next for each source?
+- Which v0.2 intelligence fields are still missing from the pilot shape?
 
 This should be read alongside `docs/real_data_readiness.md`. The readiness doc
 sets the guardrails; the contract register turns those guardrails into source-by-

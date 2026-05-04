@@ -79,6 +79,18 @@ The current contract register keeps real source readiness separate from seed-dat
 validity. A source can have useful candidate fields and still be blocked by
 privacy, aggregation, ownership, or freshness rules.
 
+Before expanding the product into v0.2 role-demand, competency-gap,
+horizon-radar, or simulator features, run:
+
+```bash
+python3 scripts/schema_gap_review.py
+```
+
+The schema gap review shows whether the current seed data, pilot templates, and
+source contracts cover the fields required for the broader intelligence engine.
+It should be used to decide the minimum viable pilot extract before requesting
+new data.
+
 ## Pilot Extract Templates
 
 Pilot extract templates live in:
