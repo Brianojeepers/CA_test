@@ -124,3 +124,13 @@ python3 scripts/decision_changelog.py
 
 The decision changelog lists released changes, pending changes, monitor/no-change
 decisions, and any approved decisions missing a release record.
+
+Run the Matching and CSM outcome review:
+
+```bash
+python3 scripts/outcome_review.py
+```
+
+The outcome review shows post-change cohorts, linked releases, placement and
+retention deltas, small-n and pending-data flags, confidence, and suggested
+actions.
