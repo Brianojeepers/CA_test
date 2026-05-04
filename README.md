@@ -97,6 +97,7 @@ The first API endpoints are:
 
 - `GET /api/health`
 - `GET /api/monthly-packet`
+- `GET /api/decisions/{decision_id}`
 
 Run the first stakeholder dashboard prototype:
 

@@ -88,6 +88,8 @@ def impact_status(
         return "no_outcome_data"
 
     readiness_levels = {item["readiness_level"] for item in evidence}
+    if any(item.get("suppression_applied") for item in evidence):
+        return "needs_attention"
     if "not_ready" in readiness_levels:
         return "needs_attention"
     if "insufficient_sample" in readiness_levels:

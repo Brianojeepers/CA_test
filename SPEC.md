@@ -132,6 +132,7 @@ API surface:
 | --- | --- |
 | `GET /api/health` | Return API health as `{ "status": "ok" }`. |
 | `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
+| `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
 
 Frontend prototype:
 
@@ -215,6 +216,7 @@ The MVP is in a valid local state when:
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
+- Decision detail is available through the API as a joined traceability object.
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 
 ## 10. Tests

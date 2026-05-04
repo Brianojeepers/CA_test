@@ -354,6 +354,10 @@ tbody tr.selected {
   line-height: 1.45;
 }
 
+.muted-copy {
+  color: var(--muted);
+}
+
 .detail-title {
   color: var(--text);
   font-size: 18px;
@@ -366,6 +370,56 @@ tbody tr.selected {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+}
+
+.trace-counts {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 14px 0;
+}
+
+.trace-counts span {
+  background: var(--surface-muted);
+  border-radius: 7px;
+  color: var(--neutral);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px;
+}
+
+.trace-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.trace-section h3 {
+  color: var(--text);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.trace-section p {
+  margin: 0;
+}
+
+.trace-list {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.trace-list li {
+  background: #f8fafc;
+  border-radius: 7px;
+  padding: 10px;
+}
+
+.trace-list strong,
+.trace-list span {
+  display: block;
 }
 
 .lower-grid {

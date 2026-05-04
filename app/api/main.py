@@ -7,6 +7,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from decision_spine.services.decision_detail import build_decision_detail
 from decision_spine.services.monthly_packet import build_monthly_packet
 
 
@@ -39,3 +40,14 @@ def monthly_packet() -> dict[str, Any]:
         return build_monthly_packet()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/decisions/{decision_id}")
+def decision_detail(decision_id: str) -> dict[str, Any]:
+    try:
+        detail = build_decision_detail(decision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    if detail is None:
+        raise HTTPException(status_code=404, detail=f"Unknown decision_id: {decision_id}")
+    return detail

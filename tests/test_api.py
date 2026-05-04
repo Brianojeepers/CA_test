@@ -25,6 +25,21 @@ class ApiTests(unittest.TestCase):
         self.assertIn("decision_impact", payload)
         self.assertIn("actions", payload)
 
+    def test_decision_detail_endpoint_returns_traceability(self) -> None:
+        response = self.client.get("/api/decisions/DEC-2026-001")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["decision"]["decision_id"], "DEC-2026-001")
+        self.assertGreaterEqual(payload["traceability"]["signal_count"], 1)
+        self.assertGreaterEqual(payload["traceability"]["release_count"], 1)
+        self.assertGreaterEqual(payload["traceability"]["competency_count"], 1)
+
+    def test_decision_detail_endpoint_returns_404_for_unknown_id(self) -> None:
+        response = self.client.get("/api/decisions/DEC-DOES-NOT-EXIST")
+
+        self.assertEqual(response.status_code, 404)
+
 
 if __name__ == "__main__":
     unittest.main()

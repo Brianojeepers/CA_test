@@ -40,6 +40,17 @@ class DecisionImpactReviewTests(unittest.TestCase):
 
         self.assertEqual(status, "needs_attention")
 
+    def test_suppressed_positive_readiness_needs_attention(self) -> None:
+        status = impact_status(
+            releases=[{"release_status": "released"}],
+            evidence=[{"readiness_level": "ready", "suppression_applied": True}],
+            cohorts=[{"placement_rate": None, "retention_90d_rate": None}],
+            placement_deltas=[],
+            retention_deltas=[],
+        )
+
+        self.assertEqual(status, "needs_attention")
+
 
 if __name__ == "__main__":
     unittest.main()
