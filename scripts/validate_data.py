@@ -184,6 +184,7 @@ def validate_all() -> ValidationResult:
         predictions = load_json("predictions.json")
         pedagogy = load_optional_json("pedagogy_map.json")
         source_contracts = load_optional_json("source_contracts.json")
+        role_competencies = load_optional_json("role_competencies.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -197,6 +198,8 @@ def validate_all() -> ValidationResult:
         require_unique_ids(result, "pedagogy_map.json", pedagogy, "pedagogy_id")
     if source_contracts:
         require_unique_ids(result, "source_contracts.json", source_contracts, "contract_id")
+    if role_competencies:
+        require_unique_ids(result, "role_competencies.json", role_competencies, "competency_id")
 
     require_fields(
         result,
@@ -351,6 +354,30 @@ def validate_all() -> ValidationResult:
             },
             "contract_id",
         )
+    if role_competencies:
+        require_fields(
+            result,
+            "role_competencies.json",
+            role_competencies,
+            {
+                "competency_id",
+                "role_archetype",
+                "competency_cluster",
+                "capability",
+                "target_proficiency",
+                "market_priority",
+                "horizon_window",
+                "linked_signal_ids",
+                "linked_decision_ids",
+                "linked_release_ids",
+                "pedagogy_ids",
+                "assessment_signal",
+                "gap_hypothesis",
+                "owner",
+                "status",
+            },
+            "competency_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -454,6 +481,68 @@ def validate_all() -> ValidationResult:
             if field_name in item and (not isinstance(item[field_name], str) or not item[field_name].strip()):
                 result.error("pedagogy_map.json", pid, field_name, "must be a non-empty string")
 
+    pedagogy_ids = {item.get("pedagogy_id") for item in pedagogy}
+    for item in role_competencies:
+        cid = record_id(item, "competency_id")
+        validate_enum(
+            result,
+            "role_competencies.json",
+            [item],
+            "competency_id",
+            "market_priority",
+            {"core", "emerging", "monitor"},
+        )
+        validate_enum(
+            result,
+            "role_competencies.json",
+            [item],
+            "competency_id",
+            "status",
+            {"active", "monitor", "deprecated"},
+        )
+        for field_name, allowed_ids in (
+            ("linked_signal_ids", signal_ids),
+            ("linked_decision_ids", decision_ids),
+        ):
+            validate_list_of_ids(result, "role_competencies.json", item, "competency_id", field_name, allowed_ids)
+        for field_name, allowed_ids in (
+            ("linked_release_ids", release_ids),
+            ("pedagogy_ids", pedagogy_ids),
+        ):
+            values = item.get(field_name)
+            if not isinstance(values, list):
+                result.error("role_competencies.json", cid, field_name, "must be a list")
+                continue
+            for value in values:
+                if value not in allowed_ids:
+                    result.error("role_competencies.json", cid, field_name, f"unknown ID {value!r}")
+        for field_name in (
+            "role_archetype",
+            "competency_cluster",
+            "capability",
+            "target_proficiency",
+            "horizon_window",
+            "assessment_signal",
+            "gap_hypothesis",
+            "owner",
+        ):
+            if field_name in item and (not isinstance(item[field_name], str) or not item[field_name].strip()):
+                result.error("role_competencies.json", cid, field_name, "must be a non-empty string")
+        if item.get("status") == "active" and item.get("market_priority") == "monitor":
+            result.warning(
+                "role_competencies.json",
+                cid,
+                "market_priority",
+                "active competency is marked monitor priority",
+            )
+        if item.get("market_priority") in {"core", "emerging"} and not item.get("linked_release_ids"):
+            result.warning(
+                "role_competencies.json",
+                cid,
+                "linked_release_ids",
+                "core or emerging competency has no release yet",
+            )
+
     framed_decisions = {item.get("decision_id") for item in pedagogy}
     for decision in decisions:
         if decision["decision_type"] in {"curriculum", "credential", "assessment"} and decision["decision_id"] not in framed_decisions:
@@ -464,6 +553,21 @@ def validate_all() -> ValidationResult:
                 "learning or credential decision has no pedagogy mapping yet",
             )
 
+    competency_signals = {
+        signal_id
+        for item in role_competencies
+        for signal_id in item.get("linked_signal_ids", [])
+        if isinstance(item.get("linked_signal_ids"), list)
+    }
+    for signal in signals:
+        if signal["status"] == "green" and signal["signal_id"] not in competency_signals:
+            result.warning(
+                "role_competencies.json",
+                signal["signal_id"],
+                "linked_signal_ids",
+                "green signal has no competency mapping yet",
+            )
+
     expected_files = {
         "signals.json",
         "decisions.json",
@@ -471,6 +575,7 @@ def validate_all() -> ValidationResult:
         "cohort_outcomes.json",
         "predictions.json",
         "pedagogy_map.json",
+        "role_competencies.json",
     }
     for contract in source_contracts:
         cid = record_id(contract, "contract_id")

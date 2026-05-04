@@ -126,6 +126,38 @@
     "next_action": "Run privacy review for 2-4 anonymized cohort outcome rows before storing any real extract."
   },
   {
+    "contract_id": "SRC-2026-006",
+    "data_domain": "competency_ontology",
+    "candidate_source": "Academy competency model, assessment blueprint, matcher role archetypes, and council-approved signal themes",
+    "source_owner": "Learning",
+    "privacy_owner": "Academy Operations",
+    "feeds_files": ["role_competencies.json"],
+    "minimum_grain": "One competency target per role archetype and competency cluster",
+    "required_fields": [
+      "role_archetype",
+      "competency_cluster",
+      "capability",
+      "target_proficiency",
+      "market_priority",
+      "horizon_window",
+      "linked_signal_ids",
+      "linked_decision_ids",
+      "assessment_signal",
+      "gap_hypothesis",
+      "owner",
+      "status"
+    ],
+    "privacy_posture": "No learner-level records; ontology should describe capability targets and evidence standards only.",
+    "freshness_sla": "Reviewed monthly with council decisions and quarterly during structural recalibration.",
+    "pilot_status": "candidate",
+    "readiness": "amber",
+    "blockers": [
+      "Role archetype definitions need council sign-off before gap scoring is treated as authoritative.",
+      "Learner proficiency evidence is not yet connected."
+    ],
+    "next_action": "Review the initial competency register with Learning, Assessment Ops, Matching, and Solutions before adding gap scores."
+  },
+  {
     "contract_id": "SRC-2026-005",
     "data_domain": "prediction_register",
     "candidate_source": "Council horizon review and research prediction register",

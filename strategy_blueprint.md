@@ -73,6 +73,7 @@ Key rule: every curriculum change must link to specific market signals and outco
 
 Pedagogical translation is defined in `docs/pedagogical_framing.md`. Bloom's taxonomy should describe cognitive complexity, Dreyfus should describe proficiency and autonomy, and assessment evidence should prove realistic performance rather than content exposure.
 The local MVP now tests this as optional structured data in `data/pedagogy_map.json`, reviewed through `scripts/pedagogy_review.py`, before making pedagogical labels mandatory across every curriculum or credential record.
+The first competency ontology lives in `data/role_competencies.json` and is reviewed through `scripts/competency_gap_review.py`; it links role archetypes to competency clusters, market signals, decisions, releases, and gap hypotheses.
 
 ## 4) Intelligence features to implement
 
