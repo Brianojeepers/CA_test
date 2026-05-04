@@ -187,8 +187,11 @@ select {
 
 .insight-card {
   border-left: 4px solid var(--neutral);
+  color: var(--text);
+  cursor: pointer;
   min-height: 130px;
   padding: 16px;
+  text-align: left;
 }
 
 .insight-card strong {
@@ -214,6 +217,12 @@ select {
 
 .insight-card.red {
   border-left-color: var(--red);
+}
+
+.insight-card:hover,
+.insight-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.12);
+  outline: 0;
 }
 
 .metric-label {

@@ -44,18 +44,36 @@ function insightTone(metric, value) {
   return "neutral";
 }
 
-export function renderInsights(view, rows, actions, packet) {
+function actionAttributes(action) {
+  if (!action) return "";
+  const attributes = [`data-insight-action="${escapeHtml(action.type)}"`];
+  if (action.status) attributes.push(`data-insight-status="${escapeHtml(action.status)}"`);
+  if (action.focus) attributes.push(`data-insight-focus="${escapeHtml(action.focus)}"`);
+  return attributes.join(" ");
+}
+
+export function renderInsights(view, rows, actions, packet, onInsightAction) {
   document.getElementById("stakeholder-insights").innerHTML = view.insightCards
     .map((card) => {
       const value = insightValue(card.metric, rows, actions, packet);
       const tone = insightTone(card.metric, value);
       return `
-        <article class="insight-card ${tone}">
+        <button class="insight-card ${tone}" type="button" ${actionAttributes(card.action)}>
           <span class="metric-label">${escapeHtml(card.label)}</span>
           <strong>${value}</strong>
           <small>${escapeHtml(card.description)}</small>
-        </article>
+        </button>
       `;
     })
     .join("");
+
+  document.querySelectorAll("[data-insight-action]").forEach((card) => {
+    card.addEventListener("click", () => {
+      onInsightAction({
+        type: card.dataset.insightAction,
+        status: card.dataset.insightStatus,
+        focus: card.dataset.insightFocus,
+      });
+    });
+  });
 }

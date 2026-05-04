@@ -121,6 +121,55 @@ function handleViewChange(nextViewId) {
   }
 }
 
+function focusPanel(target) {
+  const targetIds = {
+    actions: "action-list",
+    detail: "decision-detail",
+    table: "decision-table",
+    warnings: "warning-list",
+  };
+  const targetId = targetIds[target] ?? targetIds.table;
+  const element = document.getElementById(targetId);
+  const section = element?.closest("section") ?? element;
+  if (!section) return;
+  if (!section.hasAttribute("tabindex")) {
+    section.setAttribute("tabindex", "-1");
+  }
+  section.focus({ preventScroll: true });
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function handleInsightAction(action) {
+  if (action.type === "filterStatus") {
+    activeFilter = action.status ?? "all";
+    actionMode = false;
+    render();
+    focusPanel(action.focus);
+    return;
+  }
+  if (action.type === "actionMode") {
+    activeFilter = "all";
+    actionMode = true;
+    render();
+    focusPanel(action.focus ?? "actions");
+    return;
+  }
+  if (action.type === "focusWarnings") {
+    focusPanel("warnings");
+    return;
+  }
+  if (action.type === "focusDetail") {
+    focusPanel("detail");
+    return;
+  }
+  if (action.type === "clearFilters") {
+    activeFilter = "all";
+    actionMode = false;
+    render();
+    focusPanel(action.focus ?? "table");
+  }
+}
+
 function selectDecision(decisionId) {
   selectedDecisionId = decisionId;
   renderDecisionTableFromState();
@@ -150,7 +199,7 @@ function render() {
   }
   renderStakeholderTabs(stakeholderViews, activeView, handleViewChange);
   renderStakeholderContext(activeView, rows, actions);
-  renderInsights(activeView, rows, actions, packet);
+  renderInsights(activeView, rows, actions, packet, handleInsightAction);
   renderSummary(packet, rows, actions);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);

@@ -225,7 +225,7 @@ The MVP is in a valid local state when:
 - The first frontend prototype renders the monthly packet without exposing raw JSON to stakeholders.
 - The dashboard supports an action-focused council meeting mode with copyable meeting notes.
 - The dashboard supports stakeholder-specific views without duplicating the underlying packet data.
-- The dashboard shows role-specific insight cards before the audit table.
+- The dashboard shows clickable role-specific insight cards before the audit table.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.
 - With the local API and static server running, `python3 scripts/check_dashboard.py` passes.
 
