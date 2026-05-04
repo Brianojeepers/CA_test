@@ -67,3 +67,12 @@ python3 scripts/report_kpis.py
 The report reads these seed files and prints the current Decision Spine KPI status,
 including threshold colors, pending releases, outcome deltas, and prediction scoring.
 It runs validation first and stops if the seed data has errors.
+
+Run the action-focused council review:
+
+```bash
+python3 scripts/council_review.py
+```
+
+The council review surfaces decision queues, release accountability, traceability
+checks, and prediction follow-ups for monthly operating review.
