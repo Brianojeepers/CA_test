@@ -1,6 +1,7 @@
 .pycache/
 __pycache__/
 *.pyc
+.DS_Store
 outputs/*
 !outputs/.gitkeep
 data/pilot_extracts/*
