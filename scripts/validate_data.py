@@ -40,6 +40,13 @@ def load_json(filename: str) -> list[dict[str, Any]]:
     return data
 
 
+def load_optional_json(filename: str) -> list[dict[str, Any]]:
+    path = DATA_DIR / filename
+    if not path.exists():
+        return []
+    return load_json(filename)
+
+
 def parse_date(value: Any) -> date | None:
     if value is None:
         return None
@@ -175,6 +182,7 @@ def validate_all() -> ValidationResult:
         releases = load_json("releases.json")
         cohorts = load_json("cohort_outcomes.json")
         predictions = load_json("predictions.json")
+        pedagogy = load_optional_json("pedagogy_map.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -184,6 +192,8 @@ def validate_all() -> ValidationResult:
     require_unique_ids(result, "releases.json", releases, "release_id")
     require_unique_ids(result, "cohort_outcomes.json", cohorts, "cohort_id")
     require_unique_ids(result, "predictions.json", predictions, "prediction_id")
+    if pedagogy:
+        require_unique_ids(result, "pedagogy_map.json", pedagogy, "pedagogy_id")
 
     require_fields(
         result,
@@ -294,6 +304,27 @@ def validate_all() -> ValidationResult:
         },
         "prediction_id",
     )
+    if pedagogy:
+        require_fields(
+            result,
+            "pedagogy_map.json",
+            pedagogy,
+            {
+                "pedagogy_id",
+                "decision_id",
+                "release_id",
+                "signal_ids",
+                "capability",
+                "bloom_target",
+                "dreyfus_target",
+                "performance_context",
+                "practice_path",
+                "assessment_evidence",
+                "credential_threshold",
+                "outcome_hypothesis",
+            },
+            "pedagogy_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -352,6 +383,7 @@ def validate_all() -> ValidationResult:
 
     signal_ids = {signal.get("signal_id") for signal in signals}
     decision_ids = {decision.get("decision_id") for decision in decisions}
+    release_ids = {release.get("release_id") for release in releases}
     cohort_ids = {cohort.get("cohort_id") for cohort in cohorts}
 
     for decision in decisions:
@@ -373,6 +405,38 @@ def validate_all() -> ValidationResult:
 
     for prediction in predictions:
         validate_list_of_ids(result, "predictions.json", prediction, "prediction_id", "linked_signal_ids", signal_ids)
+
+    for item in pedagogy:
+        pid = record_id(item, "pedagogy_id")
+        if item.get("decision_id") not in decision_ids:
+            result.error("pedagogy_map.json", pid, "decision_id", f"unknown ID {item.get('decision_id')!r}")
+        if item.get("release_id") not in release_ids:
+            result.error("pedagogy_map.json", pid, "release_id", f"unknown ID {item.get('release_id')!r}")
+        validate_list_of_ids(result, "pedagogy_map.json", item, "pedagogy_id", "signal_ids", signal_ids)
+        practice_path = item.get("practice_path")
+        if not isinstance(practice_path, list) or not practice_path:
+            result.error("pedagogy_map.json", pid, "practice_path", "must be a non-empty list")
+        for field_name in (
+            "capability",
+            "bloom_target",
+            "dreyfus_target",
+            "performance_context",
+            "assessment_evidence",
+            "credential_threshold",
+            "outcome_hypothesis",
+        ):
+            if field_name in item and (not isinstance(item[field_name], str) or not item[field_name].strip()):
+                result.error("pedagogy_map.json", pid, field_name, "must be a non-empty string")
+
+    framed_decisions = {item.get("decision_id") for item in pedagogy}
+    for decision in decisions:
+        if decision["decision_type"] in {"curriculum", "credential", "assessment"} and decision["decision_id"] not in framed_decisions:
+            result.warning(
+                "pedagogy_map.json",
+                decision["decision_id"],
+                "decision_id",
+                "learning or credential decision has no pedagogy mapping yet",
+            )
 
     for prediction in predictions:
         rid = record_id(prediction, "prediction_id")

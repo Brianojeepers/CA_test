@@ -1,0 +1,79 @@
+[
+  {
+    "pedagogy_id": "PED-2026-001",
+    "decision_id": "DEC-2026-001",
+    "release_id": "REL-2026-001",
+    "signal_ids": ["SIG-2026-001"],
+    "capability": "Evaluate and improve agentic workflow reliability.",
+    "bloom_target": "Evaluate/Create",
+    "dreyfus_target": "Competent to Proficient",
+    "performance_context": "A realistic AI Builder workflow that must be instrumented, evaluated, and improved against reliability thresholds.",
+    "practice_path": [
+      "Identify expected agent behavior.",
+      "Build a small evaluation dataset.",
+      "Instrument traces and inspect failures.",
+      "Set quality thresholds.",
+      "Improve the workflow and explain residual risks."
+    ],
+    "assessment_evidence": "Evaluation plan, traces, failure analysis, and reliability threshold rationale.",
+    "credential_threshold": "Can diagnose agentic workflow failures and justify quality controls in a realistic client scenario.",
+    "outcome_hypothesis": "Improves placement conversion for AI Builders by demonstrating reliability practices clients increasingly request."
+  },
+  {
+    "pedagogy_id": "PED-2026-002",
+    "decision_id": "DEC-2026-002",
+    "release_id": "REL-2026-002",
+    "signal_ids": ["SIG-2026-002"],
+    "capability": "Connect models, APIs, data stores, and governance constraints into production-ready AI workflows.",
+    "bloom_target": "Analyze/Create",
+    "dreyfus_target": "Competent",
+    "performance_context": "A Scaler credential scenario requiring integration architecture decisions across model, API, data, and governance boundaries.",
+    "practice_path": [
+      "Map system boundaries.",
+      "Identify integration constraints.",
+      "Produce an architecture decision record.",
+      "Defend tradeoffs for reliability and governance."
+    ],
+    "assessment_evidence": "Architecture decision record, integration prototype, and tradeoff explanation.",
+    "credential_threshold": "Can produce and defend integration architecture evidence for a production-oriented AI workflow.",
+    "outcome_hypothesis": "Improves Scaler positioning for clients that need production integration readiness."
+  },
+  {
+    "pedagogy_id": "PED-2026-003",
+    "decision_id": "DEC-2026-004",
+    "release_id": "REL-2026-003",
+    "signal_ids": ["SIG-2026-004"],
+    "capability": "Reason about data flow, privacy risk, and control points in AI systems.",
+    "bloom_target": "Analyze/Evaluate",
+    "dreyfus_target": "Competent to Proficient",
+    "performance_context": "A regulated-client simulation where Scaler talent must identify data handling risks and propose controls.",
+    "practice_path": [
+      "Trace data flow through the AI workflow.",
+      "Identify privacy and security risks.",
+      "Select mitigation controls.",
+      "Explain tradeoffs in client-safe language."
+    ],
+    "assessment_evidence": "Risk notes, simulation decisions, mitigations, and client-safe explanation.",
+    "credential_threshold": "Can identify AI security and privacy risks and justify mitigation choices in a regulated scenario.",
+    "outcome_hypothesis": "Improves client trust and retention for regulated Scaler placements."
+  },
+  {
+    "pedagogy_id": "PED-2026-004",
+    "decision_id": "DEC-2026-005",
+    "release_id": "REL-2026-004",
+    "signal_ids": ["SIG-2026-005"],
+    "capability": "Build multimodal product prototypes that combine modalities in a useful workflow.",
+    "bloom_target": "Apply/Create",
+    "dreyfus_target": "Advanced beginner to Competent",
+    "performance_context": "A consumer product prototype sprint requiring text, image, speech, or workflow automation choices.",
+    "practice_path": [
+      "Choose the user workflow.",
+      "Select useful modalities.",
+      "Build a working prototype.",
+      "Explain modality choices and limitations."
+    ],
+    "assessment_evidence": "Prototype artifact, modality choice rationale, and user workflow demo.",
+    "credential_threshold": "Can create and explain a multimodal prototype that supports a specific product workflow.",
+    "outcome_hypothesis": "Improves Prototyper portfolio strength for consumer product opportunities."
+  }
+]

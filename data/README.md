@@ -17,6 +17,7 @@ with real source data.
 | `releases.json` | Curriculum, credential, assessment, or positioning changes linked to decisions. |
 | `cohort_outcomes.json` | Cohort-level placement and retention metrics for pre/post comparisons. |
 | `predictions.json` | Horizon predictions with six-month scoring fields. |
+| `pedagogy_map.json` | Optional pedagogical framing for selected learning, credential, and assessment changes. |
 
 The operating role accountable for turning this evidence into action is defined in
 `docs/signal_intelligence_council.md`.
@@ -29,6 +30,7 @@ The operating role accountable for turning this evidence into action is defined 
 | `decision_id` | `decisions.json`, `releases.json` |
 | `cohort_id` | `releases.json`, `cohort_outcomes.json` |
 | `prediction_id` | `predictions.json` |
+| `pedagogy_id` | `pedagogy_map.json` |
 
 Pending releases may reference future cohort IDs that are not present in
 `cohort_outcomes.json` yet. The validator treats those as warnings, not failures.
@@ -144,3 +146,13 @@ python3 scripts/client_positioning.py
 The positioning view groups market evidence by role archetype, client segment,
 and geography, then shows relevant artifacts, outcomes, caveats, and suggested
 positioning claims.
+
+Run the pedagogical framing review:
+
+```bash
+python3 scripts/pedagogy_review.py
+```
+
+The pedagogy review shows optional Bloom/Dreyfus/performance-evidence framing for
+selected decisions and releases. See `docs/pedagogical_framing.md` for the design
+rules behind this map.

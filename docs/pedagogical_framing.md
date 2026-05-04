@@ -172,12 +172,28 @@ Use this template when converting a signal into a learning or credential change:
 
 ## MVP Use
 
-In the current local MVP, this framing is a design guide rather than a validated data field. The next schema maturity step is to add optional fields such as:
+In the current local MVP, this framing is captured in `data/pedagogy_map.json`,
+an optional map from selected decisions and releases to pedagogical framing.
+Validation checks the map when it is present, but the core Decision Spine schema
+does not yet require every curriculum, credential, or assessment decision to
+carry pedagogical labels.
+
+The map currently tests fields such as:
 
 - `bloom_target`
 - `dreyfus_target`
 - `performance_context`
+- `practice_path`
 - `assessment_evidence`
 - `credential_threshold`
+- `outcome_hypothesis`
 
-These should be added only after the council agrees the labels are being used consistently.
+These labels should become mandatory only after the council agrees they are
+being used consistently and are improving assessment quality rather than adding
+process weight.
+
+Review it with:
+
+```bash
+python3 scripts/pedagogy_review.py
+```
