@@ -85,3 +85,13 @@ python3 scripts/signal_review.py
 
 The signal review groups evidence into act now, act tracked, monitor, and do not
 act buckets with linked decisions, releases, implications, and next steps.
+
+Run the Assessment Ops credential and assessment view:
+
+```bash
+python3 scripts/credential_requirements.py
+```
+
+The credential requirements view shows credential and assessment actions, linked
+signal evidence, release status, and monitor decisions that should not become
+requirements yet.
