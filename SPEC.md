@@ -116,6 +116,7 @@ Core operating scripts:
 | `scripts/monthly_packet.py` | Print concise monthly packet with drill-down commands. |
 | `scripts/export_monthly_packet.py` | Write `outputs/monthly_packet.md`. |
 | `scripts/export_stakeholder_packets.py` | Write concise stakeholder briefs under `outputs/stakeholder_packets/`. |
+| `scripts/save_review_snapshot.py` | Save the current structured packet under `outputs/review_snapshots/` for future review diffing. |
 | `scripts/decision_impact_review.py` | Classify approved decisions by impact maturity. |
 | `scripts/source_contract_review.py` | Gate real-data imports by source readiness and privacy posture. |
 | `scripts/validate_pilot_extract.py` | Dry-run pilot extract shape and privacy-risk checks. |
@@ -126,6 +127,8 @@ Reusable service layer:
 | --- | --- |
 | `decision_spine.services.monthly_packet.build_monthly_packet` | Return structured monthly-packet data for CLI, Markdown export, API, and future frontend consumption. |
 | `decision_spine.services.monthly_packet.render_monthly_packet_markdown` | Render the structured monthly packet to `outputs/monthly_packet.md` without duplicating calculation logic. |
+| `decision_spine.services.review_snapshots.build_review_diff` | Compare current packet state to a saved review snapshot. |
+| `decision_spine.services.review_snapshots.save_review_snapshot` | Persist the current packet as an ignored JSON review snapshot. |
 | `decision_spine.services.stakeholder_packets.build_stakeholder_packet` | Return a concise stakeholder-specific brief from the same monthly-packet data. |
 | `decision_spine.services.stakeholder_packets.render_stakeholder_packet_markdown` | Render stakeholder briefs for Markdown export without recalculating packet data. |
 
@@ -141,11 +144,11 @@ Frontend prototype:
 
 | Surface | Requirement |
 | --- | --- |
-| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
+| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, review snapshot diffs, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
 | `web/app.js` | Coordinate dashboard state, filtering, decision selection, and council meeting controls. |
 | `web/api.js` | Fetch `GET /api/monthly-packet` and `GET /api/decisions/{decision_id}`. |
 | `web/stakeholders.js` | Define stakeholder-specific dashboard lenses and row/action filtering. |
-| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, review snapshot diffs, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 | `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 
@@ -231,6 +234,7 @@ The MVP is in a valid local state when:
 - The dashboard shows clickable role-specific insight cards with trust/source badges before the audit table.
 - The dashboard translates each selected decision into a stakeholder action: keep/amplify, update/monitor, wait, or corrective review.
 - The dashboard shows a filtered "what changed and why" changelog backed by structured monthly-packet data.
+- The dashboard shows what changed since the latest saved review snapshot when one exists.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.

@@ -146,6 +146,15 @@ python3 scripts/export_stakeholder_packets.py
 The generated briefs are written under `outputs/stakeholder_packets/` and are
 ignored by git.
 
+Save a review snapshot after a council review:
+
+```bash
+python3 scripts/save_review_snapshot.py
+```
+
+Snapshots are written under `outputs/review_snapshots/` and are ignored by git.
+The next monthly packet compares against the latest saved snapshot.
+
 Run the Matching and CSM outcome review:
 
 ```bash

@@ -292,6 +292,85 @@ select {
   grid-template-columns: minmax(0, 1fr) 380px;
 }
 
+.review-diff-panel {
+  margin-bottom: 22px;
+}
+
+.review-diff-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  max-width: 620px;
+}
+
+.review-diff-count {
+  background: var(--surface-muted);
+  border-radius: 7px;
+  color: var(--neutral);
+  display: grid;
+  gap: 2px;
+  min-width: 96px;
+  padding: 8px 10px;
+}
+
+.review-diff-count strong {
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.review-diff-count span {
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.review-diff-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.review-diff-item {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--neutral);
+  border-radius: 7px;
+  color: var(--muted);
+  display: grid;
+  gap: 5px;
+  line-height: 1.35;
+  padding: 11px;
+  text-align: left;
+}
+
+.review-diff-item.clickable {
+  cursor: pointer;
+}
+
+.review-diff-item.green {
+  border-left-color: var(--green);
+}
+
+.review-diff-item.amber {
+  border-left-color: var(--amber);
+}
+
+.review-diff-item.red {
+  border-left-color: var(--red);
+}
+
+.review-diff-item.clickable:hover,
+.review-diff-item.clickable:focus-visible {
+  box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.12);
+  outline: 0;
+}
+
+.review-diff-item strong {
+  color: var(--text);
+}
+
 .main-column,
 .side-column {
   display: grid;
@@ -853,6 +932,7 @@ tbody tr.no-results:hover {
   .summary-grid,
   .insight-grid,
   .view-context-grid,
+  .review-diff-list,
   .changelog-list,
   .workspace,
   .lower-grid {

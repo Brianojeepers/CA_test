@@ -34,6 +34,9 @@ REQUIRED_IDS = {
     "prediction-scored",
     "action-count",
     "action-caption",
+    "review-diff-summary",
+    "review-diff-counts",
+    "review-diff-list",
     "impact-filter",
     "decision-heading",
     "decision-question",
@@ -73,6 +76,7 @@ REQUIRED_FILES = [
     "render/insights.js",
     "render/meetingNotes.js",
     "render/recommendation.js",
+    "render/reviewDiff.js",
     "render/stakeholderBrief.js",
     "render/summary.js",
     "render/table.js",
@@ -186,6 +190,24 @@ def check_stakeholder_brief_contract(errors: list[str]) -> None:
             errors.append(f"web/render/stakeholderBrief.js is missing brief token: {token}")
 
 
+def check_review_diff_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    review_diff_js = (WEB_DIR / "render" / "reviewDiff.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("renderReviewDiff", "review_diff"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing review diff token: {token}")
+
+    for token in ("review-diff-summary", "data-review-diff-decision-id", "save_review_snapshot.py"):
+        if token not in review_diff_js:
+            errors.append(f"web/render/reviewDiff.js is missing review diff token: {token}")
+
+    for token in (".review-diff-panel", ".review-diff-list", ".review-diff-item"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing review diff style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -213,6 +235,7 @@ def main() -> int:
         check_recommendation_contract(errors)
         check_changelog_contract(errors)
         check_stakeholder_brief_contract(errors)
+        check_review_diff_contract(errors)
         check_js_syntax(errors)
 
     if errors:

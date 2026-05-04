@@ -17,6 +17,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("decision_impact", packet)
         self.assertIn("actions", packet)
         self.assertIn("decision_changelog", packet)
+        self.assertIn("review_diff", packet)
         self.assertIn("stakeholder_drilldowns", packet)
         self.assertIn("known_limits", packet)
         self.assertIn("recommendation", packet["decision_impact"]["rows"][0])
@@ -24,6 +25,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("partner_functions", packet["decision_impact"]["rows"][0])
         self.assertIn("categories", packet["decision_changelog"])
         self.assertIn("items", packet["decision_changelog"])
+        self.assertIn("snapshot_status", packet["review_diff"])
 
     def test_markdown_renderer_uses_structured_packet(self) -> None:
         markdown = render_monthly_packet_markdown(build_monthly_packet())
@@ -31,6 +33,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("# Decision Spine Monthly Packet", markdown)
         self.assertIn("## Decision Impact", markdown)
         self.assertIn("## What Changed And Why", markdown)
+        self.assertIn("## Since Last Review Snapshot", markdown)
         self.assertIn("## Stakeholder Drill-Downs", markdown)
 
     def test_decision_changelog_groups_releases_and_no_change_decisions(self) -> None:

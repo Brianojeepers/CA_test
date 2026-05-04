@@ -9,6 +9,7 @@ import { renderImpactBars } from "./render/impact.js";
 import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
 import { renderRecommendation } from "./render/recommendation.js";
+import { renderReviewDiff } from "./render/reviewDiff.js";
 import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
@@ -218,6 +219,11 @@ function render() {
   renderStakeholderContext(activeView, rows, actions);
   renderInsights(activeView, rows, actions, packet, handleInsightAction);
   renderSummary(packet, rows, actions);
+  renderReviewDiff(
+    packet.review_diff,
+    selectDecision,
+    new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
+  );
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);
   renderMeetingControls(actionMode);

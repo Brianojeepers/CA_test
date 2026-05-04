@@ -8,6 +8,7 @@ from statistics import mean
 from typing import Any
 
 from decision_spine.data_access import load_json
+from decision_spine.services.review_snapshots import review_diff_from_latest
 from scripts.decision_impact_review import deltas_for_cohort, impact_status
 from scripts.validate_data import validate_all
 
@@ -463,7 +464,7 @@ def build_monthly_packet() -> dict[str, Any]:
     action_items = build_action_items(signals, decisions, releases)
     decision_changelog = build_decision_changelog(signals, decisions, releases)
 
-    return {
+    packet = {
         "generated_date": TODAY.isoformat(),
         "data_trust": {
             "validation_status": "passed",
@@ -501,6 +502,8 @@ def build_monthly_packet() -> dict[str, Any]:
         "stakeholder_drilldowns": STAKEHOLDER_DRILLDOWNS,
         "known_limits": KNOWN_LIMITS,
     }
+    packet["review_diff"] = review_diff_from_latest(packet)
+    return packet
 
 
 def render_monthly_packet_markdown(packet: dict[str, Any]) -> str:
@@ -565,6 +568,13 @@ def render_monthly_packet_markdown(packet: dict[str, Any]) -> str:
         lines.append(f"  - Why: {item['why_it_matters']}")
         lines.append(f"  - Next: {item['next_step']}")
 
+    lines.extend(["", "## Since Last Review Snapshot", ""])
+    lines.append(f"- {packet['review_diff']['summary']}")
+    if packet["review_diff"]["previous_snapshot"]:
+        lines.append(f"- Previous snapshot: `{packet['review_diff']['previous_snapshot']['snapshot_id']}`")
+    for item in packet["review_diff"]["items"][:6]:
+        lines.append(f"- {item['text']}")
+
     lines.extend(["", "## Stakeholder Drill-Downs", ""])
     for item in packet["stakeholder_drilldowns"]:
         lines.append(f"- {item['label']}: `{item['command']}`")
@@ -628,4 +638,14 @@ def render_monthly_packet_text(packet: dict[str, Any]) -> str:
     )
     for item in packet["decision_changelog"]["items"][:6]:
         lines.append(f"- {item['category']} {item['item_id']}: {item['title']} -> {item['next_step']}")
+    lines.extend(
+        [
+            "",
+            "Since Last Review Snapshot",
+            "--------------------------",
+            f"- {packet['review_diff']['summary']}",
+        ]
+    )
+    for item in packet["review_diff"]["items"][:6]:
+        lines.append(f"- {item['text']}")
     return "\n".join(lines)

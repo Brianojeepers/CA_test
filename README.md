@@ -91,9 +91,16 @@ Export stakeholder-specific Markdown briefs:
 python3 scripts/export_stakeholder_packets.py
 ```
 
+Save the current packet as a review snapshot after a council review:
+
+```bash
+python3 scripts/save_review_snapshot.py
+```
+
 The generated files are written to `outputs/monthly_packet.md` and
-`outputs/stakeholder_packets/*.md`. Generated files in `outputs/` are ignored by
-git except `outputs/.gitkeep`.
+`outputs/stakeholder_packets/*.md`; review snapshots are written under
+`outputs/review_snapshots/`. Generated files in `outputs/` are ignored by git
+except `outputs/.gitkeep`.
 
 Both monthly packet commands use
 `decision_spine.services.monthly_packet.build_monthly_packet()`, which returns
@@ -127,8 +134,9 @@ python3 -m http.server 3000 --directory web
 Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
-decision recommendations, changelog filtering, copyable stakeholder briefs,
-action mode, and the council notes panel during monthly review.
+decision recommendations, review snapshot diffs, changelog filtering, copyable
+stakeholder briefs, action mode, and the council notes panel during monthly
+review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.
@@ -165,6 +173,7 @@ outcome data exists.
 | `scripts/monthly_packet.py` | Concise council packet with drill-down commands. |
 | `scripts/export_monthly_packet.py` | Writes `outputs/monthly_packet.md` for sharing. |
 | `scripts/export_stakeholder_packets.py` | Writes concise stakeholder briefs under `outputs/stakeholder_packets/`. |
+| `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
 | `scripts/proficiency_readiness_review.py` | Aggregated learner evidence by competency and cohort. |

@@ -25,6 +25,7 @@ EXPECTED_DASHBOARD_TEXT = [
     "Copy brief",
     "Stakeholder lens",
     "Stakeholder insights",
+    "Since last snapshot",
     "Decision impact",
     "Action queue",
     "Recommended action",
@@ -103,6 +104,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/insights.js",
             "render/meetingNotes.js",
             "render/recommendation.js",
+            "render/reviewDiff.js",
             "render/stakeholderBrief.js",
             "render/summary.js",
             "render/table.js",
@@ -138,6 +140,7 @@ def check_api(errors: list[str]) -> None:
     rows = packet.get("decision_impact", {}).get("rows", [])
     actions = packet.get("actions", [])
     changelog_items = packet.get("decision_changelog", {}).get("items", [])
+    review_diff = packet.get("review_diff", {})
     if not rows:
         errors.append("monthly packet returned no decision impact rows")
         return
@@ -145,6 +148,8 @@ def check_api(errors: list[str]) -> None:
         errors.append("monthly packet returned no action items")
     if not changelog_items:
         errors.append("monthly packet returned no decision changelog items")
+    if not review_diff.get("snapshot_status"):
+        errors.append("monthly packet returned no review diff status")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:
