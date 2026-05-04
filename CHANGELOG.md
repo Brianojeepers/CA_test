@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1 - 2026-05-04
+
+Added:
+
+- Pilot extract templates for signals, decisions, releases, cohort outcomes,
+  learner evidence, and predictions.
+- Dry-run pilot extract validator via `scripts/validate_pilot_extract.py`.
+- Ignored local pilot extract directory at `data/pilot_extracts/`.
+- Pilot-template validation in `scripts/run_checks.py`.
+
 ## 0.1.0 - 2026-05-04
 
 Baseline local MVP contract.

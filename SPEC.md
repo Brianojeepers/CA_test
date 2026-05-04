@@ -1,6 +1,6 @@
 # Decision Spine MVP Specification
 
-MVP spec version: `0.1.0`
+MVP spec version: `0.1.1`
 
 ## 1. Purpose
 
