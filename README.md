@@ -133,6 +133,7 @@ The first API endpoints are:
 - `GET /api/health`
 - `GET /api/monthly-packet`
 - `GET /api/schema-gap`
+- `PATCH /api/schema-gap/actions/{capability}/{field}`
 - `GET /api/decisions/{decision_id}`
 
 Run the first stakeholder dashboard prototype:
@@ -146,9 +147,9 @@ Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/schema-gap`.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
 decision recommendations, review snapshot diffs, v0.2 readiness cards, a v0.2
-owner workbench with field-action status badges, changelog filtering, copyable
-stakeholder briefs, action mode, and the council notes panel during monthly
-review.
+owner workbench with field-action status badges and editable action notes,
+changelog filtering, copyable stakeholder briefs, action mode, and the council
+notes panel during monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.

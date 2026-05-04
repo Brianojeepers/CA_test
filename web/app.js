@@ -1,4 +1,4 @@
-import { fetchDecisionDetail, fetchMonthlyPacket, fetchSchemaGap } from "./api.js";
+import { fetchDecisionDetail, fetchMonthlyPacket, fetchSchemaGap, updateSchemaAction } from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
 import { renderChangelog } from "./render/changelog.js";
@@ -197,6 +197,16 @@ function selectDecision(decisionId) {
   loadDecisionDetail(selectedDecisionId);
 }
 
+async function handleSchemaActionUpdate(action, status, notes) {
+  try {
+    schemaGap = await updateSchemaAction(action.capability, action.field, status, notes);
+    render();
+    setStatus(`Updated ${action.field.replaceAll("_", " ")} to ${status.replaceAll("_", " ")}.`, "ok");
+  } catch (error) {
+    setStatus(`Unable to update v0.2 field action: ${error.message}`, "error");
+  }
+}
+
 async function loadDecisionDetail(decisionId) {
   if (decisionDetails[decisionId]) {
     renderSelectedDecisionDetail();
@@ -226,7 +236,7 @@ function render() {
     selectDecision,
     new Set(packet.decision_impact.rows.map((row) => row.decision_id)),
   );
-  renderSchemaGap(schemaGap);
+  renderSchemaGap(schemaGap, handleSchemaActionUpdate);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);
   renderMeetingControls(actionMode);

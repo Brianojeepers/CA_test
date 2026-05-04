@@ -32,7 +32,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -536,6 +537,39 @@ select {
   background: var(--surface);
   border-radius: 6px;
   padding: 8px;
+}
+
+.schema-status-form {
+  align-items: end;
+  display: grid;
+  gap: 8px;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(130px, 160px) minmax(180px, 1fr) auto;
+}
+
+.schema-status-form label {
+  color: var(--muted);
+  display: grid;
+  font-size: 11px;
+  font-weight: 760;
+  gap: 5px;
+  text-transform: uppercase;
+}
+
+.schema-status-form select,
+.schema-status-form textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  min-height: 34px;
+  padding: 7px 9px;
+}
+
+.schema-status-form textarea {
+  line-height: 1.35;
+  min-height: 58px;
+  resize: vertical;
 }
 
 .schema-blocker {
@@ -1175,6 +1209,10 @@ tbody tr.no-results:hover {
   }
 
   .controls-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .schema-status-form {
     grid-template-columns: 1fr;
   }
 

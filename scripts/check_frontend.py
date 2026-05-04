@@ -133,6 +133,9 @@ def check_api_contract(errors: list[str]) -> None:
     for endpoint in ("/monthly-packet", "/schema-gap", "/decisions/"):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
+    for token in ("updateSchemaAction", "PATCH"):
+        if token not in api_js:
+            errors.append(f"web/api.js is missing schema action update token: {token}")
 
 
 def check_insight_trust_contract(errors: list[str]) -> None:
@@ -223,6 +226,9 @@ def check_schema_gap_contract(errors: list[str]) -> None:
     for token in ("fetchSchemaGap", "renderSchemaGap", "schemaGap"):
         if token not in app_js:
             errors.append(f"web/app.js is missing schema gap token: {token}")
+    for token in ("updateSchemaAction", "handleSchemaActionUpdate"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing schema action update token: {token}")
 
     for token in (
         "schema-gap-summary",
@@ -232,6 +238,8 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         "schema-gap-actions",
         "schema-owner-tabs",
         "data-schema-owner",
+        "data-schema-action-capability",
+        "schema-status-form",
         "v02_requirements",
         "privacy_sensitivity",
         "decision_unlocked",
@@ -246,6 +254,7 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         ".schema-action",
         ".schema-action-heading",
         ".schema-owner-tabs",
+        ".schema-status-form",
         ".schema-blocker",
     ):
         if token not in styles_css:

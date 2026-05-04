@@ -2,14 +2,25 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from decision_spine.services.decision_detail import build_decision_detail
 from decision_spine.services.monthly_packet import build_monthly_packet
-from decision_spine.services.schema_gap import build_schema_gap_report
+from decision_spine.services.schema_gap import (
+    InvalidFieldActionStatus,
+    UnknownFieldAction,
+    build_schema_gap_report,
+    update_field_action_status,
+)
+
+
+class FieldActionStatusUpdate(BaseModel):
+    status: str
+    notes: Optional[str] = None
 
 
 app = FastAPI(
@@ -25,7 +36,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
     ],
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "PATCH"],
     allow_headers=["*"],
 )
 
@@ -47,6 +58,19 @@ def monthly_packet() -> dict[str, Any]:
 def schema_gap() -> dict[str, Any]:
     try:
         return build_schema_gap_report()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.patch("/api/schema-gap/actions/{capability}/{field}")
+def update_schema_gap_action(capability: str, field: str, update: FieldActionStatusUpdate) -> dict[str, Any]:
+    try:
+        update_field_action_status(capability, field, update.status, update.notes)
+        return build_schema_gap_report()
+    except InvalidFieldActionStatus as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except UnknownFieldAction as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

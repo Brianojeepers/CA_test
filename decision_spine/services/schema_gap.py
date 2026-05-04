@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,14 @@ TEMPLATE_DIR = DATA_DIR / "pilot_extract_templates"
 V02_REQUIREMENTS_FILE = DATA_DIR / "v02_intelligence_requirements.json"
 FIELD_ACTION_STATUS_FILE = DATA_DIR / "v02_field_action_status.json"
 ACTION_STATUSES = ("open", "in_review", "approved", "blocked", "deferred")
+
+
+class InvalidFieldActionStatus(ValueError):
+    """Raised when a field action update uses an unsupported status."""
+
+
+class UnknownFieldAction(ValueError):
+    """Raised when a field action update references no current v0.2 action."""
 
 
 CURRENT_SCHEMA_FIELDS: dict[str, tuple[str, ...]] = {
@@ -260,15 +269,30 @@ def action_key(capability: str, field: str) -> str:
     return f"{capability}:{field}"
 
 
-def load_field_action_statuses(path: Path = FIELD_ACTION_STATUS_FILE) -> dict[str, dict[str, Any]]:
+def load_field_action_status_records(path: Path | None = None) -> list[dict[str, Any]]:
+    path = path or FIELD_ACTION_STATUS_FILE
     if not path.exists():
-        return {}
-    statuses = load_json(path)
+        return []
+    return load_json(path)
+
+
+def load_field_action_statuses(path: Path | None = None) -> dict[str, dict[str, Any]]:
+    statuses = load_field_action_status_records(path)
     by_key: dict[str, dict[str, Any]] = {}
     for status in statuses:
         key = action_key(str(status.get("capability", "")), str(status.get("field", "")))
         by_key[key] = status
     return by_key
+
+
+def save_field_action_status_records(records: list[dict[str, Any]], path: Path | None = None) -> None:
+    path = path or FIELD_ACTION_STATUS_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = path.with_suffix(f"{path.suffix}.tmp")
+    with temp_path.open("w", encoding="utf-8") as file:
+        json.dump(records, file, indent=2)
+        file.write("\n")
+    temp_path.replace(path)
 
 
 def fields_in_records(records: list[dict[str, Any]]) -> set[str]:
@@ -432,7 +456,8 @@ def build_field_actions(
     v02_reports: list[dict[str, Any]],
     status_by_key: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
-    status_by_key = status_by_key or load_field_action_statuses()
+    if status_by_key is None:
+        status_by_key = load_field_action_statuses()
     actions: list[dict[str, Any]] = []
     for requirement in v02_reports:
         for field_detail in requirement.get("missing_field_details", []):
@@ -502,6 +527,67 @@ def build_field_actions_by_owner(field_actions: list[dict[str, Any]]) -> list[di
             }
         )
     return owner_groups
+
+
+def current_field_action_by_key(status_by_key: dict[str, dict[str, Any]] | None = None) -> dict[str, dict[str, Any]]:
+    requirements = load_v02_requirements()
+    v02_reports = build_v02_requirement_report(requirements)
+    return {
+        action_key(action["capability"], action["field"]): action
+        for action in build_field_actions(v02_reports, status_by_key)
+    }
+
+
+def update_field_action_status(
+    capability: str,
+    field: str,
+    status: str,
+    notes: str | None = None,
+    *,
+    path: Path | None = None,
+    updated_date: date | None = None,
+) -> dict[str, Any]:
+    status = status.strip()
+    if status not in ACTION_STATUSES:
+        raise InvalidFieldActionStatus(f"Unsupported field action status: {status}")
+
+    if notes is not None:
+        notes = notes.strip()
+        if not notes:
+            raise InvalidFieldActionStatus("Field action notes cannot be blank")
+
+    records = load_field_action_status_records(path)
+    status_by_key = {
+        action_key(str(record.get("capability", "")), str(record.get("field", ""))): record
+        for record in records
+    }
+    key = action_key(capability, field)
+    actions = current_field_action_by_key(status_by_key)
+    action = actions.get(key)
+    if action is None:
+        raise UnknownFieldAction(f"Unknown current v0.2 field action: {key}")
+
+    today = (updated_date or date.today()).isoformat()
+    current_record = status_by_key.get(key)
+    if current_record is None:
+        current_record = {
+            "capability": capability,
+            "field": field,
+            "owner": action["source_owner"],
+            "status": status,
+            "notes": notes or action["action_text"],
+            "updated_date": today,
+        }
+        records.append(current_record)
+    else:
+        current_record["owner"] = action["source_owner"]
+        current_record["status"] = status
+        if notes is not None:
+            current_record["notes"] = notes
+        current_record["updated_date"] = today
+
+    save_field_action_status_records(records, path)
+    return current_record
 
 
 def build_minimum_viable_pilot_fields(

@@ -1,6 +1,15 @@
 import unittest
+from datetime import date
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from decision_spine.services.schema_gap import build_schema_gap_report, load_field_action_statuses, load_v02_requirements
+from decision_spine.services.schema_gap import (
+    FIELD_ACTION_STATUS_FILE,
+    build_schema_gap_report,
+    load_field_action_statuses,
+    load_v02_requirements,
+    update_field_action_status,
+)
 
 
 class SchemaGapTests(unittest.TestCase):
@@ -98,6 +107,26 @@ class SchemaGapTests(unittest.TestCase):
 
         self.assertEqual(len(statuses), 18)
         self.assertTrue(set(statuses).issubset(known))
+
+    def test_update_field_action_status_persists_to_register(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            status_path = Path(temp_dir) / "v02_field_action_status.json"
+            status_path.write_text(FIELD_ACTION_STATUS_FILE.read_text(encoding="utf-8"), encoding="utf-8")
+
+            update_field_action_status(
+                "role_anchor_demand_index",
+                "demand_volume",
+                "in_review",
+                "Market source owner is confirming the pilot extract.",
+                path=status_path,
+                updated_date=date(2026, 5, 4),
+            )
+
+            statuses = load_field_action_statuses(status_path)
+            updated = statuses["role_anchor_demand_index:demand_volume"]
+            self.assertEqual(updated["status"], "in_review")
+            self.assertEqual(updated["notes"], "Market source owner is confirming the pilot extract.")
+            self.assertEqual(updated["updated_date"], "2026-05-04")
 
 
 if __name__ == "__main__":

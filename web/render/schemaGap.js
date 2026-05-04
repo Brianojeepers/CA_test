@@ -32,6 +32,12 @@ function statusLabel(status) {
   return fieldLabel(status ?? "open");
 }
 
+function statusOptions(selectedStatus) {
+  return ["open", "in_review", "approved", "blocked", "deferred"]
+    .map((status) => `<option value="${status}" ${status === selectedStatus ? "selected" : ""}>${escapeHtml(statusLabel(status))}</option>`)
+    .join("");
+}
+
 function renderAction(action) {
   const actionStatus = action.action_status ?? "open";
   return `
@@ -43,6 +49,19 @@ function renderAction(action) {
       <span class="badge ${statusTone(actionStatus)}">${escapeHtml(statusLabel(actionStatus))}</span>
       <p>${escapeHtml(action.action_text)}</p>
       ${action.status_notes ? `<p class="schema-status-note">${escapeHtml(action.status_notes)}</p>` : ""}
+      <form class="schema-status-form" data-schema-action-capability="${escapeHtml(action.capability)}" data-schema-action-field="${escapeHtml(action.field)}">
+        <label>
+          <span>Status</span>
+          <select name="status" aria-label="Status for ${escapeHtml(fieldLabel(action.field))}">
+            ${statusOptions(actionStatus)}
+          </select>
+        </label>
+        <label class="schema-status-notes">
+          <span>Notes</span>
+          <textarea name="notes" rows="2" aria-label="Notes for ${escapeHtml(fieldLabel(action.field))}">${escapeHtml(action.status_notes ?? "")}</textarea>
+        </label>
+        <button type="submit" class="secondary-button">Save</button>
+      </form>
     </div>
   `;
 }
@@ -168,7 +187,7 @@ function renderCapabilityCard(requirement) {
   `;
 }
 
-export function renderSchemaGap(report) {
+export function renderSchemaGap(report, onActionUpdate) {
   const summaryElement = document.getElementById("schema-gap-summary");
   const listElement = document.getElementById("schema-gap-list");
   const ownerTabsElement = document.getElementById("schema-owner-tabs");
@@ -205,7 +224,35 @@ export function renderSchemaGap(report) {
   ownerTabsElement.querySelectorAll("[data-schema-owner]").forEach((button) => {
     button.addEventListener("click", () => {
       activeSchemaOwner = button.dataset.schemaOwner ?? "all";
-      renderSchemaGap(report);
+      renderSchemaGap(report, onActionUpdate);
+    });
+  });
+
+  actionsElement.querySelectorAll("[data-schema-action-capability]").forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!onActionUpdate) return;
+      const action = scopedActions.find(
+        (candidate) =>
+          candidate.capability === form.dataset.schemaActionCapability &&
+          candidate.field === form.dataset.schemaActionField,
+      );
+      const statusInput = form.querySelector("[name='status']");
+      const notesInput = form.querySelector("[name='notes']");
+      const button = form.querySelector("button[type='submit']");
+      if (!action || !statusInput || !notesInput) return;
+      if (button) {
+        button.disabled = true;
+        button.textContent = "Saving";
+      }
+      try {
+        await onActionUpdate(action, statusInput.value, notesInput.value.trim());
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = "Save";
+        }
+      }
     });
   });
 

@@ -151,6 +151,7 @@ API surface:
 | `GET /api/health` | Return API health as `{ "status": "ok" }`. |
 | `GET /api/monthly-packet` | Return the structured monthly packet from `build_monthly_packet()`. |
 | `GET /api/schema-gap` | Return seed, pilot-template, source-contract, and v0.2 intelligence field readiness. |
+| `PATCH /api/schema-gap/actions/{capability}/{field}` | Update a v0.2 field-action status and notes in the local status register, then return the refreshed schema-gap report. |
 | `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
 
 Frontend prototype:
@@ -254,6 +255,7 @@ The MVP is in a valid local state when:
 - The dashboard shows a v0.2 field action queue for missing data definitions, source owners, and privacy blockers.
 - The dashboard groups v0.2 field actions into an owner workbench with owner-specific action counts.
 - The dashboard shows v0.2 field-action status badges from `data/v02_field_action_status.json`.
+- The dashboard can update v0.2 field-action status and notes through the local API without hand-editing JSON.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.
