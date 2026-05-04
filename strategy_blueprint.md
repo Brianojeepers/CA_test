@@ -7,6 +7,14 @@ Transform the current static dashboard into a continuously updated **market inte
 3. Forecasts role demand by horizon (0–3, 3–9, 9–18 months).
 4. Helps matching teams place graduates at the right time with the right evidence.
 
+## Implementation Contract
+
+This blueprint defines product direction and target architecture.
+
+The executable local MVP contract lives in `SPEC.md`. Use `SPEC.md` as the
+source of truth for current data contracts, command surface, acceptance criteria,
+reasoning gates, generated outputs, tests, and known limitations.
+
 ## 1) Product evolution: from dashboard to decision engine
 
 ### Current state (snapshot dashboard)
@@ -33,6 +41,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/credential_requirements.py` for Assessment Ops credential and assessment actions.
 - `docs/real_data_readiness.md` for the controlled path from synthetic seed data to real pilot extracts.
 - `docs/source_data_contracts.md` and `scripts/source_contract_review.py` for source-owner, privacy, field, freshness, and pilot-readiness contracts before real data is imported.
+- `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
 
