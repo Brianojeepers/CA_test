@@ -4,6 +4,10 @@ This folder contains seed data for the Decision Spine MVP.
 
 The sample data is intentionally small and hand-readable. It is not production data, and it should not be treated as an accurate representation of Andela systems or outcomes.
 
+Real data should be introduced only through a controlled, privacy-reviewed pilot extract.
+See `docs/real_data_readiness.md` before replacing or supplementing these seed files
+with real source data.
+
 ## Files
 
 | File | Purpose |
@@ -26,6 +30,10 @@ The operating role accountable for turning this evidence into action is defined 
 | `cohort_id` | `releases.json`, `cohort_outcomes.json` |
 | `prediction_id` | `predictions.json` |
 
+Pending releases may reference future cohort IDs that are not present in
+`cohort_outcomes.json` yet. The validator treats those as warnings, not failures.
+Released items with unknown cohort IDs are data quality failures.
+
 ## Intended MVP Flow
 
 ```text
@@ -44,7 +52,13 @@ These files are enough to build a first local dashboard or script that calculate
 
 ## Local KPI Report
 
-Run the first MVP report from the repository root:
+Validate the seed data from the repository root:
+
+```bash
+python3 scripts/validate_data.py
+```
+
+Run the first MVP report:
 
 ```bash
 python3 scripts/report_kpis.py
@@ -52,3 +66,4 @@ python3 scripts/report_kpis.py
 
 The report reads these seed files and prints the current Decision Spine KPI status,
 including threshold colors, pending releases, outcome deltas, and prediction scoring.
+It runs validation first and stops if the seed data has errors.

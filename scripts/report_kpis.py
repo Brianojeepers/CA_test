@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 from statistics import mean
 from typing import Any
+
+from validate_data import validate_all
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -251,6 +254,16 @@ def report_prediction_accuracy(predictions: list[dict[str, Any]]) -> None:
 
 
 def main() -> None:
+    validation = validate_all()
+    if validation.errors:
+        print("Data validation failed:", file=sys.stderr)
+        for error in validation.errors:
+            print(f"- {error}", file=sys.stderr)
+        raise SystemExit(1)
+
+    for warning in validation.warnings:
+        print(f"Data validation warning: {warning}", file=sys.stderr)
+
     signals = load_json("signals.json")
     decisions = load_json("decisions.json")
     releases = load_json("releases.json")
