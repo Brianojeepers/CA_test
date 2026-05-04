@@ -250,6 +250,7 @@ The MVP is in a valid local state when:
 - The dashboard shows a filtered "what changed and why" changelog backed by structured monthly-packet data.
 - The dashboard shows what changed since the latest saved review snapshot when one exists.
 - The dashboard shows v0.2 intelligence readiness by capability, missing field count, owner, and privacy posture.
+- The dashboard shows a v0.2 field action queue for missing data definitions, source owners, and privacy blockers.
 - The dashboard can copy a concise Markdown brief for the active stakeholder lens.
 - Stakeholder-specific Markdown briefs can be exported without duplicating dashboard logic.
 - Frontend module wiring passes `python3 scripts/check_frontend.py`.

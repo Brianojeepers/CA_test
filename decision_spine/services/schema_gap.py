@@ -368,6 +368,21 @@ def build_v02_requirement_report(requirements: list[dict[str, Any]] | None = Non
         available_fields = seed_fields | template_fields | source_required
         required = set(requirement["required_fields"])
         missing = missing_fields(required, available_fields, filename)
+        field_details = sorted(requirement.get("field_details", []), key=lambda item: item["field"])
+        details_by_field = {field["field"]: field for field in field_details}
+        missing_field_details = [
+            details_by_field.get(
+                field,
+                {
+                    "field": field,
+                    "purpose": "Field required by the v0.2 contract.",
+                    "source_owner": requirement.get("owner", ""),
+                    "privacy_sensitivity": requirement.get("privacy_sensitivity", ""),
+                    "decision_unlocked": requirement.get("decision_unlocked", ""),
+                },
+            )
+            for field in missing
+        ]
         reports.append(
             {
                 "capability": requirement["capability"],
@@ -377,13 +392,59 @@ def build_v02_requirement_report(requirements: list[dict[str, Any]] | None = Non
                 "privacy_sensitivity": requirement.get("privacy_sensitivity", ""),
                 "decision_unlocked": requirement.get("decision_unlocked", ""),
                 "required_fields": sorted(required),
-                "field_details": sorted(requirement.get("field_details", []), key=lambda item: item["field"]),
+                "field_details": field_details,
+                "missing_field_details": missing_field_details,
                 "covered_fields": sorted(field for field in required if is_field_covered(field, available_fields, filename)),
                 "missing_fields": missing,
                 "coverage": round((len(required) - len(missing)) / len(required), 2),
             }
         )
     return reports
+
+
+def field_action_severity(field_detail: dict[str, Any], requirement: dict[str, Any]) -> tuple[str, bool, str]:
+    privacy = str(field_detail.get("privacy_sensitivity") or requirement.get("privacy_sensitivity") or "")
+    if "learner" in privacy:
+        return ("red", True, "Resolve privacy and suppression approval")
+    if "commercial" in privacy or "outcome" in privacy:
+        return ("amber", False, "Confirm source definition and approved pilot grain")
+    return ("amber", False, "Confirm field definition and pilot owner")
+
+
+def build_field_actions(v02_reports: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    actions: list[dict[str, Any]] = []
+    for requirement in v02_reports:
+        for field_detail in requirement.get("missing_field_details", []):
+            severity, blocked, action_prefix = field_action_severity(field_detail, requirement)
+            source_owner = field_detail.get("source_owner") or requirement.get("owner") or "Unassigned"
+            privacy = field_detail.get("privacy_sensitivity") or requirement.get("privacy_sensitivity") or "unknown"
+            field = field_detail["field"]
+            action_text = f"{action_prefix} for {field} before using {requirement['label']} in recommendations."
+            actions.append(
+                {
+                    "capability": requirement["capability"],
+                    "capability_label": requirement["label"],
+                    "file": requirement["file"],
+                    "field": field,
+                    "source_owner": source_owner,
+                    "privacy_sensitivity": privacy,
+                    "severity": severity,
+                    "blocked": blocked,
+                    "action_text": action_text,
+                    "decision_unlocked": field_detail.get("decision_unlocked") or requirement.get("decision_unlocked", ""),
+                }
+            )
+
+    severity_order = {"red": 0, "amber": 1, "green": 2}
+    return sorted(
+        actions,
+        key=lambda action: (
+            severity_order.get(action["severity"], 9),
+            action["source_owner"],
+            action["capability"],
+            action["field"],
+        ),
+    )
 
 
 def build_minimum_viable_pilot_fields(
@@ -439,6 +500,7 @@ def build_schema_gap_report() -> dict[str, Any]:
     ]
     requirements = load_v02_requirements()
     v02_reports = build_v02_requirement_report(requirements)
+    field_actions = build_field_actions(v02_reports)
     source_readiness = build_source_readiness(feed_contract_groups)
     readiness_counts = Counter(item["readiness"] for item in source_readiness)
 
@@ -453,10 +515,13 @@ def build_schema_gap_report() -> dict[str, Any]:
             "contract_seed_gap_count": sum(len(report["contract_missing_from_seed"]) for report in file_reports),
             "contract_template_gap_count": sum(len(report["contract_missing_from_template"]) for report in file_reports),
             "v02_gap_count": sum(len(report["missing_fields"]) for report in v02_reports),
+            "field_action_count": len(field_actions),
+            "red_field_actions": sum(1 for action in field_actions if action["severity"] == "red"),
         },
         "file_reports": file_reports,
         "source_readiness": source_readiness,
         "v02_requirements": v02_reports,
+        "field_actions": field_actions,
         "minimum_viable_pilot_fields": build_minimum_viable_pilot_fields(file_reports, requirements),
     }
 
@@ -502,6 +567,14 @@ def render_schema_gap_report_text(report: dict[str, Any]) -> str:
         lines.append(
             f"- {requirement['label']} ({requirement['file']}): "
             f"coverage={requirement['coverage']:.0%}; missing={format_list(requirement['missing_fields'])}"
+        )
+
+    lines.extend(["", "Field Actions", "-------------"])
+    for action in report["field_actions"]:
+        blocked = " blocked" if action["blocked"] else ""
+        lines.append(
+            f"- [{action['severity']}{blocked}] {action['source_owner']}: "
+            f"{action['field']} ({action['capability_label']}) - {action['action_text']}"
         )
 
     lines.extend(["", "Pilot Blockers", "--------------"])

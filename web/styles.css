@@ -441,6 +441,7 @@ select {
 
 .schema-meta,
 .schema-fields,
+.schema-gap-actions,
 .schema-gap-blockers {
   display: flex;
   flex-wrap: wrap;
@@ -465,6 +466,58 @@ select {
 
 .schema-gap-blockers {
   margin-top: 12px;
+}
+
+.schema-action-section {
+  border-top: 1px solid var(--border);
+  margin-top: 14px;
+  padding-top: 14px;
+}
+
+.schema-action-section h3 {
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+
+.schema-action {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--amber);
+  border-radius: 7px;
+  display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: min(100%, 330px);
+  padding: 10px;
+}
+
+.schema-action.red {
+  background: var(--red-bg);
+  border-left-color: var(--red);
+}
+
+.schema-action.green {
+  background: var(--green-bg);
+  border-left-color: var(--green);
+}
+
+.schema-action strong,
+.schema-action span {
+  display: block;
+}
+
+.schema-action span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.schema-action p {
+  color: var(--neutral);
+  font-size: 13px;
+  grid-column: 1 / -1;
+  line-height: 1.4;
+  margin: 0;
 }
 
 .schema-blocker {

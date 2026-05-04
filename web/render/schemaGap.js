@@ -15,6 +15,20 @@ function fieldLabel(field) {
   return field.replaceAll("_", " ");
 }
 
+function renderAction(action) {
+  const blockedText = action.blocked ? "Blocked" : "Needs definition";
+  return `
+    <div class="schema-action ${escapeHtml(action.severity)}">
+      <div>
+        <strong>${escapeHtml(action.source_owner)}</strong>
+        <span>${escapeHtml(fieldLabel(action.field))} · ${escapeHtml(action.capability_label)}</span>
+      </div>
+      <span class="badge ${escapeHtml(action.severity)}">${blockedText}</span>
+      <p>${escapeHtml(action.action_text)}</p>
+    </div>
+  `;
+}
+
 function statusForRequirement(requirement) {
   const missingCount = requirement.missing_fields?.length ?? 0;
   if (missingCount === 0) {
@@ -85,22 +99,28 @@ function renderCapabilityCard(requirement) {
 export function renderSchemaGap(report) {
   const summaryElement = document.getElementById("schema-gap-summary");
   const listElement = document.getElementById("schema-gap-list");
+  const actionsElement = document.getElementById("schema-gap-actions");
   const blockerElement = document.getElementById("schema-gap-blockers");
-  if (!summaryElement || !listElement || !blockerElement) return;
+  if (!summaryElement || !listElement || !actionsElement || !blockerElement) return;
 
   if (!report) {
     summaryElement.textContent = "Loading v0.2 readiness...";
     listElement.innerHTML = "";
+    actionsElement.innerHTML = "";
     blockerElement.innerHTML = "";
     return;
   }
 
   const requirements = report.v02_requirements ?? [];
+  const fieldActions = report.field_actions ?? [];
   const missingCount = report.summary?.v02_gap_count ?? 0;
   const blockedSources = (report.source_readiness ?? []).filter((source) => source.blocked);
-  summaryElement.textContent = `${missingCount} missing v0.2 field(s) across ${requirements.length} capability contracts. ${blockedSources.length} source(s) remain blocked.`;
+  summaryElement.textContent = `${missingCount} missing v0.2 field(s) across ${requirements.length} capability contracts. ${fieldActions.length} field action(s) queued. ${blockedSources.length} source(s) remain blocked.`;
 
   listElement.innerHTML = requirements.map(renderCapabilityCard).join("");
+  actionsElement.innerHTML = fieldActions.length
+    ? fieldActions.slice(0, 8).map(renderAction).join("")
+    : '<div class="schema-action green"><strong>No field actions</strong><p>All v0.2 fields are covered by the pilot shape.</p></div>';
   blockerElement.innerHTML = blockedSources.length
     ? blockedSources
         .map(

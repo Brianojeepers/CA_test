@@ -39,6 +39,7 @@ REQUIRED_IDS = {
     "review-diff-list",
     "schema-gap-summary",
     "schema-gap-list",
+    "schema-gap-actions",
     "schema-gap-blockers",
     "impact-filter",
     "decision-heading",
@@ -221,11 +222,18 @@ def check_schema_gap_contract(errors: list[str]) -> None:
         if token not in app_js:
             errors.append(f"web/app.js is missing schema gap token: {token}")
 
-    for token in ("schema-gap-summary", "v02_requirements", "privacy_sensitivity", "decision_unlocked"):
+    for token in (
+        "schema-gap-summary",
+        "field_actions",
+        "schema-gap-actions",
+        "v02_requirements",
+        "privacy_sensitivity",
+        "decision_unlocked",
+    ):
         if token not in schema_gap_js:
             errors.append(f"web/render/schemaGap.js is missing schema gap token: {token}")
 
-    for token in (".schema-gap-panel", ".schema-gap-list", ".schema-card", ".schema-blocker"):
+    for token in (".schema-gap-panel", ".schema-gap-list", ".schema-card", ".schema-action", ".schema-blocker"):
         if token not in styles_css:
             errors.append(f"web/styles.css is missing schema gap style: {token}")
 

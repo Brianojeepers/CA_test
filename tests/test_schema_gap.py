@@ -50,6 +50,28 @@ class SchemaGapTests(unittest.TestCase):
         self.assertIn("demand_growth_rate", role_demand["required_fields"])
         self.assertTrue(all("source_owner" in field for field in role_demand["field_details"]))
 
+    def test_missing_v02_fields_generate_actions(self) -> None:
+        report = build_schema_gap_report()
+
+        self.assertEqual(report["summary"]["field_action_count"], 18)
+        self.assertEqual(len(report["field_actions"]), 18)
+
+    def test_privacy_sensitive_learner_actions_are_blocked(self) -> None:
+        report = build_schema_gap_report()
+        actions = {item["field"]: item for item in report["field_actions"]}
+
+        self.assertEqual(actions["demonstrated_proficiency"]["severity"], "red")
+        self.assertTrue(actions["demonstrated_proficiency"]["blocked"])
+        self.assertEqual(actions["proficiency_gap_score"]["severity"], "red")
+        self.assertTrue(actions["proficiency_gap_score"]["blocked"])
+
+    def test_commercial_summary_actions_route_to_market_intelligence(self) -> None:
+        report = build_schema_gap_report()
+        actions = {item["field"]: item for item in report["field_actions"]}
+
+        self.assertEqual(actions["demand_volume"]["source_owner"], "Market Intelligence")
+        self.assertEqual(actions["demand_volume"]["severity"], "amber")
+
 
 if __name__ == "__main__":
     unittest.main()
