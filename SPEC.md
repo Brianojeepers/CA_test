@@ -30,6 +30,7 @@ In scope:
 - Owner-ready v0.2 pilot data request pack grouped by source owner.
 - Pilot intake review of source-owner responses before schema design.
 - Horizontal architecture readiness review before database schema or warehouse-model commitments.
+- Trust and source coverage registry by stakeholder-facing surface.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -85,6 +86,7 @@ Real-data readiness and source obligations live in:
 - `docs/real_data_readiness.md`
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
+- `docs/trust_registry.md`
 - `docs/v02_pilot_schema.md`
 - `data/source_contracts.json`
 - `data/v02_intelligence_requirements.json`
@@ -139,6 +141,7 @@ Core operating scripts:
 | `scripts/v02_intelligence_preview.py` | Print directional role-demand, competency-gap, horizon, and curriculum-impact previews gated by current evidence and missing fields. |
 | `scripts/pilot_intake_review.py` | Review source-owner responses and classify fields as accepted, needs clarification, privacy blocked, or not ready. |
 | `scripts/architecture_readiness_review.py` | Review horizontal coverage across the target intelligence architecture before database/schema work. |
+| `scripts/trust_registry_review.py` | Review trust posture and source coverage by stakeholder-facing surface. |
 
 Reusable service layer:
 
@@ -159,6 +162,8 @@ Reusable service layer:
 | `decision_spine.services.pilot_intake_review.render_pilot_intake_review_text` | Render the pilot intake review for CLI use. |
 | `decision_spine.services.architecture_readiness.build_architecture_readiness_review` | Return horizontal architecture coverage, guardrails, and next slices before vertical database work. |
 | `decision_spine.services.architecture_readiness.render_architecture_readiness_text` | Render the architecture readiness review for CLI use. |
+| `decision_spine.services.trust_registry.build_trust_registry` | Return source coverage, trust posture, blockers, and next trust actions by stakeholder-facing surface. |
+| `decision_spine.services.trust_registry.render_trust_registry_text` | Render the trust and source coverage registry for CLI use. |
 
 API surface:
 
@@ -268,6 +273,7 @@ The MVP is in a valid local state when:
 - The MVP can export an owner-ready v0.2 pilot data request pack grouped by source owner.
 - The MVP can review source-owner intake responses before allowing v0.2 fields into schema design.
 - The MVP can review horizontal architecture readiness before committing to database schemas, warehouse models, or scheduled ingestion.
+- The MVP can show which stakeholder-facing surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates before any real-data claim is made.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -308,7 +314,8 @@ They currently cover:
 - stakeholder readiness gates,
 - delivery-window timing classifications,
 - schema gap coverage, alias handling, and v0.2 expansion requirements,
-- horizontal architecture readiness before database/schema commitments.
+- horizontal architecture readiness before database/schema commitments,
+- trust and source coverage posture by stakeholder-facing surface.
 
 Run:
 

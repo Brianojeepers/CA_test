@@ -29,6 +29,7 @@ def main() -> int:
         ("Review schema gaps", [python, "scripts/schema_gap_review.py"], None),
         ("Review pilot intake", [python, "scripts/pilot_intake_review.py"], None),
         ("Review architecture readiness", [python, "scripts/architecture_readiness_review.py"], None),
+        ("Review trust registry", [python, "scripts/trust_registry_review.py"], None),
         ("Run tests", [python, "-m", "unittest", "discover", "-s", "tests"], None),
         ("Check frontend", [python, "scripts/check_frontend.py"], None),
         (

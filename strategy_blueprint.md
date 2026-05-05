@@ -45,6 +45,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/export_pilot_request_pack.py` for turning v0.2 missing fields into owner-ready pilot data requests before database design.
 - `scripts/pilot_intake_review.py` for checking whether owner responses are accepted, unclear, privacy blocked, or not ready before schema work begins.
 - `scripts/architecture_readiness_review.py` and `docs/architecture_readiness_map.md` for checking horizontal coverage across the target architecture before database/schema work.
+- `scripts/trust_registry_review.py` and `docs/trust_registry.md` for showing which stakeholder surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -83,6 +84,10 @@ decision, activation, governance cadence, observability/trust, and stakeholder
 experience. The architecture readiness map makes this explicit so the product
 does not over-optimize one narrow module while the broader intelligence engine
 is still underrepresented.
+The first implementation of that horizontal expansion is the trust registry: it
+connects stakeholder-facing surfaces back to source contracts, labels confidence
+and privacy blockers, and keeps decision-grade claims disabled while source
+trust is still immature.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**

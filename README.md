@@ -103,6 +103,12 @@ Review horizontal architecture readiness before database/schema work:
 python3 scripts/architecture_readiness_review.py
 ```
 
+Review trust and source coverage by stakeholder surface:
+
+```bash
+python3 scripts/trust_registry_review.py
+```
+
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
 
@@ -220,6 +226,7 @@ outcome data exists.
 | `scripts/export_pilot_request_pack.py` | Writes owner-ready v0.2 field requests to `outputs/pilot_request_pack.md`. |
 | `scripts/pilot_intake_review.py` | Reviews source-owner responses before v0.2 fields enter schema design. |
 | `scripts/architecture_readiness_review.py` | Reviews horizontal architecture coverage before database/schema work. |
+| `scripts/trust_registry_review.py` | Reviews trust and source coverage by stakeholder surface. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
@@ -243,6 +250,7 @@ See:
 - `docs/real_data_readiness.md`
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
+- `docs/trust_registry.md`
 - `data/source_contracts.json`
 
 Current real-data blockers include learner evidence suppression rules and cohort

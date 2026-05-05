@@ -26,7 +26,7 @@ will make later schema and database decisions more defensible.
 | Decision | Covered for local MVP | Add decision-policy checks for wait, escalate, revise, or archive. | Automated approvals and downstream writes. |
 | Activation | Partial | Map every stakeholder lens to expected actions, evidence thresholds, and escalation paths. | LMS, CRM, ATS, or delivery-tool integrations. |
 | Governance cadence | Partial | Define weekly, monthly, and quarterly review templates with entry and exit criteria. | Automated production schedules. |
-| Observability and trust | Partial | Add a trust registry for freshness, source coverage, privacy posture, and confidence by surface. | Production observability tooling. |
+| Observability and trust | Partial | Add a stakeholder journey map that shows how trust posture changes the next action for each user group. | Production observability tooling. |
 | Stakeholder experience | Partial | Broaden the dashboard into architecture-wide navigation: signals, trust, decisions, activation, and learning. | Deep optimization of any single dashboard module. |
 
 ## Guardrails
@@ -42,8 +42,6 @@ will make later schema and database decisions more defensible.
 
 ## Next Horizontal Slices
 
-1. Architecture readiness map.
-2. Trust and source coverage registry.
-3. Stakeholder journey map across evidence, decision, activation, and follow-up.
-4. Decision policy checks for wait, revise, escalate, or archive.
-5. Cross-layer reasoning stress tests before schema commitments.
+1. Stakeholder journey map across evidence, decision, activation, and follow-up.
+2. Decision policy checks for wait, revise, escalate, or archive.
+3. Cross-layer reasoning stress tests before schema commitments.
