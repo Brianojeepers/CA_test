@@ -1,6 +1,7 @@
 import {
   fetchDecisionDetail,
   fetchMonthlyPacket,
+  fetchPilotIntakeReview,
   fetchPilotRequestPack,
   fetchSchemaGap,
   fetchV02Intelligence,
@@ -15,6 +16,7 @@ import { renderFilters, renderMeetingControls, renderOwnerFilter } from "./rende
 import { renderImpactBars } from "./render/impact.js";
 import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
+import { renderPilotIntake } from "./render/pilotIntake.js";
 import { renderPilotRequests } from "./render/pilotRequests.js";
 import { renderRecommendation } from "./render/recommendation.js";
 import { renderReviewDiff } from "./render/reviewDiff.js";
@@ -38,6 +40,7 @@ let packet = null;
 let schemaGap = null;
 let v02Intelligence = null;
 let pilotRequestPack = null;
+let pilotIntakeReview = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
 let activeFilter = "all";
@@ -213,6 +216,7 @@ async function handleSchemaActionUpdate(action, status, notes) {
     schemaGap = await updateSchemaAction(action.capability, action.field, status, notes);
     v02Intelligence = await fetchV02Intelligence();
     pilotRequestPack = await fetchPilotRequestPack();
+    pilotIntakeReview = await fetchPilotIntakeReview();
     render();
     setStatus(`Updated ${action.field.replaceAll("_", " ")} to ${status.replaceAll("_", " ")}.`, "ok");
   } catch (error) {
@@ -252,6 +256,7 @@ function render() {
   renderSchemaGap(schemaGap, handleSchemaActionUpdate);
   renderV02Intelligence(v02Intelligence);
   renderPilotRequests(pilotRequestPack);
+  renderPilotIntake(pilotIntakeReview);
   renderFilters(packet, activeFilter, handleFilterChange);
   renderOwnerFilter(rows, activeOwner);
   renderMeetingControls(actionMode);
@@ -275,23 +280,25 @@ function render() {
 async function loadPacket() {
   setStatus("Refreshing monthly packet...");
   try {
-    const [nextPacket, nextSchemaGap, nextV02Intelligence, nextPilotRequestPack] = await Promise.all([
+    const [nextPacket, nextSchemaGap, nextV02Intelligence, nextPilotRequestPack, nextPilotIntakeReview] = await Promise.all([
       fetchMonthlyPacket(),
       fetchSchemaGap(),
       fetchV02Intelligence(),
       fetchPilotRequestPack(),
+      fetchPilotIntakeReview(),
     ]);
     packet = nextPacket;
     schemaGap = nextSchemaGap;
     v02Intelligence = nextV02Intelligence;
     pilotRequestPack = nextPilotRequestPack;
+    pilotIntakeReview = nextPilotIntakeReview;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
     if (selectedDecisionId) {
       loadDecisionDetail(selectedDecisionId);
     }
-    setStatus("Connected to FastAPI monthly packet, schema-gap, and pilot request endpoints.", "ok");
+    setStatus("Connected to FastAPI monthly packet, schema-gap, pilot request, and intake endpoints.", "ok");
   } catch (error) {
     setStatus(`Unable to load dashboard data: ${error.message}`, "error");
   }

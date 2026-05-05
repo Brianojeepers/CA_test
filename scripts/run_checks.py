@@ -27,6 +27,7 @@ def main() -> int:
         ("Validate data", [python, "scripts/validate_data.py"], None),
         ("Validate pilot templates", [python, "scripts/validate_pilot_extract.py", "data/pilot_extract_templates"], None),
         ("Review schema gaps", [python, "scripts/schema_gap_review.py"], None),
+        ("Review pilot intake", [python, "scripts/pilot_intake_review.py"], None),
         ("Run tests", [python, "-m", "unittest", "discover", "-s", "tests"], None),
         ("Check frontend", [python, "scripts/check_frontend.py"], None),
         (

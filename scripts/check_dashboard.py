@@ -29,6 +29,8 @@ EXPECTED_DASHBOARD_TEXT = [
     "Directional preview",
     "Pilot data requests",
     "Owner-ready request pack",
+    "Pilot intake readiness",
+    "Schema design gate",
     "Since last snapshot",
     "v0.2 readiness",
     "Intelligence capability readiness",
@@ -110,6 +112,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/impact.js",
             "render/insights.js",
             "render/meetingNotes.js",
+            "render/pilotIntake.js",
             "render/pilotRequests.js",
             "render/recommendation.js",
             "render/reviewDiff.js",
@@ -202,6 +205,21 @@ def check_api(errors: list[str]) -> None:
         errors.append("pilot request pack endpoint did not return two privacy-review requests")
     if not pilot_pack.get("owner_groups"):
         errors.append("pilot request pack endpoint returned no owner groups")
+
+    try:
+        pilot_intake = fetch_json(f"{API_BASE_URL}/pilot-intake-review", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if pilot_intake.get("summary", {}).get("field_count") != 18:
+        errors.append("pilot intake endpoint did not review 18 field requests")
+    if pilot_intake.get("summary", {}).get("accepted_count") != 5:
+        errors.append("pilot intake endpoint did not return five accepted fields")
+    if pilot_intake.get("summary", {}).get("privacy_blocked_count") != 2:
+        errors.append("pilot intake endpoint did not return two privacy-blocked fields")
+    if not pilot_intake.get("capability_groups"):
+        errors.append("pilot intake endpoint returned no capability groups")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

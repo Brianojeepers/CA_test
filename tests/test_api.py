@@ -82,6 +82,16 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["privacy_review_count"], 2)
         self.assertIn("owner_groups", payload)
 
+    def test_pilot_intake_review_endpoint_returns_schema_gate(self) -> None:
+        response = self.client.get("/api/pilot-intake-review")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["field_count"], 18)
+        self.assertEqual(payload["summary"]["accepted_count"], 5)
+        self.assertEqual(payload["summary"]["privacy_blocked_count"], 2)
+        self.assertIn("capability_groups", payload)
+
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
         with self.temporary_status_register() as (status_path, event_path):
             response = self.client.patch(

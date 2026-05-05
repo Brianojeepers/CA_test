@@ -28,6 +28,7 @@ extracts should live in ignored `data/pilot_extracts/` and pass
 | `v02_intelligence_requirements.json` | Versioned field contract for role-demand, competency-gap, horizon-radar, and simulator expansion. |
 | `v02_field_action_status.json` | Status and notes register for v0.2 field-action resolution, editable through the local dashboard API. |
 | `v02_field_action_events.json` | Append-only audit trail for v0.2 field-action status and notes changes. |
+| `pilot_request_responses.json` | Source-owner intake responses for v0.2 pilot field requests before schema design. |
 
 The operating role accountable for turning this evidence into action is defined in
 `docs/signal_intelligence_council.md`.
@@ -273,3 +274,14 @@ minimum viable pilot extract instead of a vague data wishlist.
 
 The v0.2 requirement contract lives in `v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
+
+Run the pilot intake review before translating requested fields into database
+schema decisions:
+
+```bash
+python3 scripts/pilot_intake_review.py
+```
+
+The intake review checks `pilot_request_responses.json` and classifies each
+requested v0.2 field as accepted, needing clarification, privacy blocked, or not
+ready.

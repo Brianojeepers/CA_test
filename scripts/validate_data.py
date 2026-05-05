@@ -200,6 +200,7 @@ def validate_all() -> ValidationResult:
         v02_requirements = load_optional_json_document("v02_intelligence_requirements.json")
         v02_action_statuses = load_optional_json("v02_field_action_status.json")
         v02_action_events = load_optional_json("v02_field_action_events.json")
+        pilot_responses = load_optional_json("pilot_request_responses.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -217,6 +218,8 @@ def validate_all() -> ValidationResult:
         require_unique_ids(result, "role_competencies.json", role_competencies, "competency_id")
     if learner_evidence:
         require_unique_ids(result, "learner_evidence_summary.json", learner_evidence, "evidence_id")
+    if pilot_responses:
+        require_unique_ids(result, "pilot_request_responses.json", pilot_responses, "response_id")
 
     require_fields(
         result,
@@ -452,6 +455,27 @@ def validate_all() -> ValidationResult:
             },
             "event_id",
         )
+    if pilot_responses:
+        require_fields(
+            result,
+            "pilot_request_responses.json",
+            pilot_responses,
+            {
+                "response_id",
+                "capability",
+                "field",
+                "owner",
+                "response_date",
+                "response_status",
+                "source_contract_id",
+                "proposed_grain",
+                "freshness_sla",
+                "sample_available",
+                "privacy_decision",
+                "notes",
+            },
+            "response_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -462,6 +486,8 @@ def validate_all() -> ValidationResult:
         validate_dates(result, "v02_field_action_status.json", v02_action_statuses, "field", {"updated_date"})
     if v02_action_events:
         validate_dates(result, "v02_field_action_events.json", v02_action_events, "event_id", {"event_date"})
+    if pilot_responses:
+        validate_dates(result, "pilot_request_responses.json", pilot_responses, "response_id", {"response_date"})
 
     validate_enum(result, "signals.json", signals, "signal_id", "status", {"green", "amber", "red"})
     validate_enum(result, "signals.json", signals, "signal_id", "confidence", {"low", "medium", "high"})
@@ -496,6 +522,23 @@ def validate_all() -> ValidationResult:
             "event_id",
             "next_status",
             {"open", "in_review", "approved", "blocked", "deferred"},
+        )
+    for response in pilot_responses:
+        validate_enum(
+            result,
+            "pilot_request_responses.json",
+            [response],
+            "response_id",
+            "response_status",
+            {"accepted", "needs_clarification", "privacy_blocked", "not_ready"},
+        )
+        validate_enum(
+            result,
+            "pilot_request_responses.json",
+            [response],
+            "response_id",
+            "privacy_decision",
+            {"not_required", "summary_approved", "aggregate_approved", "pending", "blocked"},
         )
 
     for score_field in (
@@ -543,6 +586,7 @@ def validate_all() -> ValidationResult:
     release_ids = {release.get("release_id") for release in releases}
     cohort_ids = {cohort.get("cohort_id") for cohort in cohorts}
     competency_ids = {competency.get("competency_id") for competency in role_competencies}
+    source_contract_ids = {contract.get("contract_id") for contract in source_contracts}
 
     for decision in decisions:
         validate_list_of_ids(result, "decisions.json", decision, "decision_id", "signal_ids", signal_ids)
@@ -802,7 +846,7 @@ def validate_all() -> ValidationResult:
                 "active competency has no learner evidence yet",
             )
 
-    if v02_requirements or v02_action_statuses or v02_action_events:
+    if v02_requirements or v02_action_statuses or v02_action_events or pilot_responses:
         requirements = v02_requirements.get("requirements")
         known_v02_fields: set[tuple[str, str]] = set()
         if v02_requirements and not isinstance(requirements, list):
@@ -858,6 +902,41 @@ def validate_all() -> ValidationResult:
                     not isinstance(event[field_name_key], str) or not event[field_name_key].strip()
                 ):
                     result.error("v02_field_action_events.json", event_id, field_name_key, "must be a non-empty string")
+        seen_response_keys: set[tuple[Any, Any]] = set()
+        for response in pilot_responses:
+            capability = response.get("capability")
+            field_name = response.get("field")
+            response_id = record_id(response, "response_id")
+            if (capability, field_name) in seen_response_keys:
+                result.error("pilot_request_responses.json", response_id, "field", "duplicate capability/field response")
+            seen_response_keys.add((capability, field_name))
+            if known_v02_fields and (capability, field_name) not in known_v02_fields:
+                result.error("pilot_request_responses.json", response_id, "field", "response references unknown v0.2 field")
+            if response.get("source_contract_id") not in source_contract_ids:
+                result.error(
+                    "pilot_request_responses.json",
+                    response_id,
+                    "source_contract_id",
+                    f"unknown ID {response.get('source_contract_id')!r}",
+                )
+            if not isinstance(response.get("sample_available"), bool):
+                result.error("pilot_request_responses.json", response_id, "sample_available", "must be a boolean")
+            for field_name_key in (
+                "response_id",
+                "capability",
+                "field",
+                "owner",
+                "response_status",
+                "source_contract_id",
+                "proposed_grain",
+                "freshness_sla",
+                "privacy_decision",
+                "notes",
+            ):
+                if field_name_key in response and (
+                    not isinstance(response[field_name_key], str) or not response[field_name_key].strip()
+                ):
+                    result.error("pilot_request_responses.json", response_id, field_name_key, "must be a non-empty string")
 
     expected_files = {
         "signals.json",

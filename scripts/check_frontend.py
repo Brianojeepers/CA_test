@@ -32,6 +32,9 @@ REQUIRED_IDS = {
     "pilot-request-summary",
     "pilot-request-guardrails",
     "pilot-request-list",
+    "pilot-intake-summary",
+    "pilot-intake-capabilities",
+    "pilot-intake-list",
     "data-trust",
     "data-warning",
     "signal-average",
@@ -87,6 +90,7 @@ REQUIRED_FILES = [
     "render/impact.js",
     "render/insights.js",
     "render/meetingNotes.js",
+    "render/pilotIntake.js",
     "render/pilotRequests.js",
     "render/recommendation.js",
     "render/reviewDiff.js",
@@ -138,7 +142,14 @@ def check_html_contract(errors: list[str]) -> None:
 
 def check_api_contract(errors: list[str]) -> None:
     api_js = (WEB_DIR / "api.js").read_text(encoding="utf-8")
-    for endpoint in ("/monthly-packet", "/schema-gap", "/v02-intelligence", "/pilot-request-pack", "/decisions/"):
+    for endpoint in (
+        "/monthly-packet",
+        "/schema-gap",
+        "/v02-intelligence",
+        "/pilot-request-pack",
+        "/pilot-intake-review",
+        "/decisions/",
+    ):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
     for token in ("updateSchemaAction", "PATCH"):
@@ -315,6 +326,24 @@ def check_pilot_request_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing pilot request style: {token}")
 
 
+def check_pilot_intake_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    intake_js = (WEB_DIR / "render" / "pilotIntake.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("fetchPilotIntakeReview", "renderPilotIntake", "pilotIntakeReview"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing pilot intake token: {token}")
+
+    for token in ("pilot-intake-summary", "pilot-intake-capabilities", "pilot-intake-list", "intake_status"):
+        if token not in intake_js:
+            errors.append(f"web/render/pilotIntake.js is missing pilot intake token: {token}")
+
+    for token in (".pilot-intake-capabilities", ".pilot-intake-list", ".pilot-intake-card", ".pilot-intake-item"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing pilot intake style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -346,6 +375,7 @@ def main() -> int:
         check_schema_gap_contract(errors)
         check_v02_intelligence_contract(errors)
         check_pilot_request_contract(errors)
+        check_pilot_intake_contract(errors)
         check_js_syntax(errors)
 
     if errors:
