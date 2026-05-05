@@ -25,7 +25,7 @@ will make later schema and database decisions more defensible.
 | Intelligence | Partial | Use stress-test failures to define the narrowest pilot extract rehearsal. | Model training, weight tuning, and scoring contracts. |
 | Decision | Covered for local MVP | Place policy and stress-test downgrades into the dashboard once the review language stabilizes. | Automated approvals and downstream writes. |
 | Activation | Partial | Rehearse controlled pilot extracts once source blockers clear. | LMS, CRM, ATS, or delivery-tool integrations. |
-| Governance cadence | Partial | Define weekly, monthly, and quarterly review templates with entry and exit criteria. | Automated production schedules. |
+| Governance cadence | Partial | Trial the manual cadence and capture review outcomes before automation. | Automated production schedules. |
 | Observability and trust | Partial | Expose stress-test downgrades as stakeholder-visible trust signals. | Production observability tooling. |
 | Stakeholder experience | Partial | Broaden the dashboard into architecture-wide navigation: signals, trust, decisions, activation, and learning. | Deep optimization of any single dashboard module. |
 
@@ -44,4 +44,4 @@ will make later schema and database decisions more defensible.
 
 1. Controlled pilot extract rehearsal once source blockers clear.
 2. Dashboard placement for decision policy and stress-test downgrades.
-3. Governance cadence templates with weekly, monthly, and quarterly entry and exit criteria.
+3. Manual governance cadence trial with saved review outcomes.

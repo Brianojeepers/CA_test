@@ -32,6 +32,7 @@ def main() -> int:
         ("Review trust registry", [python, "scripts/trust_registry_review.py"], None),
         ("Review source ingestion", [python, "scripts/source_ingestion_review.py"], None),
         ("Review normalization crosswalk", [python, "scripts/normalization_crosswalk_review.py"], None),
+        ("Review governance cadence", [python, "scripts/governance_cadence_review.py"], None),
         ("Review stakeholder journeys", [python, "scripts/stakeholder_journey_review.py"], None),
         ("Review decision policy", [python, "scripts/decision_policy_review.py"], None),
         ("Review reasoning stress tests", [python, "scripts/reasoning_stress_review.py"], None),

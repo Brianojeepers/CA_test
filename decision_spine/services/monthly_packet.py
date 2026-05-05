@@ -30,6 +30,7 @@ STAKEHOLDER_DRILLDOWNS = [
     {"label": "Source contracts", "command": "python3 scripts/source_contract_review.py"},
     {"label": "Source ingestion", "command": "python3 scripts/source_ingestion_review.py"},
     {"label": "Normalization crosswalk", "command": "python3 scripts/normalization_crosswalk_review.py"},
+    {"label": "Governance cadence", "command": "python3 scripts/governance_cadence_review.py"},
     {"label": "Reasoning stress tests", "command": "python3 scripts/reasoning_stress_review.py"},
 ]
 

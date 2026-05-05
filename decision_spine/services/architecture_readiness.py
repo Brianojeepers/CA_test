@@ -110,17 +110,19 @@ ARCHITECTURE_LAYERS: tuple[dict[str, Any], ...] = (
         "layer": "governance_cadence",
         "label": "Governance cadence layer",
         "target_state": "Run weekly refresh, monthly council review, quarterly recalibration, and documented source-quality governance.",
-        "current_coverage": "Council charter, monthly packet, review snapshots, data rules, and validation-first checks are in place.",
+        "current_coverage": "Council charter, monthly packet, review snapshots, cadence templates, data rules, and validation-first checks are in place.",
         "current_assets": [
             "docs/signal_intelligence_council.md",
+            "docs/governance_cadence.md",
             "scripts/monthly_packet.py",
+            "scripts/governance_cadence_review.py",
             "scripts/save_review_snapshot.py",
             "scripts/run_checks.py",
             "data/README.md",
         ],
         "readiness": "partial",
         "stakeholder_value": "The MVP has an operating rhythm, not just isolated analytics outputs.",
-        "horizontal_next_step": "Define agenda templates for weekly, monthly, and quarterly reviews with explicit entry and exit criteria.",
+        "horizontal_next_step": "Trial the manual cadence and capture review outcomes before automation.",
         "defer_vertical_work": "Do not schedule automated production jobs until the human cadence proves which reviews actually matter.",
     },
     {
@@ -212,7 +214,7 @@ def build_architecture_readiness_review() -> dict[str, Any]:
         "next_horizontal_slices": [
             "Controlled pilot extract rehearsal once source blockers clear",
             "Dashboard placement for decision policy and stress-test downgrades",
-            "Governance cadence templates with weekly, monthly, and quarterly entry and exit criteria",
+            "Manual governance cadence trial with saved review outcomes",
         ],
     }
 

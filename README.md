@@ -121,6 +121,12 @@ Review role, competency, pedagogy, evidence, and outcome normalization:
 python3 scripts/normalization_crosswalk_review.py
 ```
 
+Review weekly, monthly, and quarterly governance cadence:
+
+```bash
+python3 scripts/governance_cadence_review.py
+```
+
 Review stakeholder journeys from evidence surface to safe action:
 
 ```bash
@@ -259,6 +265,7 @@ outcome data exists.
 | `scripts/trust_registry_review.py` | Reviews trust and source coverage by stakeholder surface. |
 | `scripts/source_ingestion_review.py` | Reviews source ingestion envelope, freshness, allowed use, and standardization risk before live connectors. |
 | `scripts/normalization_crosswalk_review.py` | Reviews role, competency, pedagogy, evidence, and outcome language before ontology/schema work. |
+| `scripts/governance_cadence_review.py` | Reviews weekly, monthly, and quarterly operating cadence before automation. |
 | `scripts/stakeholder_journey_review.py` | Reviews stakeholder journeys from evidence surface to safe action. |
 | `scripts/decision_policy_review.py` | Reviews safe operating policy for current decisions. |
 | `scripts/reasoning_stress_review.py` | Stress-tests cross-layer claim downgrades before schema commitments. |
@@ -288,6 +295,7 @@ See:
 - `docs/trust_registry.md`
 - `docs/source_ingestion_contract.md`
 - `docs/normalization_crosswalk.md`
+- `docs/governance_cadence.md`
 - `docs/stakeholder_journey_map.md`
 - `docs/decision_policy.md`
 - `docs/reasoning_stress_tests.md`
