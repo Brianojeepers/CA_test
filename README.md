@@ -109,10 +109,22 @@ Review trust and source coverage by stakeholder surface:
 python3 scripts/trust_registry_review.py
 ```
 
+Review source ingestion envelope, freshness, and standardization risk:
+
+```bash
+python3 scripts/source_ingestion_review.py
+```
+
 Review stakeholder journeys from evidence surface to safe action:
 
 ```bash
 python3 scripts/stakeholder_journey_review.py
+```
+
+Review safe operating policy for current decisions:
+
+```bash
+python3 scripts/decision_policy_review.py
 ```
 
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
@@ -233,7 +245,9 @@ outcome data exists.
 | `scripts/pilot_intake_review.py` | Reviews source-owner responses before v0.2 fields enter schema design. |
 | `scripts/architecture_readiness_review.py` | Reviews horizontal architecture coverage before database/schema work. |
 | `scripts/trust_registry_review.py` | Reviews trust and source coverage by stakeholder surface. |
+| `scripts/source_ingestion_review.py` | Reviews source ingestion envelope, freshness, allowed use, and standardization risk before live connectors. |
 | `scripts/stakeholder_journey_review.py` | Reviews stakeholder journeys from evidence surface to safe action. |
+| `scripts/decision_policy_review.py` | Reviews safe operating policy for current decisions. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
@@ -258,7 +272,9 @@ See:
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
 - `docs/trust_registry.md`
+- `docs/source_ingestion_contract.md`
 - `docs/stakeholder_journey_map.md`
+- `docs/decision_policy.md`
 - `data/source_contracts.json`
 
 Current real-data blockers include learner evidence suppression rules and cohort

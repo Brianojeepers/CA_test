@@ -19,6 +19,7 @@ TODAY = date.today()
 STAKEHOLDER_DRILLDOWNS = [
     {"label": "Council", "command": "python3 scripts/council_review.py"},
     {"label": "Decision impact", "command": "python3 scripts/decision_impact_review.py"},
+    {"label": "Decision policy", "command": "python3 scripts/decision_policy_review.py"},
     {"label": "Matching and CSM outcomes", "command": "python3 scripts/outcome_review.py"},
     {"label": "Credential requirements", "command": "python3 scripts/credential_requirements.py"},
     {"label": "Learning outcomes", "command": "python3 scripts/learning_outcomes.py"},
@@ -27,6 +28,7 @@ STAKEHOLDER_DRILLDOWNS = [
     {"label": "Talent profile signals", "command": "python3 scripts/talent_profile_signals.py"},
     {"label": "Delivery windows", "command": "python3 scripts/delivery_window_review.py"},
     {"label": "Source contracts", "command": "python3 scripts/source_contract_review.py"},
+    {"label": "Source ingestion", "command": "python3 scripts/source_ingestion_review.py"},
 ]
 
 

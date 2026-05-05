@@ -29,6 +29,7 @@ warehouse model, production observability stack, or scheduled ingestion.
 | Schema gap workbench | Planning control ready | Its job is to expose missing fields and source blockers before schema work. |
 | Pilot request pack | Planning control ready | It requests owner input; it is not source approval. |
 | Pilot intake review | Planning control ready | It classifies intake responses, but current responses are synthetic planning records. |
+| Source ingestion review | Planning control ready | It defines the ingestion envelope, freshness posture, allowed use, and standardization risk before connectors or schemas. |
 
 ## Current Source Contract Posture
 

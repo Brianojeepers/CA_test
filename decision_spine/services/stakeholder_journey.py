@@ -69,7 +69,7 @@ JOURNEY_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "label": "Data and Analytics",
         "primary_question": "Where is evidence trustworthy enough, and where are source contracts still blocking progress?",
         "decision_moment": "Source-quality review and field-readiness planning.",
-        "surface_ids": ["schema_gap_workbench", "pilot_request_pack", "pilot_intake_review"],
+        "surface_ids": ["schema_gap_workbench", "pilot_request_pack", "pilot_intake_review", "source_ingestion_review"],
         "can_do_now": "Coordinate source-owner clarification, privacy blockers, and minimum viable pilot fields.",
         "must_defer": "Do not create database schemas or warehouse models until horizontal trust and field ownership are coherent.",
         "escalation_path": "Escalate red source contracts to privacy owners and unresolved field ownership to the council chair.",
@@ -91,7 +91,7 @@ JOURNEY_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "label": "Market Intelligence and Research",
         "primary_question": "Which demand, horizon, and weak-signal claims are ready for controlled review?",
         "decision_moment": "Signal refresh, horizon scoring, and v0.2 intelligence planning.",
-        "surface_ids": ["v02_intelligence_preview", "schema_gap_workbench", "pilot_request_pack"],
+        "surface_ids": ["v02_intelligence_preview", "schema_gap_workbench", "pilot_request_pack", "source_ingestion_review"],
         "can_do_now": "Stress-test role demand, horizon, and weak-signal assumptions with explicit missing-field labels.",
         "must_defer": "Do not publish scores, model weights, or hard recommendations until pilot evidence is approved.",
         "escalation_path": "Escalate source-owner gaps to Research and council-owned maturity definitions to the council chair.",
@@ -102,7 +102,7 @@ JOURNEY_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "label": "Source Owners",
         "primary_question": "What do I need to clarify before my source can support the pilot?",
         "decision_moment": "Source-owner response and pilot extract readiness review.",
-        "surface_ids": ["pilot_request_pack", "pilot_intake_review", "schema_gap_workbench"],
+        "surface_ids": ["pilot_request_pack", "pilot_intake_review", "schema_gap_workbench", "source_ingestion_review"],
         "can_do_now": "Respond to field requests, clarify grain and freshness, and identify privacy constraints.",
         "must_defer": "Do not send real extracts until privacy posture, storage, and sample rules are approved.",
         "escalation_path": "Escalate privacy uncertainty to the named privacy owner and unresolved field need to Data and Analytics.",
@@ -200,9 +200,9 @@ def build_stakeholder_journey_map(trust_registry: dict[str, Any] | None = None) 
         ],
         "journeys": journeys,
         "next_horizontal_slices": [
-            "Decision policy checks for wait, revise, escalate, or archive",
             "Cross-layer reasoning stress tests before schema commitments",
-            "Source freshness and owner-obligation review",
+            "Controlled pilot extract rehearsal once source blockers clear",
+            "Decision-policy dashboard placement once policy checks stabilize",
         ],
     }
 

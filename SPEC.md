@@ -31,7 +31,9 @@ In scope:
 - Pilot intake review of source-owner responses before schema design.
 - Horizontal architecture readiness review before database schema or warehouse-model commitments.
 - Trust and source coverage registry by stakeholder-facing surface.
+- Source ingestion contract and freshness review before live connectors or source-specific schemas.
 - Stakeholder journey map from evidence surface to safe action, deferred action, escalation, and evidence needed.
+- Decision policy checks for safe operating outcomes: act now, revise, monitor, wait, escalate, or archive.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -88,7 +90,9 @@ Real-data readiness and source obligations live in:
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
 - `docs/trust_registry.md`
+- `docs/source_ingestion_contract.md`
 - `docs/stakeholder_journey_map.md`
+- `docs/decision_policy.md`
 - `docs/v02_pilot_schema.md`
 - `data/source_contracts.json`
 - `data/v02_intelligence_requirements.json`
@@ -144,7 +148,9 @@ Core operating scripts:
 | `scripts/pilot_intake_review.py` | Review source-owner responses and classify fields as accepted, needs clarification, privacy blocked, or not ready. |
 | `scripts/architecture_readiness_review.py` | Review horizontal coverage across the target intelligence architecture before database/schema work. |
 | `scripts/trust_registry_review.py` | Review trust posture and source coverage by stakeholder-facing surface. |
+| `scripts/source_ingestion_review.py` | Review source ingestion envelope, freshness, allowed use, standardization risk, and deferred live-ingestion posture. |
 | `scripts/stakeholder_journey_review.py` | Review stakeholder journeys from evidence surface to safe action and deferred claims. |
+| `scripts/decision_policy_review.py` | Review safe operating policy for current decisions. |
 
 Reusable service layer:
 
@@ -167,8 +173,12 @@ Reusable service layer:
 | `decision_spine.services.architecture_readiness.render_architecture_readiness_text` | Render the architecture readiness review for CLI use. |
 | `decision_spine.services.trust_registry.build_trust_registry` | Return source coverage, trust posture, blockers, and next trust actions by stakeholder-facing surface. |
 | `decision_spine.services.trust_registry.render_trust_registry_text` | Render the trust and source coverage registry for CLI use. |
+| `decision_spine.services.source_ingestion.build_source_ingestion_review` | Return canonical ingestion envelope, source freshness posture, allowed use, standardization risk, and live-ingestion readiness. |
+| `decision_spine.services.source_ingestion.render_source_ingestion_review_text` | Render the source ingestion contract review for CLI use. |
 | `decision_spine.services.stakeholder_journey.build_stakeholder_journey_map` | Return stakeholder journeys with current trust mode, safe actions, deferred actions, escalation path, and evidence needed. |
 | `decision_spine.services.stakeholder_journey.render_stakeholder_journey_text` | Render the stakeholder journey map for CLI use. |
+| `decision_spine.services.decision_policy.build_decision_policy_review` | Return policy outcomes for current decisions based on impact status, trust posture, and stakeholder journey mode. |
+| `decision_spine.services.decision_policy.render_decision_policy_text` | Render the decision policy review for CLI use. |
 
 API surface:
 
@@ -279,7 +289,9 @@ The MVP is in a valid local state when:
 - The MVP can review source-owner intake responses before allowing v0.2 fields into schema design.
 - The MVP can review horizontal architecture readiness before committing to database schemas, warehouse models, or scheduled ingestion.
 - The MVP can show which stakeholder-facing surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates before any real-data claim is made.
+- The MVP can define a canonical ingestion envelope and review source freshness, allowed use, and standardization risk before any connector, table, or schema work begins.
 - The MVP can show what each stakeholder can do now, what they must defer, who they escalate to, and what evidence is needed to progress.
+- The MVP can classify each current decision into a safe operating policy outcome before any approval, claim, or escalation is acted on.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -322,7 +334,9 @@ They currently cover:
 - schema gap coverage, alias handling, and v0.2 expansion requirements,
 - horizontal architecture readiness before database/schema commitments,
 - trust and source coverage posture by stakeholder-facing surface,
-- stakeholder journey mode, safe action, deferred claim, escalation path, and evidence-needed mapping.
+- source ingestion envelope, freshness posture, allowed use, and standardization risk,
+- stakeholder journey mode, safe action, deferred claim, escalation path, and evidence-needed mapping,
+- decision policy outcomes for act now, revise, monitor, wait, escalate, and archive.
 
 Run:
 
@@ -336,6 +350,7 @@ python3 -m unittest discover -s tests
 - Outcome and learner evidence samples are intentionally immature.
 - Placement, retention, and readiness evidence are directional, not causal proof.
 - Source contracts currently block real learner and outcome extracts pending privacy review.
+- Source ingestion review is a contract and freshness posture review, not a live connector or production ingestion pipeline.
 - Pilot intake responses are synthetic planning records, not real source-owner approvals.
 - Actual cohort calendar data is unavailable.
 - Client/account-level commercial evidence is unavailable.
@@ -347,7 +362,8 @@ python3 -m unittest discover -s tests
 Next stages should focus on:
 
 - privacy-reviewed pilot extracts,
-- horizontal coverage across decision policy, source freshness, and architecture-wide reasoning before v0.2 pilot schema decisions,
+- controlled pilot extract rehearsal once source blockers clear,
+- horizontal coverage across architecture-wide reasoning before v0.2 pilot schema decisions,
 - v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,

@@ -27,10 +27,10 @@ warehouse models, scheduled ingestion, or downstream system writes.
 | Assessment Ops | Workflow design only | Identify readiness risks, privacy blockers, and assessment evidence requirements. | Storing learner-derived real extracts or moving high-stakes thresholds from synthetic evidence. |
 | Matching and CSM | Workflow design only | Flag likely positioning opportunities and outcome gaps. | Updating client-facing placement claims. |
 | Solutions and Sales | Workflow design only | Prepare non-overstated narratives with known limits. | Citing raw client demand, account-level evidence, or unapproved outcome claims. |
-| Data and Analytics | Planning ready | Coordinate source-owner clarification, privacy blockers, and pilot fields. | Creating database schemas or warehouse models. |
+| Data and Analytics | Planning ready | Coordinate source-owner clarification, ingestion-envelope gaps, privacy blockers, and pilot fields. | Creating database schemas or warehouse models. |
 | Delivery | Workflow design only | Review release timing risk and cohort-calendar gaps. | Automating delivery schedules or assuming real cohort timing confidence. |
 | Market Intelligence and Research | Workflow design only | Stress-test role demand, horizon, and weak-signal assumptions with missing-field labels. | Publishing scores, model weights, or hard recommendations. |
-| Source Owners | Planning ready | Respond to field requests, clarify grain and freshness, and identify privacy constraints. | Sending real extracts before privacy, storage, and sample rules are approved. |
+| Source Owners | Planning ready | Respond to field requests, clarify grain and freshness, and identify privacy constraints. | Sending real extracts before privacy, storage, sample rules, and ingestion envelope are approved. |
 | Executive stakeholders | Workflow design only | Review the operating narrative, known limits, and accountability. | Making performance claims or scale decisions from synthetic evidence. |
 
 ## Escalation Rules
@@ -50,6 +50,23 @@ warehouse models, scheduled ingestion, or downstream system writes.
 - Owner-confirmed field definitions, sample availability, privacy decisions, and freshness SLAs.
 - Confirmed cohort calendar and release-window data.
 - Calibrated demand, horizon, and weak-signal scoring examples.
+
+## Policy Link
+
+Stakeholder journeys describe what each user can safely do. Decision policy
+checks translate those journeys into operating outcomes: act now, revise,
+monitor, wait, escalate, or archive.
+
+Source ingestion checks define the canonical envelope and source freshness
+posture that Data, Analytics, and Source Owners need before any live ingestion
+or schema work begins.
+
+Run:
+
+```bash
+python3 scripts/source_ingestion_review.py
+python3 scripts/decision_policy_review.py
+```
 
 ## Command
 

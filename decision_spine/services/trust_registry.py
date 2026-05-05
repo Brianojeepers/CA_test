@@ -139,6 +139,17 @@ TRUST_SURFACES: tuple[dict[str, Any], ...] = (
         "decision_use": "Classify owner responses as accepted, unclear, privacy blocked, or not ready before schema design.",
         "known_limit": "Current intake records are synthetic planning records, not real source-owner approvals.",
     },
+    {
+        "surface_id": "source_ingestion_review",
+        "label": "Source ingestion review",
+        "surface_type": "control_surface",
+        "stakeholders": ["Source owners", "Data and Analytics", "Signal Intelligence Council"],
+        "source_files": [],
+        "control_files": ["data/source_contracts.json", "scripts/source_ingestion_review.py"],
+        "uses_contract_register": True,
+        "decision_use": "Define the canonical ingestion envelope and rate source freshness, allowed use, and standardization risk.",
+        "known_limit": "This is not approval for live ingestion, source connectors, landing tables, or database schemas.",
+    },
 )
 
 
