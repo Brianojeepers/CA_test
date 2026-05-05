@@ -97,6 +97,12 @@ Review source-owner intake responses before schema design:
 python3 scripts/pilot_intake_review.py
 ```
 
+Review horizontal architecture readiness before database/schema work:
+
+```bash
+python3 scripts/architecture_readiness_review.py
+```
+
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
 
@@ -213,6 +219,7 @@ outcome data exists.
 | `scripts/export_stakeholder_packets.py` | Writes concise stakeholder briefs under `outputs/stakeholder_packets/`. |
 | `scripts/export_pilot_request_pack.py` | Writes owner-ready v0.2 field requests to `outputs/pilot_request_pack.md`. |
 | `scripts/pilot_intake_review.py` | Reviews source-owner responses before v0.2 fields enter schema design. |
+| `scripts/architecture_readiness_review.py` | Reviews horizontal architecture coverage before database/schema work. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |

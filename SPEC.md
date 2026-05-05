@@ -29,6 +29,7 @@ In scope:
 - Schema gap review across seed data, pilot templates, source contracts, and v0.2 intelligence requirements.
 - Owner-ready v0.2 pilot data request pack grouped by source owner.
 - Pilot intake review of source-owner responses before schema design.
+- Horizontal architecture readiness review before database schema or warehouse-model commitments.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -137,6 +138,7 @@ Core operating scripts:
 | `scripts/schema_gap_review.py` | Compare current seed schema, pilot templates, source contracts, and v0.2 intelligence requirements. |
 | `scripts/v02_intelligence_preview.py` | Print directional role-demand, competency-gap, horizon, and curriculum-impact previews gated by current evidence and missing fields. |
 | `scripts/pilot_intake_review.py` | Review source-owner responses and classify fields as accepted, needs clarification, privacy blocked, or not ready. |
+| `scripts/architecture_readiness_review.py` | Review horizontal coverage across the target intelligence architecture before database/schema work. |
 
 Reusable service layer:
 
@@ -155,6 +157,8 @@ Reusable service layer:
 | `decision_spine.services.pilot_request_pack.render_pilot_request_pack_markdown` | Render the owner-ready pilot request pack to Markdown. |
 | `decision_spine.services.pilot_intake_review.build_pilot_intake_review` | Return source-owner intake readiness for each v0.2 pilot field request. |
 | `decision_spine.services.pilot_intake_review.render_pilot_intake_review_text` | Render the pilot intake review for CLI use. |
+| `decision_spine.services.architecture_readiness.build_architecture_readiness_review` | Return horizontal architecture coverage, guardrails, and next slices before vertical database work. |
+| `decision_spine.services.architecture_readiness.render_architecture_readiness_text` | Render the architecture readiness review for CLI use. |
 
 API surface:
 
@@ -263,6 +267,7 @@ The MVP is in a valid local state when:
 - Schema gap review makes source-template, seed-contract, and v0.2 intelligence field gaps explicit before broader product expansion.
 - The MVP can export an owner-ready v0.2 pilot data request pack grouped by source owner.
 - The MVP can review source-owner intake responses before allowing v0.2 fields into schema design.
+- The MVP can review horizontal architecture readiness before committing to database schemas, warehouse models, or scheduled ingestion.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -302,7 +307,8 @@ They currently cover:
 - decision impact maturity gates,
 - stakeholder readiness gates,
 - delivery-window timing classifications,
-- schema gap coverage, alias handling, and v0.2 expansion requirements.
+- schema gap coverage, alias handling, and v0.2 expansion requirements,
+- horizontal architecture readiness before database/schema commitments.
 
 Run:
 
@@ -327,6 +333,7 @@ python3 -m unittest discover -s tests
 Next stages should focus on:
 
 - privacy-reviewed pilot extracts,
+- horizontal coverage across source trust, stakeholder journeys, decision policy, and architecture-wide reasoning before v0.2 pilot schema decisions,
 - v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,

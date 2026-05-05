@@ -44,6 +44,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/v02_intelligence_preview.py` for directional role-demand, competency-gap, horizon, and curriculum-impact previews that keep hard recommendations disabled until fields and sources are ready.
 - `scripts/export_pilot_request_pack.py` for turning v0.2 missing fields into owner-ready pilot data requests before database design.
 - `scripts/pilot_intake_review.py` for checking whether owner responses are accepted, unclear, privacy blocked, or not ready before schema work begins.
+- `scripts/architecture_readiness_review.py` and `docs/architecture_readiness_map.md` for checking horizontal coverage across the target architecture before database/schema work.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -75,6 +76,13 @@ brief before committing to database schemas.
 The next gate is pilot intake review: it distinguishes fields that can enter
 schema design from fields that still need clarification, privacy approval, or
 sample evidence.
+
+Before the MVP goes deeper into database schemas, it should expand horizontally
+across the target architecture: signal ingestion, normalization, intelligence,
+decision, activation, governance cadence, observability/trust, and stakeholder
+experience. The architecture readiness map makes this explicit so the product
+does not over-optimize one narrow module while the broader intelligence engine
+is still underrepresented.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**
@@ -234,6 +242,7 @@ The council charter for this operating owner is defined in `docs/signal_intellig
 3. Add a “recommended action” panel: update module, keep, or deprecate.
 4. Add a “matcher view” that translates curriculum outcomes into client-ready talent profiles.
 5. Add changelog diffing so stakeholders see what changed since last review.
+6. Add architecture-wide navigation so stakeholders can move across signals, trust, decisions, activation, and learning without needing technical packet output.
 
 ---
 
