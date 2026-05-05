@@ -34,6 +34,7 @@ In scope:
 - Source ingestion contract and freshness review before live connectors or source-specific schemas.
 - Stakeholder journey map from evidence surface to safe action, deferred action, escalation, and evidence needed.
 - Decision policy checks for safe operating outcomes: act now, revise, monitor, wait, escalate, or archive.
+- Cross-layer reasoning stress tests that force unsafe claims to downgrade before schema commitments.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -93,6 +94,7 @@ Real-data readiness and source obligations live in:
 - `docs/source_ingestion_contract.md`
 - `docs/stakeholder_journey_map.md`
 - `docs/decision_policy.md`
+- `docs/reasoning_stress_tests.md`
 - `docs/v02_pilot_schema.md`
 - `data/source_contracts.json`
 - `data/v02_intelligence_requirements.json`
@@ -151,6 +153,7 @@ Core operating scripts:
 | `scripts/source_ingestion_review.py` | Review source ingestion envelope, freshness, allowed use, standardization risk, and deferred live-ingestion posture. |
 | `scripts/stakeholder_journey_review.py` | Review stakeholder journeys from evidence surface to safe action and deferred claims. |
 | `scripts/decision_policy_review.py` | Review safe operating policy for current decisions. |
+| `scripts/reasoning_stress_review.py` | Stress-test cross-layer claim downgrades before schema commitments. |
 
 Reusable service layer:
 
@@ -179,6 +182,8 @@ Reusable service layer:
 | `decision_spine.services.stakeholder_journey.render_stakeholder_journey_text` | Render the stakeholder journey map for CLI use. |
 | `decision_spine.services.decision_policy.build_decision_policy_review` | Return policy outcomes for current decisions based on impact status, trust posture, and stakeholder journey mode. |
 | `decision_spine.services.decision_policy.render_decision_policy_text` | Render the decision policy review for CLI use. |
+| `decision_spine.services.reasoning_stress.build_reasoning_stress_review` | Return cross-layer stress scenarios that test unsafe claims against trust, ingestion, journey, and policy posture. |
+| `decision_spine.services.reasoning_stress.render_reasoning_stress_text` | Render the reasoning stress test review for CLI use. |
 
 API surface:
 
@@ -292,6 +297,7 @@ The MVP is in a valid local state when:
 - The MVP can define a canonical ingestion envelope and review source freshness, allowed use, and standardization risk before any connector, table, or schema work begins.
 - The MVP can show what each stakeholder can do now, what they must defer, who they escalate to, and what evidence is needed to progress.
 - The MVP can classify each current decision into a safe operating policy outcome before any approval, claim, or escalation is acted on.
+- The MVP can stress-test cross-layer reasoning and block unsafe claim escalation before any schema commitment is made.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -336,7 +342,8 @@ They currently cover:
 - trust and source coverage posture by stakeholder-facing surface,
 - source ingestion envelope, freshness posture, allowed use, and standardization risk,
 - stakeholder journey mode, safe action, deferred claim, escalation path, and evidence-needed mapping,
-- decision policy outcomes for act now, revise, monitor, wait, escalate, and archive.
+- decision policy outcomes for act now, revise, monitor, wait, escalate, and archive,
+- cross-layer reasoning stress tests for unsafe claim downgrades.
 
 Run:
 
@@ -356,6 +363,7 @@ python3 -m unittest discover -s tests
 - Client/account-level commercial evidence is unavailable.
 - Training offers and talent profile signals are recommendation inputs only; they do not write to downstream systems.
 - v0.2 intelligence requirements are field-readiness requirements, not implemented forecasting or simulation models.
+- Reasoning stress tests use current MVP posture; they should be rerun when pilot evidence changes.
 
 ## 12. Future Work
 
@@ -363,7 +371,7 @@ Next stages should focus on:
 
 - privacy-reviewed pilot extracts,
 - controlled pilot extract rehearsal once source blockers clear,
-- horizontal coverage across architecture-wide reasoning before v0.2 pilot schema decisions,
+- dashboard placement for decision policy and stress-test downgrades,
 - v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,

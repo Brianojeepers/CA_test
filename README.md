@@ -127,6 +127,12 @@ Review safe operating policy for current decisions:
 python3 scripts/decision_policy_review.py
 ```
 
+Stress-test cross-layer reasoning before schema commitments:
+
+```bash
+python3 scripts/reasoning_stress_review.py
+```
+
 The v0.2 field contract lives in `data/v02_intelligence_requirements.json` and
 is explained in `docs/v02_pilot_schema.md`.
 
@@ -248,6 +254,7 @@ outcome data exists.
 | `scripts/source_ingestion_review.py` | Reviews source ingestion envelope, freshness, allowed use, and standardization risk before live connectors. |
 | `scripts/stakeholder_journey_review.py` | Reviews stakeholder journeys from evidence surface to safe action. |
 | `scripts/decision_policy_review.py` | Reviews safe operating policy for current decisions. |
+| `scripts/reasoning_stress_review.py` | Stress-tests cross-layer claim downgrades before schema commitments. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |
@@ -275,6 +282,7 @@ See:
 - `docs/source_ingestion_contract.md`
 - `docs/stakeholder_journey_map.md`
 - `docs/decision_policy.md`
+- `docs/reasoning_stress_tests.md`
 - `data/source_contracts.json`
 
 Current real-data blockers include learner evidence suppression rules and cohort

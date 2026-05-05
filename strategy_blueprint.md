@@ -49,6 +49,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/source_ingestion_review.py` and `docs/source_ingestion_contract.md` for defining the canonical ingestion envelope, freshness posture, allowed use, and standardization risk before live connectors or schemas.
 - `scripts/stakeholder_journey_review.py` and `docs/stakeholder_journey_map.md` for mapping what each stakeholder can do now, must defer, escalate, and evidence-gate.
 - `scripts/decision_policy_review.py` and `docs/decision_policy.md` for turning current evidence posture into safe policy outcomes: act now, revise, monitor, wait, escalate, or archive.
+- `scripts/reasoning_stress_review.py` and `docs/reasoning_stress_tests.md` for forcing unsafe claims to downgrade across signal, trust, ingestion, decision, activation, and stakeholder-experience layers.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -101,6 +102,10 @@ Source ingestion contract checks then make the future ingestion problem explicit
 without building it too early: every candidate source gets an envelope, allowed
 use, freshness obligation, standardization risk, canonical target, and blocker
 before any connector, schedule, landing table, or database schema is considered.
+Reasoning stress tests then check whether the horizontal architecture holds
+together under pressure: strong signals cannot bypass red evidence sources,
+approvals cannot masquerade as implementation proof, and dashboard actions
+cannot override policy outcomes.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**

@@ -22,11 +22,11 @@ will make later schema and database decisions more defensible.
 | --- | --- | --- | --- |
 | Signal ingestion | Partial | Rehearse controlled pilot extracts once source blockers clear. | Scheduled ingestion, warehouse landing tables, and source-specific pipelines. |
 | Normalization | Thin | Create a crosswalk review for role anchors, competency clusters, evidence types, and decision references. | Canonical ontology tables and warehouse semantic models. |
-| Intelligence | Partial | Extend reasoning stress tests across role demand, competency gaps, horizon radar, and curriculum impact assumptions. | Model training, weight tuning, and scoring contracts. |
-| Decision | Covered for local MVP | Add cross-layer reasoning stress tests before schema commitments. | Automated approvals and downstream writes. |
-| Activation | Partial | Add cross-layer reasoning stress tests before schema commitments. | LMS, CRM, ATS, or delivery-tool integrations. |
+| Intelligence | Partial | Use stress-test failures to define the narrowest pilot extract rehearsal. | Model training, weight tuning, and scoring contracts. |
+| Decision | Covered for local MVP | Place policy and stress-test downgrades into the dashboard once the review language stabilizes. | Automated approvals and downstream writes. |
+| Activation | Partial | Rehearse controlled pilot extracts once source blockers clear. | LMS, CRM, ATS, or delivery-tool integrations. |
 | Governance cadence | Partial | Define weekly, monthly, and quarterly review templates with entry and exit criteria. | Automated production schedules. |
-| Observability and trust | Partial | Add cross-layer reasoning stress tests before schema commitments. | Production observability tooling. |
+| Observability and trust | Partial | Expose stress-test downgrades as stakeholder-visible trust signals. | Production observability tooling. |
 | Stakeholder experience | Partial | Broaden the dashboard into architecture-wide navigation: signals, trust, decisions, activation, and learning. | Deep optimization of any single dashboard module. |
 
 ## Guardrails
@@ -42,6 +42,6 @@ will make later schema and database decisions more defensible.
 
 ## Next Horizontal Slices
 
-1. Cross-layer reasoning stress tests before schema commitments.
-2. Controlled pilot extract rehearsal once source blockers clear.
-3. Decision-policy dashboard placement once policy checks stabilize.
+1. Controlled pilot extract rehearsal once source blockers clear.
+2. Dashboard placement for decision policy and stress-test downgrades.
+3. Schema decisions only after stress scenarios keep passing with pilot evidence.
