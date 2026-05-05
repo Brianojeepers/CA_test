@@ -26,6 +26,10 @@ REQUIRED_IDS = {
     "view-scope-count",
     "view-action-count",
     "stakeholder-insights",
+    "architecture-summary",
+    "architecture-tabs",
+    "architecture-body",
+    "architecture-next-list",
     "v02-intelligence-summary",
     "v02-intelligence-guardrails",
     "v02-intelligence-list",
@@ -83,6 +87,7 @@ REQUIRED_FILES = [
     "format.js",
     "stakeholders.js",
     "render/actions.js",
+    "render/architectureSurface.js",
     "render/changelog.js",
     "render/detail.js",
     "render/drilldowns.js",
@@ -148,6 +153,13 @@ def check_api_contract(errors: list[str]) -> None:
         "/v02-intelligence",
         "/pilot-request-pack",
         "/pilot-intake-review",
+        "/architecture-readiness",
+        "/trust-registry",
+        "/source-ingestion",
+        "/normalization-crosswalk",
+        "/governance-cadence",
+        "/decision-policy",
+        "/reasoning-stress",
         "/decisions/",
     ):
         if endpoint not in api_js:
@@ -344,6 +356,55 @@ def check_pilot_intake_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing pilot intake style: {token}")
 
 
+def check_architecture_surface_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    architecture_js = (WEB_DIR / "render" / "architectureSurface.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in (
+        "fetchArchitectureReadiness",
+        "fetchTrustRegistry",
+        "fetchSourceIngestion",
+        "fetchNormalizationCrosswalk",
+        "fetchGovernanceCadence",
+        "fetchDecisionPolicy",
+        "fetchReasoningStress",
+        "renderArchitectureSurface",
+        "activeArchitectureView",
+    ):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing architecture surface token: {token}")
+
+    for token in (
+        "architecture-summary",
+        "architecture-tabs",
+        "architecture-body",
+        "architecture-next-list",
+        "data-architecture-view",
+        "architectureReadiness",
+        "trustRegistry",
+        "sourceIngestion",
+        "normalizationCrosswalk",
+        "governanceCadence",
+        "decisionPolicy",
+        "reasoningStress",
+    ):
+        if token not in architecture_js:
+            errors.append(f"web/render/architectureSurface.js is missing architecture token: {token}")
+
+    for token in (
+        ".architecture-panel",
+        ".architecture-tabs",
+        ".architecture-body",
+        ".architecture-list",
+        ".architecture-card",
+        ".architecture-two-column",
+        ".architecture-next",
+    ):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing architecture surface style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -376,6 +437,7 @@ def main() -> int:
         check_v02_intelligence_contract(errors)
         check_pilot_request_contract(errors)
         check_pilot_intake_contract(errors)
+        check_architecture_surface_contract(errors)
         check_js_syntax(errors)
 
     if errors:

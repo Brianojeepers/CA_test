@@ -202,6 +202,13 @@ The first API endpoints are:
 - `GET /api/v02-intelligence`
 - `GET /api/pilot-request-pack`
 - `GET /api/pilot-intake-review`
+- `GET /api/architecture-readiness`
+- `GET /api/trust-registry`
+- `GET /api/source-ingestion`
+- `GET /api/normalization-crosswalk`
+- `GET /api/governance-cadence`
+- `GET /api/decision-policy`
+- `GET /api/reasoning-stress`
 - `PATCH /api/schema-gap/actions/{capability}/{field}`
 - `GET /api/decisions/{decision_id}`
 
@@ -215,14 +222,17 @@ Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/monthly-packet`,
 `http://127.0.0.1:8000/api/schema-gap`, and
 `http://127.0.0.1:8000/api/v02-intelligence`, plus the pilot request pack at
-`http://127.0.0.1:8000/api/pilot-request-pack` and intake review at
-`http://127.0.0.1:8000/api/pilot-intake-review`.
+`http://127.0.0.1:8000/api/pilot-request-pack`, intake review at
+`http://127.0.0.1:8000/api/pilot-intake-review`, and horizontal architecture
+reviews for readiness, trust, source ingestion, normalization, cadence, decision
+policy, and reasoning stress.
 Use stakeholder views, clickable insight cards, trust/source badges, selected
 decision recommendations, review snapshot diffs, directional v0.2 intelligence
-previews, owner-ready pilot data requests, pilot intake readiness, v0.2 readiness
-cards, a v0.2 owner workbench with field-action status badges, editable action
-notes, recent activity history, changelog filtering, copyable stakeholder
-briefs, action mode, and the council notes panel during monthly review.
+previews, architecture navigation, owner-ready pilot data requests, pilot intake
+readiness, v0.2 readiness cards, a v0.2 owner workbench with field-action status
+badges, editable action notes, recent activity history, changelog filtering,
+copyable stakeholder briefs, action mode, and the council notes panel during
+monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.

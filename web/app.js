@@ -1,14 +1,22 @@
 import {
+  fetchArchitectureReadiness,
   fetchDecisionDetail,
+  fetchDecisionPolicy,
+  fetchGovernanceCadence,
   fetchMonthlyPacket,
+  fetchNormalizationCrosswalk,
   fetchPilotIntakeReview,
   fetchPilotRequestPack,
+  fetchReasoningStress,
   fetchSchemaGap,
+  fetchSourceIngestion,
+  fetchTrustRegistry,
   fetchV02Intelligence,
   updateSchemaAction,
 } from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
+import { renderArchitectureSurface } from "./render/architectureSurface.js";
 import { renderChangelog } from "./render/changelog.js";
 import { renderDecisionDetail } from "./render/detail.js";
 import { renderDrilldowns, renderKnownLimits } from "./render/drilldowns.js";
@@ -41,8 +49,16 @@ let schemaGap = null;
 let v02Intelligence = null;
 let pilotRequestPack = null;
 let pilotIntakeReview = null;
+let architectureReadiness = null;
+let trustRegistry = null;
+let sourceIngestion = null;
+let normalizationCrosswalk = null;
+let governanceCadence = null;
+let decisionPolicy = null;
+let reasoningStress = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
+let activeArchitectureView = "layers";
 let activeFilter = "all";
 let activeOwner = "all";
 let activeChangelogCategory = "all";
@@ -155,6 +171,23 @@ function handleChangelogCategoryChange(nextCategory) {
   );
 }
 
+function architectureData() {
+  return {
+    architectureReadiness,
+    trustRegistry,
+    sourceIngestion,
+    normalizationCrosswalk,
+    governanceCadence,
+    decisionPolicy,
+    reasoningStress,
+  };
+}
+
+function handleArchitectureViewChange(nextViewId) {
+  activeArchitectureView = nextViewId ?? "layers";
+  renderArchitectureSurface(architectureData(), activeArchitectureView, handleArchitectureViewChange);
+}
+
 function focusPanel(target) {
   const targetIds = {
     actions: "action-list",
@@ -247,6 +280,7 @@ function render() {
   renderStakeholderTabs(stakeholderViews, activeView, handleViewChange);
   renderStakeholderContext(activeView, rows, actions);
   renderInsights(activeView, rows, actions, packet, handleInsightAction);
+  renderArchitectureSurface(architectureData(), activeArchitectureView, handleArchitectureViewChange);
   renderSummary(packet, rows, actions);
   renderReviewDiff(
     packet.review_diff,
@@ -280,25 +314,52 @@ function render() {
 async function loadPacket() {
   setStatus("Refreshing monthly packet...");
   try {
-    const [nextPacket, nextSchemaGap, nextV02Intelligence, nextPilotRequestPack, nextPilotIntakeReview] = await Promise.all([
+    const [
+      nextPacket,
+      nextSchemaGap,
+      nextV02Intelligence,
+      nextPilotRequestPack,
+      nextPilotIntakeReview,
+      nextArchitectureReadiness,
+      nextTrustRegistry,
+      nextSourceIngestion,
+      nextNormalizationCrosswalk,
+      nextGovernanceCadence,
+      nextDecisionPolicy,
+      nextReasoningStress,
+    ] = await Promise.all([
       fetchMonthlyPacket(),
       fetchSchemaGap(),
       fetchV02Intelligence(),
       fetchPilotRequestPack(),
       fetchPilotIntakeReview(),
+      fetchArchitectureReadiness(),
+      fetchTrustRegistry(),
+      fetchSourceIngestion(),
+      fetchNormalizationCrosswalk(),
+      fetchGovernanceCadence(),
+      fetchDecisionPolicy(),
+      fetchReasoningStress(),
     ]);
     packet = nextPacket;
     schemaGap = nextSchemaGap;
     v02Intelligence = nextV02Intelligence;
     pilotRequestPack = nextPilotRequestPack;
     pilotIntakeReview = nextPilotIntakeReview;
+    architectureReadiness = nextArchitectureReadiness;
+    trustRegistry = nextTrustRegistry;
+    sourceIngestion = nextSourceIngestion;
+    normalizationCrosswalk = nextNormalizationCrosswalk;
+    governanceCadence = nextGovernanceCadence;
+    decisionPolicy = nextDecisionPolicy;
+    reasoningStress = nextReasoningStress;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
     if (selectedDecisionId) {
       loadDecisionDetail(selectedDecisionId);
     }
-    setStatus("Connected to FastAPI monthly packet, schema-gap, pilot request, and intake endpoints.", "ok");
+    setStatus("Connected to FastAPI monthly packet, architecture, pilot, and intake endpoints.", "ok");
   } catch (error) {
     setStatus(`Unable to load dashboard data: ${error.message}`, "error");
   }

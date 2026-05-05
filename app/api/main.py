@@ -8,16 +8,23 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from decision_spine.services.architecture_readiness import build_architecture_readiness_review
 from decision_spine.services.decision_detail import build_decision_detail
+from decision_spine.services.decision_policy import build_decision_policy_review
+from decision_spine.services.governance_cadence import build_governance_cadence_review
 from decision_spine.services.monthly_packet import build_monthly_packet
+from decision_spine.services.normalization_crosswalk import build_normalization_crosswalk
 from decision_spine.services.pilot_intake_review import build_pilot_intake_review
 from decision_spine.services.pilot_request_pack import build_pilot_request_pack
+from decision_spine.services.reasoning_stress import build_reasoning_stress_review
 from decision_spine.services.schema_gap import (
     InvalidFieldActionStatus,
     UnknownFieldAction,
     build_schema_gap_report,
     update_field_action_status,
 )
+from decision_spine.services.source_ingestion import build_source_ingestion_review
+from decision_spine.services.trust_registry import build_trust_registry
 from decision_spine.services.v02_intelligence import build_v02_intelligence_preview
 
 
@@ -85,6 +92,62 @@ def pilot_request_pack() -> dict[str, Any]:
 def pilot_intake_review() -> dict[str, Any]:
     try:
         return build_pilot_intake_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/architecture-readiness")
+def architecture_readiness() -> dict[str, Any]:
+    try:
+        return build_architecture_readiness_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/trust-registry")
+def trust_registry() -> dict[str, Any]:
+    try:
+        return build_trust_registry()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/source-ingestion")
+def source_ingestion() -> dict[str, Any]:
+    try:
+        return build_source_ingestion_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/normalization-crosswalk")
+def normalization_crosswalk() -> dict[str, Any]:
+    try:
+        return build_normalization_crosswalk()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/governance-cadence")
+def governance_cadence() -> dict[str, Any]:
+    try:
+        return build_governance_cadence_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/decision-policy")
+def decision_policy() -> dict[str, Any]:
+    try:
+        return build_decision_policy_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/reasoning-stress")
+def reasoning_stress() -> dict[str, Any]:
+    try:
+        return build_reasoning_stress_review()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

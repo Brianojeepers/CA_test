@@ -25,6 +25,9 @@ EXPECTED_DASHBOARD_TEXT = [
     "Copy brief",
     "Stakeholder lens",
     "Stakeholder insights",
+    "Architecture navigation",
+    "Horizontal MVP surface",
+    "Next horizontal slices",
     "v0.2 intelligence",
     "Directional preview",
     "Pilot data requests",
@@ -105,6 +108,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "format.js",
             "stakeholders.js",
             "render/actions.js",
+            "render/architectureSurface.js",
             "render/changelog.js",
             "render/detail.js",
             "render/drilldowns.js",
@@ -220,6 +224,85 @@ def check_api(errors: list[str]) -> None:
         errors.append("pilot intake endpoint did not return two privacy-blocked fields")
     if not pilot_intake.get("capability_groups"):
         errors.append("pilot intake endpoint returned no capability groups")
+
+    try:
+        architecture = fetch_json(f"{API_BASE_URL}/architecture-readiness", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if architecture.get("summary", {}).get("database_schema_work") != "deferred":
+        errors.append("architecture readiness endpoint must keep database schema work deferred")
+    if architecture.get("summary", {}).get("layer_count") != len(architecture.get("layers", [])):
+        errors.append("architecture readiness endpoint layer count does not match layers")
+    if not architecture.get("next_horizontal_slices"):
+        errors.append("architecture readiness endpoint returned no next horizontal slices")
+
+    try:
+        trust_registry = fetch_json(f"{API_BASE_URL}/trust-registry", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if trust_registry.get("summary", {}).get("surface_count") != len(trust_registry.get("surfaces", [])):
+        errors.append("trust registry endpoint surface count does not match surfaces")
+    if trust_registry.get("summary", {}).get("decision_grade_surface_count") != 0:
+        errors.append("trust registry endpoint should not mark synthetic surfaces decision-grade")
+
+    try:
+        source_ingestion = fetch_json(f"{API_BASE_URL}/source-ingestion", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if source_ingestion.get("summary", {}).get("production_ingestion_ready_count") != 0:
+        errors.append("source ingestion endpoint must not mark production ingestion ready")
+    if not source_ingestion.get("envelope_fields"):
+        errors.append("source ingestion endpoint returned no ingestion envelope fields")
+
+    try:
+        normalization = fetch_json(f"{API_BASE_URL}/normalization-crosswalk", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if normalization.get("summary", {}).get("ontology_schema_work") != "deferred":
+        errors.append("normalization crosswalk endpoint must keep ontology schema work deferred")
+    if normalization.get("summary", {}).get("competency_count") != len(normalization.get("rows", [])):
+        errors.append("normalization crosswalk endpoint row count does not match summary")
+
+    try:
+        governance = fetch_json(f"{API_BASE_URL}/governance-cadence", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if governance.get("summary", {}).get("automated_scheduling") != "deferred":
+        errors.append("governance cadence endpoint must keep automated scheduling deferred")
+    if governance.get("summary", {}).get("cadence_count") != len(governance.get("cadences", [])):
+        errors.append("governance cadence endpoint cadence count does not match cadences")
+
+    try:
+        decision_policy = fetch_json(f"{API_BASE_URL}/decision-policy", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if decision_policy.get("summary", {}).get("decision_count") != len(decision_policy.get("policy_rows", [])):
+        errors.append("decision policy endpoint row count does not match summary")
+    if not decision_policy.get("policy_catalog"):
+        errors.append("decision policy endpoint returned no policy catalog")
+
+    try:
+        reasoning_stress = fetch_json(f"{API_BASE_URL}/reasoning-stress", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if reasoning_stress.get("summary", {}).get("database_schema_work") != "deferred":
+        errors.append("reasoning stress endpoint must keep database schema work deferred")
+    if reasoning_stress.get("summary", {}).get("scenario_count") != len(reasoning_stress.get("scenarios", [])):
+        errors.append("reasoning stress endpoint scenario count does not match scenarios")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

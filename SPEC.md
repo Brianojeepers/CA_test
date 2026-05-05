@@ -205,6 +205,13 @@ API surface:
 | `GET /api/v02-intelligence` | Return directional role-demand, competency-gap, horizon, and curriculum-impact preview data with guardrails. |
 | `GET /api/pilot-request-pack` | Return owner-ready v0.2 pilot field requests grouped by source owner. |
 | `GET /api/pilot-intake-review` | Return source-owner intake readiness for v0.2 pilot schema design. |
+| `GET /api/architecture-readiness` | Return horizontal architecture coverage, guardrails, rating, and next slices before database/schema work. |
+| `GET /api/trust-registry` | Return stakeholder-surface trust posture, source coverage, and priority trust actions. |
+| `GET /api/source-ingestion` | Return source ingestion envelope, source posture, allowed use, standardization risk, and deferred production-readiness status. |
+| `GET /api/normalization-crosswalk` | Return role, competency, pedagogy, release, evidence, and outcome crosswalk posture before ontology/schema commitments. |
+| `GET /api/governance-cadence` | Return weekly, monthly, and quarterly manual cadence definitions before scheduling or automation. |
+| `GET /api/decision-policy` | Return current decision operating policies across act, revise, monitor, wait, escalate, and archive outcomes. |
+| `GET /api/reasoning-stress` | Return cross-layer stress scenarios that verify unsafe claims downgrade before schema commitments. |
 | `PATCH /api/schema-gap/actions/{capability}/{field}` | Update a v0.2 field-action status and notes in the local status register, then return the refreshed schema-gap report. |
 | `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
 
@@ -212,11 +219,11 @@ Frontend prototype:
 
 | Surface | Requirement |
 | --- | --- |
-| `web/index.html` | Render the monthly-packet API as a stakeholder dashboard with summary metrics, actions, review snapshot diffs, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
-| `web/app.js` | Coordinate dashboard state, filtering, decision selection, and council meeting controls. |
-| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, pilot request pack, pilot intake review, and decision-detail API data. |
+| `web/index.html` | Render the monthly-packet and horizontal-review APIs as a stakeholder dashboard with architecture navigation, summary metrics, actions, review snapshot diffs, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
+| `web/app.js` | Coordinate dashboard state, architecture navigation, filtering, decision selection, and council meeting controls. |
+| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, pilot request pack, pilot intake review, architecture review, trust, source ingestion, normalization, cadence, decision policy, reasoning stress, and decision-detail API data. |
 | `web/stakeholders.js` | Define stakeholder-specific dashboard lenses and row/action filtering. |
-| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, pilot data requests, pilot intake readiness, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, architecture navigation, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, pilot data requests, pilot intake readiness, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 | `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 

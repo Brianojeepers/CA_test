@@ -92,6 +92,74 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["privacy_blocked_count"], 2)
         self.assertIn("capability_groups", payload)
 
+    def test_architecture_readiness_endpoint_returns_horizontal_review(self) -> None:
+        response = self.client.get("/api/architecture-readiness")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["database_schema_work"], "deferred")
+        self.assertEqual(payload["summary"]["layer_count"], len(payload["layers"]))
+        self.assertEqual(payload["rating"]["score"], 9)
+        self.assertIn("next_horizontal_slices", payload)
+
+    def test_trust_registry_endpoint_returns_surface_posture(self) -> None:
+        response = self.client.get("/api/trust-registry")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["source_contract_count"], 7)
+        self.assertEqual(payload["summary"]["surface_count"], len(payload["surfaces"]))
+        self.assertEqual(payload["summary"]["decision_grade_surface_count"], 0)
+        self.assertIn("priority_trust_actions", payload)
+
+    def test_source_ingestion_endpoint_returns_readiness_posture(self) -> None:
+        response = self.client.get("/api/source-ingestion")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["source_count"], 7)
+        self.assertEqual(payload["summary"]["production_ingestion_ready_count"], 0)
+        self.assertEqual(payload["summary"]["database_schema_work"], "deferred")
+        self.assertIn("envelope_fields", payload)
+
+    def test_normalization_crosswalk_endpoint_returns_mapping_posture(self) -> None:
+        response = self.client.get("/api/normalization-crosswalk")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["role_count"], 3)
+        self.assertEqual(payload["summary"]["competency_count"], len(payload["rows"]))
+        self.assertEqual(payload["summary"]["ontology_schema_work"], "deferred")
+        self.assertIn("role_summaries", payload)
+
+    def test_governance_cadence_endpoint_returns_manual_cadences(self) -> None:
+        response = self.client.get("/api/governance-cadence")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["cadence_count"], len(payload["cadences"]))
+        self.assertEqual(payload["summary"]["ready_for_manual_trial_count"], 2)
+        self.assertEqual(payload["summary"]["automated_scheduling"], "deferred")
+
+    def test_decision_policy_endpoint_returns_operating_policy(self) -> None:
+        response = self.client.get("/api/decision-policy")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["decision_count"], len(payload["policy_rows"]))
+        self.assertEqual(payload["summary"]["escalate_count"], 1)
+        self.assertIn("policy_catalog", payload)
+
+    def test_reasoning_stress_endpoint_returns_cross_layer_scenarios(self) -> None:
+        response = self.client.get("/api/reasoning-stress")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["scenario_count"], len(payload["scenarios"]))
+        self.assertEqual(payload["summary"]["fail_count"], 0)
+        self.assertEqual(payload["summary"]["database_schema_work"], "deferred")
+        self.assertIn("next_horizontal_slices", payload)
+
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
         with self.temporary_status_register() as (status_path, event_path):
             response = self.client.patch(
