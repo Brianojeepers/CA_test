@@ -31,6 +31,7 @@ In scope:
 - Pilot intake review of source-owner responses before schema design.
 - Horizontal architecture readiness review before database schema or warehouse-model commitments.
 - Trust and source coverage registry by stakeholder-facing surface.
+- Stakeholder journey map from evidence surface to safe action, deferred action, escalation, and evidence needed.
 - Full coverage of the 17 original user stories in `docs/user_stories.md`.
 
 Out of scope:
@@ -87,6 +88,7 @@ Real-data readiness and source obligations live in:
 - `docs/pilot_extract_process.md`
 - `docs/source_data_contracts.md`
 - `docs/trust_registry.md`
+- `docs/stakeholder_journey_map.md`
 - `docs/v02_pilot_schema.md`
 - `data/source_contracts.json`
 - `data/v02_intelligence_requirements.json`
@@ -142,6 +144,7 @@ Core operating scripts:
 | `scripts/pilot_intake_review.py` | Review source-owner responses and classify fields as accepted, needs clarification, privacy blocked, or not ready. |
 | `scripts/architecture_readiness_review.py` | Review horizontal coverage across the target intelligence architecture before database/schema work. |
 | `scripts/trust_registry_review.py` | Review trust posture and source coverage by stakeholder-facing surface. |
+| `scripts/stakeholder_journey_review.py` | Review stakeholder journeys from evidence surface to safe action and deferred claims. |
 
 Reusable service layer:
 
@@ -164,6 +167,8 @@ Reusable service layer:
 | `decision_spine.services.architecture_readiness.render_architecture_readiness_text` | Render the architecture readiness review for CLI use. |
 | `decision_spine.services.trust_registry.build_trust_registry` | Return source coverage, trust posture, blockers, and next trust actions by stakeholder-facing surface. |
 | `decision_spine.services.trust_registry.render_trust_registry_text` | Render the trust and source coverage registry for CLI use. |
+| `decision_spine.services.stakeholder_journey.build_stakeholder_journey_map` | Return stakeholder journeys with current trust mode, safe actions, deferred actions, escalation path, and evidence needed. |
+| `decision_spine.services.stakeholder_journey.render_stakeholder_journey_text` | Render the stakeholder journey map for CLI use. |
 
 API surface:
 
@@ -274,6 +279,7 @@ The MVP is in a valid local state when:
 - The MVP can review source-owner intake responses before allowing v0.2 fields into schema design.
 - The MVP can review horizontal architecture readiness before committing to database schemas, warehouse models, or scheduled ingestion.
 - The MVP can show which stakeholder-facing surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates before any real-data claim is made.
+- The MVP can show what each stakeholder can do now, what they must defer, who they escalate to, and what evidence is needed to progress.
 - Generated outputs are ignored by git.
 - Monthly packet data is available as structured Python dictionaries before rendering to Markdown or UI.
 - The API exposes health and monthly-packet endpoints backed by the same Python service layer as the CLI.
@@ -315,7 +321,8 @@ They currently cover:
 - delivery-window timing classifications,
 - schema gap coverage, alias handling, and v0.2 expansion requirements,
 - horizontal architecture readiness before database/schema commitments,
-- trust and source coverage posture by stakeholder-facing surface.
+- trust and source coverage posture by stakeholder-facing surface,
+- stakeholder journey mode, safe action, deferred claim, escalation path, and evidence-needed mapping.
 
 Run:
 
@@ -340,7 +347,7 @@ python3 -m unittest discover -s tests
 Next stages should focus on:
 
 - privacy-reviewed pilot extracts,
-- horizontal coverage across source trust, stakeholder journeys, decision policy, and architecture-wide reasoning before v0.2 pilot schema decisions,
+- horizontal coverage across decision policy, source freshness, and architecture-wide reasoning before v0.2 pilot schema decisions,
 - v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,

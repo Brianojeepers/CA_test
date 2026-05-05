@@ -24,9 +24,9 @@ will make later schema and database decisions more defensible.
 | Normalization | Thin | Create a crosswalk review for role anchors, competency clusters, evidence types, and decision references. | Canonical ontology tables and warehouse semantic models. |
 | Intelligence | Partial | Extend reasoning stress tests across role demand, competency gaps, horizon radar, and curriculum impact assumptions. | Model training, weight tuning, and scoring contracts. |
 | Decision | Covered for local MVP | Add decision-policy checks for wait, escalate, revise, or archive. | Automated approvals and downstream writes. |
-| Activation | Partial | Map every stakeholder lens to expected actions, evidence thresholds, and escalation paths. | LMS, CRM, ATS, or delivery-tool integrations. |
+| Activation | Partial | Add decision-policy checks for when each stakeholder should wait, revise, escalate, or archive. | LMS, CRM, ATS, or delivery-tool integrations. |
 | Governance cadence | Partial | Define weekly, monthly, and quarterly review templates with entry and exit criteria. | Automated production schedules. |
-| Observability and trust | Partial | Add a stakeholder journey map that shows how trust posture changes the next action for each user group. | Production observability tooling. |
+| Observability and trust | Partial | Add a source freshness and owner-obligation review across planned signal domains. | Production observability tooling. |
 | Stakeholder experience | Partial | Broaden the dashboard into architecture-wide navigation: signals, trust, decisions, activation, and learning. | Deep optimization of any single dashboard module. |
 
 ## Guardrails
@@ -42,6 +42,6 @@ will make later schema and database decisions more defensible.
 
 ## Next Horizontal Slices
 
-1. Stakeholder journey map across evidence, decision, activation, and follow-up.
-2. Decision policy checks for wait, revise, escalate, or archive.
-3. Cross-layer reasoning stress tests before schema commitments.
+1. Decision policy checks for wait, revise, escalate, or archive.
+2. Cross-layer reasoning stress tests before schema commitments.
+3. Source freshness and owner-obligation review.
