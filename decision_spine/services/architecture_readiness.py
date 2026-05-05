@@ -31,18 +31,20 @@ ARCHITECTURE_LAYERS: tuple[dict[str, Any], ...] = (
         "layer": "normalization",
         "label": "Normalization layer",
         "target_state": "Standardize roles, competencies, skills, horizons, confidence, privacy posture, and source provenance.",
-        "current_coverage": "Role competencies, pedagogy framing, source contracts, and v0.2 field requirements provide early normalization anchors.",
+        "current_coverage": "Role competencies, pedagogy framing, source contracts, v0.2 field requirements, and a crosswalk review provide early normalization anchors.",
         "current_assets": [
             "data/role_competencies.json",
             "data/pedagogy_map.json",
             "data/v02_intelligence_requirements.json",
             "scripts/competency_gap_review.py",
+            "scripts/normalization_crosswalk_review.py",
             "scripts/pedagogy_review.py",
             "scripts/schema_gap_review.py",
+            "docs/normalization_crosswalk.md",
         ],
-        "readiness": "thin",
+        "readiness": "partial",
         "stakeholder_value": "Learning, Assessment Ops, and Data can discuss the same roles and competencies without assuming a final ontology.",
-        "horizontal_next_step": "Create a crosswalk review that shows role anchors, competency clusters, evidence types, and decision references in one place.",
+        "horizontal_next_step": "Use crosswalk gaps to shape controlled pilot extracts before ontology/schema work.",
         "defer_vertical_work": "Do not lock a canonical ontology table or warehouse semantic model until source terms and stakeholder language stabilize.",
     },
     {
@@ -210,7 +212,7 @@ def build_architecture_readiness_review() -> dict[str, Any]:
         "next_horizontal_slices": [
             "Controlled pilot extract rehearsal once source blockers clear",
             "Dashboard placement for decision policy and stress-test downgrades",
-            "Schema decisions only after stress scenarios keep passing with pilot evidence",
+            "Governance cadence templates with weekly, monthly, and quarterly entry and exit criteria",
         ],
     }
 

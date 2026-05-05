@@ -21,7 +21,7 @@ will make later schema and database decisions more defensible.
 | Layer | Current readiness | Horizontal next step | Vertical work deferred |
 | --- | --- | --- | --- |
 | Signal ingestion | Partial | Rehearse controlled pilot extracts once source blockers clear. | Scheduled ingestion, warehouse landing tables, and source-specific pipelines. |
-| Normalization | Thin | Create a crosswalk review for role anchors, competency clusters, evidence types, and decision references. | Canonical ontology tables and warehouse semantic models. |
+| Normalization | Partial | Use crosswalk gaps to shape controlled pilot extracts before ontology/schema work. | Canonical ontology tables and warehouse semantic models. |
 | Intelligence | Partial | Use stress-test failures to define the narrowest pilot extract rehearsal. | Model training, weight tuning, and scoring contracts. |
 | Decision | Covered for local MVP | Place policy and stress-test downgrades into the dashboard once the review language stabilizes. | Automated approvals and downstream writes. |
 | Activation | Partial | Rehearse controlled pilot extracts once source blockers clear. | LMS, CRM, ATS, or delivery-tool integrations. |
@@ -44,4 +44,4 @@ will make later schema and database decisions more defensible.
 
 1. Controlled pilot extract rehearsal once source blockers clear.
 2. Dashboard placement for decision policy and stress-test downgrades.
-3. Schema decisions only after stress scenarios keep passing with pilot evidence.
+3. Governance cadence templates with weekly, monthly, and quarterly entry and exit criteria.

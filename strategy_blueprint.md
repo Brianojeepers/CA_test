@@ -47,6 +47,7 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/architecture_readiness_review.py` and `docs/architecture_readiness_map.md` for checking horizontal coverage across the target architecture before database/schema work.
 - `scripts/trust_registry_review.py` and `docs/trust_registry.md` for showing which stakeholder surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates.
 - `scripts/source_ingestion_review.py` and `docs/source_ingestion_contract.md` for defining the canonical ingestion envelope, freshness posture, allowed use, and standardization risk before live connectors or schemas.
+- `scripts/normalization_crosswalk_review.py` and `docs/normalization_crosswalk.md` for aligning role, competency, pedagogy, decision, release, evidence, and outcome language before ontology/schema work.
 - `scripts/stakeholder_journey_review.py` and `docs/stakeholder_journey_map.md` for mapping what each stakeholder can do now, must defer, escalate, and evidence-gate.
 - `scripts/decision_policy_review.py` and `docs/decision_policy.md` for turning current evidence posture into safe policy outcomes: act now, revise, monitor, wait, escalate, or archive.
 - `scripts/reasoning_stress_review.py` and `docs/reasoning_stress_tests.md` for forcing unsafe claims to downgrade across signal, trust, ingestion, decision, activation, and stakeholder-experience layers.
@@ -102,6 +103,9 @@ Source ingestion contract checks then make the future ingestion problem explicit
 without building it too early: every candidate source gets an envelope, allowed
 use, freshness obligation, standardization risk, canonical target, and blocker
 before any connector, schedule, landing table, or database schema is considered.
+Normalization crosswalk checks then show whether role archetypes, competency
+clusters, pedagogy, releases, learner evidence, and outcome cohorts line up
+well enough for pilot planning without pretending that a final ontology exists.
 Reasoning stress tests then check whether the horizontal architecture holds
 together under pressure: strong signals cannot bypass red evidence sources,
 approvals cannot masquerade as implementation proof, and dashboard actions

@@ -32,6 +32,7 @@ In scope:
 - Horizontal architecture readiness review before database schema or warehouse-model commitments.
 - Trust and source coverage registry by stakeholder-facing surface.
 - Source ingestion contract and freshness review before live connectors or source-specific schemas.
+- Normalization crosswalk across roles, competencies, pedagogy, decisions, releases, learner evidence, and outcomes before ontology/schema work.
 - Stakeholder journey map from evidence surface to safe action, deferred action, escalation, and evidence needed.
 - Decision policy checks for safe operating outcomes: act now, revise, monitor, wait, escalate, or archive.
 - Cross-layer reasoning stress tests that force unsafe claims to downgrade before schema commitments.
@@ -92,6 +93,7 @@ Real-data readiness and source obligations live in:
 - `docs/source_data_contracts.md`
 - `docs/trust_registry.md`
 - `docs/source_ingestion_contract.md`
+- `docs/normalization_crosswalk.md`
 - `docs/stakeholder_journey_map.md`
 - `docs/decision_policy.md`
 - `docs/reasoning_stress_tests.md`
@@ -151,6 +153,7 @@ Core operating scripts:
 | `scripts/architecture_readiness_review.py` | Review horizontal coverage across the target intelligence architecture before database/schema work. |
 | `scripts/trust_registry_review.py` | Review trust posture and source coverage by stakeholder-facing surface. |
 | `scripts/source_ingestion_review.py` | Review source ingestion envelope, freshness, allowed use, standardization risk, and deferred live-ingestion posture. |
+| `scripts/normalization_crosswalk_review.py` | Review role, competency, pedagogy, evidence, and outcome language before ontology/schema work. |
 | `scripts/stakeholder_journey_review.py` | Review stakeholder journeys from evidence surface to safe action and deferred claims. |
 | `scripts/decision_policy_review.py` | Review safe operating policy for current decisions. |
 | `scripts/reasoning_stress_review.py` | Stress-test cross-layer claim downgrades before schema commitments. |
@@ -178,6 +181,8 @@ Reusable service layer:
 | `decision_spine.services.trust_registry.render_trust_registry_text` | Render the trust and source coverage registry for CLI use. |
 | `decision_spine.services.source_ingestion.build_source_ingestion_review` | Return canonical ingestion envelope, source freshness posture, allowed use, standardization risk, and live-ingestion readiness. |
 | `decision_spine.services.source_ingestion.render_source_ingestion_review_text` | Render the source ingestion contract review for CLI use. |
+| `decision_spine.services.normalization_crosswalk.build_normalization_crosswalk` | Return role, competency, pedagogy, decision, release, learner-evidence, and outcome crosswalk state before ontology/schema work. |
+| `decision_spine.services.normalization_crosswalk.render_normalization_crosswalk_text` | Render the normalization crosswalk review for CLI use. |
 | `decision_spine.services.stakeholder_journey.build_stakeholder_journey_map` | Return stakeholder journeys with current trust mode, safe actions, deferred actions, escalation path, and evidence needed. |
 | `decision_spine.services.stakeholder_journey.render_stakeholder_journey_text` | Render the stakeholder journey map for CLI use. |
 | `decision_spine.services.decision_policy.build_decision_policy_review` | Return policy outcomes for current decisions based on impact status, trust posture, and stakeholder journey mode. |
@@ -295,6 +300,7 @@ The MVP is in a valid local state when:
 - The MVP can review horizontal architecture readiness before committing to database schemas, warehouse models, or scheduled ingestion.
 - The MVP can show which stakeholder-facing surfaces are privacy blocked, planning-ready, manual-sampling-only, or pilot candidates before any real-data claim is made.
 - The MVP can define a canonical ingestion envelope and review source freshness, allowed use, and standardization risk before any connector, table, or schema work begins.
+- The MVP can review whether role, competency, pedagogy, evidence, and outcome language is aligned enough for pilot planning before ontology/schema work.
 - The MVP can show what each stakeholder can do now, what they must defer, who they escalate to, and what evidence is needed to progress.
 - The MVP can classify each current decision into a safe operating policy outcome before any approval, claim, or escalation is acted on.
 - The MVP can stress-test cross-layer reasoning and block unsafe claim escalation before any schema commitment is made.
@@ -341,6 +347,7 @@ They currently cover:
 - horizontal architecture readiness before database/schema commitments,
 - trust and source coverage posture by stakeholder-facing surface,
 - source ingestion envelope, freshness posture, allowed use, and standardization risk,
+- normalization crosswalk states across role, competency, pedagogy, release, evidence, and outcome links,
 - stakeholder journey mode, safe action, deferred claim, escalation path, and evidence-needed mapping,
 - decision policy outcomes for act now, revise, monitor, wait, escalate, and archive,
 - cross-layer reasoning stress tests for unsafe claim downgrades.
@@ -358,6 +365,7 @@ python3 -m unittest discover -s tests
 - Placement, retention, and readiness evidence are directional, not causal proof.
 - Source contracts currently block real learner and outcome extracts pending privacy review.
 - Source ingestion review is a contract and freshness posture review, not a live connector or production ingestion pipeline.
+- Normalization crosswalk review is not a canonical ontology schema or semantic model.
 - Pilot intake responses are synthetic planning records, not real source-owner approvals.
 - Actual cohort calendar data is unavailable.
 - Client/account-level commercial evidence is unavailable.
@@ -372,6 +380,7 @@ Next stages should focus on:
 - privacy-reviewed pilot extracts,
 - controlled pilot extract rehearsal once source blockers clear,
 - dashboard placement for decision policy and stress-test downgrades,
+- governance cadence templates with weekly, monthly, and quarterly entry and exit criteria,
 - v0.2 pilot schema decisions for role-anchor demand, competency gaps, horizon radar, and curriculum impact simulation,
 - cohort calendar data,
 - stronger learner evidence thresholds,
