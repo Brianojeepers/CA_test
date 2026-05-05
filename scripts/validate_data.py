@@ -201,6 +201,8 @@ def validate_all() -> ValidationResult:
         v02_action_statuses = load_optional_json("v02_field_action_status.json")
         v02_action_events = load_optional_json("v02_field_action_events.json")
         pilot_responses = load_optional_json("pilot_request_responses.json")
+        review_outcomes = load_optional_json("review_workflow_outcomes.json")
+        review_events = load_optional_json("review_workflow_events.json")
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         result.errors.append(str(exc))
         return result
@@ -220,6 +222,8 @@ def validate_all() -> ValidationResult:
         require_unique_ids(result, "learner_evidence_summary.json", learner_evidence, "evidence_id")
     if pilot_responses:
         require_unique_ids(result, "pilot_request_responses.json", pilot_responses, "response_id")
+    if review_events:
+        require_unique_ids(result, "review_workflow_events.json", review_events, "event_id")
 
     require_fields(
         result,
@@ -476,6 +480,39 @@ def validate_all() -> ValidationResult:
             },
             "response_id",
         )
+    if review_outcomes:
+        require_fields(
+            result,
+            "review_workflow_outcomes.json",
+            review_outcomes,
+            {
+                "step_id",
+                "item_id",
+                "title",
+                "owner",
+                "outcome",
+                "notes",
+                "updated_date",
+            },
+            "item_id",
+        )
+    if review_events:
+        require_fields(
+            result,
+            "review_workflow_events.json",
+            review_events,
+            {
+                "event_id",
+                "step_id",
+                "item_id",
+                "title",
+                "previous_outcome",
+                "next_outcome",
+                "notes",
+                "event_date",
+            },
+            "event_id",
+        )
 
     validate_dates(result, "signals.json", signals, "signal_id", {"logged_date", "source_date", "green_threshold_date"})
     validate_dates(result, "decisions.json", decisions, "decision_id", {"decision_signed_date"})
@@ -488,6 +525,10 @@ def validate_all() -> ValidationResult:
         validate_dates(result, "v02_field_action_events.json", v02_action_events, "event_id", {"event_date"})
     if pilot_responses:
         validate_dates(result, "pilot_request_responses.json", pilot_responses, "response_id", {"response_date"})
+    if review_outcomes:
+        validate_dates(result, "review_workflow_outcomes.json", review_outcomes, "item_id", {"updated_date"})
+    if review_events:
+        validate_dates(result, "review_workflow_events.json", review_events, "event_id", {"event_date"})
 
     validate_enum(result, "signals.json", signals, "signal_id", "status", {"green", "amber", "red"})
     validate_enum(result, "signals.json", signals, "signal_id", "confidence", {"low", "medium", "high"})
@@ -539,6 +580,32 @@ def validate_all() -> ValidationResult:
             "response_id",
             "privacy_decision",
             {"not_required", "summary_approved", "aggregate_approved", "pending", "blocked"},
+        )
+    for record in review_outcomes:
+        validate_enum(
+            result,
+            "review_workflow_outcomes.json",
+            [record],
+            "item_id",
+            "outcome",
+            {"accepted", "needs_follow_up", "blocked", "deferred"},
+        )
+    for event in review_events:
+        validate_enum(
+            result,
+            "review_workflow_events.json",
+            [event],
+            "event_id",
+            "previous_outcome",
+            {"unreviewed", "accepted", "needs_follow_up", "blocked", "deferred"},
+        )
+        validate_enum(
+            result,
+            "review_workflow_events.json",
+            [event],
+            "event_id",
+            "next_outcome",
+            {"accepted", "needs_follow_up", "blocked", "deferred"},
         )
 
     for score_field in (
@@ -937,6 +1004,31 @@ def validate_all() -> ValidationResult:
                     not isinstance(response[field_name_key], str) or not response[field_name_key].strip()
                 ):
                     result.error("pilot_request_responses.json", response_id, field_name_key, "must be a non-empty string")
+
+    seen_review_keys: set[tuple[Any, Any]] = set()
+    for record in review_outcomes:
+        step_id = record.get("step_id")
+        item_id = record.get("item_id")
+        rid = f"{step_id}:{item_id}"
+        if (step_id, item_id) in seen_review_keys:
+            result.error("review_workflow_outcomes.json", rid, "item_id", "duplicate step/item outcome")
+        seen_review_keys.add((step_id, item_id))
+        for field_name_key in ("step_id", "item_id", "title", "owner", "outcome"):
+            if field_name_key in record and (
+                not isinstance(record[field_name_key], str) or not record[field_name_key].strip()
+            ):
+                result.error("review_workflow_outcomes.json", rid, field_name_key, "must be a non-empty string")
+        if "notes" in record and not isinstance(record["notes"], str):
+            result.error("review_workflow_outcomes.json", rid, "notes", "must be a string")
+    for event in review_events:
+        event_id = record_id(event, "event_id")
+        for field_name_key in ("event_id", "step_id", "item_id", "title", "previous_outcome", "next_outcome"):
+            if field_name_key in event and (
+                not isinstance(event[field_name_key], str) or not event[field_name_key].strip()
+            ):
+                result.error("review_workflow_events.json", event_id, field_name_key, "must be a non-empty string")
+        if "notes" in event and not isinstance(event["notes"], str):
+            result.error("review_workflow_events.json", event_id, "notes", "must be a string")
 
     expected_files = {
         "signals.json",

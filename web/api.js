@@ -56,6 +56,10 @@ export async function fetchReasoningStress() {
   return fetchJson("/reasoning-stress");
 }
 
+export async function fetchReviewWorkflow() {
+  return fetchJson("/review-workflow");
+}
+
 export async function updateSchemaAction(capability, field, status, notes) {
   const response = await fetch(
     `${API_BASE_URL}/schema-gap/actions/${encodeURIComponent(capability)}/${encodeURIComponent(field)}`,
@@ -63,6 +67,21 @@ export async function updateSchemaAction(capability, field, status, notes) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status, notes }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`API returned ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function updateReviewWorkflowOutcome(stepId, itemId, outcome, notes) {
+  const response = await fetch(
+    `${API_BASE_URL}/review-workflow/items/${encodeURIComponent(stepId)}/${encodeURIComponent(itemId)}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ outcome, notes }),
     },
   );
   if (!response.ok) {

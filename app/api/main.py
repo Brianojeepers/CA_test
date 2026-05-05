@@ -17,6 +17,12 @@ from decision_spine.services.normalization_crosswalk import build_normalization_
 from decision_spine.services.pilot_intake_review import build_pilot_intake_review
 from decision_spine.services.pilot_request_pack import build_pilot_request_pack
 from decision_spine.services.reasoning_stress import build_reasoning_stress_review
+from decision_spine.services.review_workflow import (
+    InvalidReviewOutcome,
+    UnknownReviewItem,
+    build_review_workflow,
+    update_review_item_outcome,
+)
 from decision_spine.services.schema_gap import (
     InvalidFieldActionStatus,
     UnknownFieldAction,
@@ -30,6 +36,11 @@ from decision_spine.services.v02_intelligence import build_v02_intelligence_prev
 
 class FieldActionStatusUpdate(BaseModel):
     status: str
+    notes: Optional[str] = None
+
+
+class ReviewOutcomeUpdate(BaseModel):
+    outcome: str
     notes: Optional[str] = None
 
 
@@ -148,6 +159,27 @@ def decision_policy() -> dict[str, Any]:
 def reasoning_stress() -> dict[str, Any]:
     try:
         return build_reasoning_stress_review()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/review-workflow")
+def review_workflow() -> dict[str, Any]:
+    try:
+        return build_review_workflow()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.patch("/api/review-workflow/items/{step_id}/{item_id}")
+def update_review_workflow_item(step_id: str, item_id: str, update: ReviewOutcomeUpdate) -> dict[str, Any]:
+    try:
+        update_review_item_outcome(step_id, item_id, update.outcome, update.notes)
+        return build_review_workflow()
+    except InvalidReviewOutcome as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except UnknownReviewItem as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

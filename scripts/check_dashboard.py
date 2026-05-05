@@ -28,6 +28,9 @@ EXPECTED_DASHBOARD_TEXT = [
     "Architecture navigation",
     "Horizontal MVP surface",
     "Next horizontal slices",
+    "Review workflow",
+    "Council operating review",
+    "Recent review outcomes",
     "v0.2 intelligence",
     "Directional preview",
     "Pilot data requests",
@@ -120,6 +123,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/pilotRequests.js",
             "render/recommendation.js",
             "render/reviewDiff.js",
+            "render/reviewWorkflow.js",
             "render/schemaGap.js",
             "render/stakeholderBrief.js",
             "render/summary.js",
@@ -303,6 +307,20 @@ def check_api(errors: list[str]) -> None:
         errors.append("reasoning stress endpoint must keep database schema work deferred")
     if reasoning_stress.get("summary", {}).get("scenario_count") != len(reasoning_stress.get("scenarios", [])):
         errors.append("reasoning stress endpoint scenario count does not match scenarios")
+
+    try:
+        review_workflow = fetch_json(f"{API_BASE_URL}/review-workflow", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if review_workflow.get("summary", {}).get("step_count") != len(review_workflow.get("steps", [])):
+        errors.append("review workflow endpoint step count does not match steps")
+    item_count = sum(len(step.get("items", [])) for step in review_workflow.get("steps", []))
+    if review_workflow.get("summary", {}).get("item_count") != item_count:
+        errors.append("review workflow endpoint item count does not match step items")
+    if not review_workflow.get("allowed_outcomes"):
+        errors.append("review workflow endpoint returned no allowed outcomes")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

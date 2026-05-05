@@ -30,6 +30,10 @@ REQUIRED_IDS = {
     "architecture-tabs",
     "architecture-body",
     "architecture-next-list",
+    "review-workflow-summary",
+    "review-workflow-tabs",
+    "review-workflow-body",
+    "review-workflow-events",
     "v02-intelligence-summary",
     "v02-intelligence-guardrails",
     "v02-intelligence-list",
@@ -99,6 +103,7 @@ REQUIRED_FILES = [
     "render/pilotRequests.js",
     "render/recommendation.js",
     "render/reviewDiff.js",
+    "render/reviewWorkflow.js",
     "render/schemaGap.js",
     "render/stakeholderBrief.js",
     "render/summary.js",
@@ -160,13 +165,14 @@ def check_api_contract(errors: list[str]) -> None:
         "/governance-cadence",
         "/decision-policy",
         "/reasoning-stress",
+        "/review-workflow",
         "/decisions/",
     ):
         if endpoint not in api_js:
             errors.append(f"web/api.js is missing API endpoint reference: {endpoint}")
-    for token in ("updateSchemaAction", "PATCH"):
+    for token in ("updateSchemaAction", "updateReviewWorkflowOutcome", "PATCH"):
         if token not in api_js:
-            errors.append(f"web/api.js is missing schema action update token: {token}")
+            errors.append(f"web/api.js is missing local update token: {token}")
 
 
 def check_insight_trust_contract(errors: list[str]) -> None:
@@ -405,6 +411,46 @@ def check_architecture_surface_contract(errors: list[str]) -> None:
             errors.append(f"web/styles.css is missing architecture surface style: {token}")
 
 
+def check_review_workflow_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    review_js = (WEB_DIR / "render" / "reviewWorkflow.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in (
+        "fetchReviewWorkflow",
+        "updateReviewWorkflowOutcome",
+        "renderReviewWorkflow",
+        "handleReviewOutcomeUpdate",
+        "reviewWorkflow",
+    ):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing review workflow token: {token}")
+
+    for token in (
+        "review-workflow-summary",
+        "review-workflow-tabs",
+        "review-workflow-body",
+        "review-workflow-events",
+        "data-review-step-id",
+        "data-review-item-id",
+        "allowed_outcomes",
+        "recommended_outcome",
+    ):
+        if token not in review_js:
+            errors.append(f"web/render/reviewWorkflow.js is missing review workflow token: {token}")
+
+    for token in (
+        ".review-workflow-panel",
+        ".review-workflow-tabs",
+        ".review-workflow-body",
+        ".review-workflow-item",
+        ".review-workflow-form",
+        ".review-event-list",
+    ):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing review workflow style: {token}")
+
+
 def check_js_syntax(errors: list[str]) -> None:
     node = shutil.which("node")
     if not node:
@@ -438,6 +484,7 @@ def main() -> int:
         check_pilot_request_contract(errors)
         check_pilot_intake_contract(errors)
         check_architecture_surface_contract(errors)
+        check_review_workflow_contract(errors)
         check_js_syntax(errors)
 
     if errors:

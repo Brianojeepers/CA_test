@@ -9,6 +9,7 @@ from typing import Iterator
 from fastapi.testclient import TestClient
 
 from app.api.main import app
+from decision_spine.services import review_workflow as review_workflow_service
 from decision_spine.services import schema_gap as schema_gap_service
 
 
@@ -32,6 +33,23 @@ class ApiTests(unittest.TestCase):
             finally:
                 schema_gap_service.FIELD_ACTION_STATUS_FILE = original_status_path
                 schema_gap_service.FIELD_ACTION_EVENT_FILE = original_event_path
+
+    @contextmanager
+    def temporary_review_workflow_register(self) -> Iterator[tuple[Path, Path]]:
+        original_outcome_path = review_workflow_service.REVIEW_OUTCOME_FILE
+        original_event_path = review_workflow_service.REVIEW_EVENT_FILE
+        with TemporaryDirectory() as temp_dir:
+            outcome_path = Path(temp_dir) / "review_workflow_outcomes.json"
+            event_path = Path(temp_dir) / "review_workflow_events.json"
+            outcome_path.write_text("[]", encoding="utf-8")
+            event_path.write_text("[]", encoding="utf-8")
+            review_workflow_service.REVIEW_OUTCOME_FILE = outcome_path
+            review_workflow_service.REVIEW_EVENT_FILE = event_path
+            try:
+                yield outcome_path, event_path
+            finally:
+                review_workflow_service.REVIEW_OUTCOME_FILE = original_outcome_path
+                review_workflow_service.REVIEW_EVENT_FILE = original_event_path
 
     def test_health_endpoint(self) -> None:
         response = self.client.get("/api/health")
@@ -159,6 +177,61 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["fail_count"], 0)
         self.assertEqual(payload["summary"]["database_schema_work"], "deferred")
         self.assertIn("next_horizontal_slices", payload)
+
+    def test_review_workflow_endpoint_returns_operating_agenda(self) -> None:
+        with self.temporary_review_workflow_register():
+            response = self.client.get("/api/review-workflow")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["step_count"], 5)
+        self.assertEqual(payload["summary"]["item_count"], 19)
+        self.assertEqual(payload["summary"]["unreviewed_count"], 19)
+        self.assertIn("allowed_outcomes", payload)
+
+    def test_review_workflow_outcome_update_persists_and_refreshes_workflow(self) -> None:
+        with self.temporary_review_workflow_register() as (outcome_path, event_path):
+            workflow = self.client.get("/api/review-workflow").json()
+            item = workflow["steps"][0]["items"][0]
+
+            response = self.client.patch(
+                f"/api/review-workflow/items/{item['step_id']}/{item['item_id']}",
+                json={
+                    "outcome": "accepted",
+                    "notes": "Council accepted the current bounded trust language.",
+                },
+            )
+
+            self.assertEqual(response.status_code, 200)
+            payload = response.json()
+            self.assertEqual(payload["summary"]["accepted_count"], 1)
+            self.assertEqual(payload["summary"]["unreviewed_count"], 18)
+            records = json.loads(outcome_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0]["outcome"], "accepted")
+            events = json.loads(event_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events[0]["next_outcome"], "accepted")
+
+    def test_review_workflow_outcome_update_rejects_invalid_outcome(self) -> None:
+        with self.temporary_review_workflow_register():
+            workflow = self.client.get("/api/review-workflow").json()
+            item = workflow["steps"][0]["items"][0]
+            response = self.client.patch(
+                f"/api/review-workflow/items/{item['step_id']}/{item['item_id']}",
+                json={"outcome": "done", "notes": "Not a supported outcome."},
+            )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_review_workflow_outcome_update_rejects_unknown_item(self) -> None:
+        with self.temporary_review_workflow_register():
+            response = self.client.patch(
+                "/api/review-workflow/items/trust_posture/not-current",
+                json={"outcome": "accepted", "notes": "Cannot update an unknown item."},
+            )
+
+        self.assertEqual(response.status_code, 404)
 
     def test_schema_gap_action_status_update_persists_and_refreshes_report(self) -> None:
         with self.temporary_status_register() as (status_path, event_path):

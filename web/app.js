@@ -8,11 +8,13 @@ import {
   fetchPilotIntakeReview,
   fetchPilotRequestPack,
   fetchReasoningStress,
+  fetchReviewWorkflow,
   fetchSchemaGap,
   fetchSourceIngestion,
   fetchTrustRegistry,
   fetchV02Intelligence,
   updateSchemaAction,
+  updateReviewWorkflowOutcome,
 } from "./api.js";
 import { setStatus } from "./format.js";
 import { renderActions } from "./render/actions.js";
@@ -28,6 +30,7 @@ import { renderPilotIntake } from "./render/pilotIntake.js";
 import { renderPilotRequests } from "./render/pilotRequests.js";
 import { renderRecommendation } from "./render/recommendation.js";
 import { renderReviewDiff } from "./render/reviewDiff.js";
+import { renderReviewWorkflow } from "./render/reviewWorkflow.js";
 import { renderSchemaGap } from "./render/schemaGap.js";
 import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
 import { renderSummary } from "./render/summary.js";
@@ -56,6 +59,7 @@ let normalizationCrosswalk = null;
 let governanceCadence = null;
 let decisionPolicy = null;
 let reasoningStress = null;
+let reviewWorkflow = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
 let activeArchitectureView = "layers";
@@ -257,6 +261,21 @@ async function handleSchemaActionUpdate(action, status, notes) {
   }
 }
 
+function handleReviewWorkflowStepChange() {
+  renderReviewWorkflow(reviewWorkflow, handleReviewWorkflowStepChange, handleReviewOutcomeUpdate);
+}
+
+async function handleReviewOutcomeUpdate(stepId, itemId, outcome, notes) {
+  try {
+    reviewWorkflow = await updateReviewWorkflowOutcome(stepId, itemId, outcome, notes);
+    packet = await fetchMonthlyPacket();
+    render();
+    setStatus(`Saved review outcome: ${outcome.replaceAll("_", " ")}.`, "ok");
+  } catch (error) {
+    setStatus(`Unable to save review outcome: ${error.message}`, "error");
+  }
+}
+
 async function loadDecisionDetail(decisionId) {
   if (decisionDetails[decisionId]) {
     renderSelectedDecisionDetail();
@@ -281,6 +300,7 @@ function render() {
   renderStakeholderContext(activeView, rows, actions);
   renderInsights(activeView, rows, actions, packet, handleInsightAction);
   renderArchitectureSurface(architectureData(), activeArchitectureView, handleArchitectureViewChange);
+  renderReviewWorkflow(reviewWorkflow, handleReviewWorkflowStepChange, handleReviewOutcomeUpdate);
   renderSummary(packet, rows, actions);
   renderReviewDiff(
     packet.review_diff,
@@ -327,6 +347,7 @@ async function loadPacket() {
       nextGovernanceCadence,
       nextDecisionPolicy,
       nextReasoningStress,
+      nextReviewWorkflow,
     ] = await Promise.all([
       fetchMonthlyPacket(),
       fetchSchemaGap(),
@@ -340,6 +361,7 @@ async function loadPacket() {
       fetchGovernanceCadence(),
       fetchDecisionPolicy(),
       fetchReasoningStress(),
+      fetchReviewWorkflow(),
     ]);
     packet = nextPacket;
     schemaGap = nextSchemaGap;
@@ -353,6 +375,7 @@ async function loadPacket() {
     governanceCadence = nextGovernanceCadence;
     decisionPolicy = nextDecisionPolicy;
     reasoningStress = nextReasoningStress;
+    reviewWorkflow = nextReviewWorkflow;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();

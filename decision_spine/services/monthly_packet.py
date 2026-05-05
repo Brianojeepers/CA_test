@@ -9,6 +9,7 @@ from typing import Any
 
 from decision_spine.data_access import load_json
 from decision_spine.services.review_snapshots import review_diff_from_latest
+from decision_spine.services.review_workflow import review_workflow_summary_from_register
 from scripts.decision_impact_review import deltas_for_cohort, impact_status
 from scripts.validate_data import validate_all
 
@@ -504,6 +505,7 @@ def build_monthly_packet() -> dict[str, Any]:
         },
         "actions": action_items,
         "decision_changelog": decision_changelog,
+        "review_workflow": review_workflow_summary_from_register(),
         "stakeholder_drilldowns": STAKEHOLDER_DRILLDOWNS,
         "known_limits": KNOWN_LIMITS,
     }
@@ -580,6 +582,16 @@ def render_monthly_packet_markdown(packet: dict[str, Any]) -> str:
     for item in packet["review_diff"]["items"][:6]:
         lines.append(f"- {item['text']}")
 
+    workflow = packet["review_workflow"]
+    lines.extend(["", "## Review Workflow Outcomes", ""])
+    lines.append(
+        f"- Recorded outcomes: {workflow['recorded_outcome_count']} "
+        f"(accepted={workflow['accepted_count']}, follow_up={workflow['needs_follow_up_count']}, "
+        f"blocked={workflow['blocked_count']}, deferred={workflow['deferred_count']})."
+    )
+    lines.append(f"- Event log entries: {workflow['event_count']}.")
+    lines.append(f"- Local register: `{workflow['local_register']}`.")
+
     lines.extend(["", "## Stakeholder Drill-Downs", ""])
     for item in packet["stakeholder_drilldowns"]:
         lines.append(f"- {item['label']}: `{item['command']}`")
@@ -653,4 +665,17 @@ def render_monthly_packet_text(packet: dict[str, Any]) -> str:
     )
     for item in packet["review_diff"]["items"][:6]:
         lines.append(f"- {item['text']}")
+    workflow = packet["review_workflow"]
+    lines.extend(
+        [
+            "",
+            "Review Workflow Outcomes",
+            "-----------------------",
+            (
+                f"- recorded={workflow['recorded_outcome_count']} accepted={workflow['accepted_count']} "
+                f"follow_up={workflow['needs_follow_up_count']} blocked={workflow['blocked_count']} "
+                f"deferred={workflow['deferred_count']} events={workflow['event_count']}"
+            ),
+        ]
+    )
     return "\n".join(lines)

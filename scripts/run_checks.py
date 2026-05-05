@@ -36,6 +36,7 @@ def main() -> int:
         ("Review stakeholder journeys", [python, "scripts/stakeholder_journey_review.py"], None),
         ("Review decision policy", [python, "scripts/decision_policy_review.py"], None),
         ("Review reasoning stress tests", [python, "scripts/reasoning_stress_review.py"], None),
+        ("Review workflow", [python, "scripts/review_workflow.py"], None),
         ("Run tests", [python, "-m", "unittest", "discover", "-s", "tests"], None),
         ("Check frontend", [python, "scripts/check_frontend.py"], None),
         (
