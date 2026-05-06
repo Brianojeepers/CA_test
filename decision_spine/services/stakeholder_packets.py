@@ -154,11 +154,15 @@ def changelog_for_view(packet: dict[str, Any], rows: list[dict[str, Any]], view:
 
 
 def build_stakeholder_packet(packet: dict[str, Any], view_id: str) -> dict[str, Any]:
+    from decision_spine.services.stakeholder_gates import build_stakeholder_gate_review
+
     view = stakeholder_view(view_id)
     rows = rows_for_view(packet, view)
     actions = actions_for_view(packet, rows, view)
     sorted_rows = sort_rows_for_brief(rows)
     status_counts = Counter(row["status"] for row in rows)
+    gate_review = build_stakeholder_gate_review(packet=packet)
+    view_gate = next(item for item in gate_review["stakeholder_views"] if item["view_id"] == view["id"])
     key_decisions = [
         {
             "decision_id": row["decision_id"],
@@ -186,6 +190,7 @@ def build_stakeholder_packet(packet: dict[str, Any], view_id: str) -> dict[str, 
         "actions": actions[:6],
         "changelog_items": changelog_for_view(packet, rows, view)[:6],
         "data_trust": packet["data_trust"],
+        "stakeholder_gate": view_gate,
         "known_limits": packet["known_limits"][:2],
     }
 
@@ -207,6 +212,8 @@ def render_stakeholder_packet_markdown(brief: dict[str, Any]) -> str:
         f"- Scope: {brief['scope_count']} decision(s).",
         f"- Actions: {brief['action_count']} item(s).",
         f"- Data trust: passed with {brief['data_trust']['warning_count']} warning(s).",
+        f"- Review gate: {brief['stakeholder_gate']['mode_label']} "
+        f"({brief['stakeholder_gate']['share_ready_count']} share-ready item(s)).",
         f"- Focus: {', '.join(brief['focus'])}.",
         "",
         "## Key Decisions",
@@ -231,6 +238,22 @@ def render_stakeholder_packet_markdown(brief: dict[str, Any]) -> str:
         lines.extend(f"- {action['text']}" for action in brief["actions"])
     else:
         lines.append("- No action items for this stakeholder lens.")
+
+    gate = brief["stakeholder_gate"]
+    lines.extend(["", "## Review Gate", ""])
+    lines.append(
+        f"- Mode: {gate['mode_label']} "
+        f"(follow-up={gate['needs_follow_up_count']}, suppressed={gate['suppressed_count']}, "
+        f"internal={gate['internal_only_count']}, unreviewed={gate['unreviewed_count']})."
+    )
+    if gate["share_ready_items"]:
+        lines.append("- Share-ready language:")
+        lines.extend(f"  - {item['communication_instruction']}" for item in gate["share_ready_items"][:3])
+    else:
+        lines.append("- Share-ready language: none accepted by council yet.")
+    if gate["follow_up_items"]:
+        lines.append("- Follow-up or suppressed items:")
+        lines.extend(f"  - {item['communication_instruction']}" for item in gate["follow_up_items"][:3])
 
     lines.extend(["", "## What Changed", ""])
     if brief["changelog_items"]:

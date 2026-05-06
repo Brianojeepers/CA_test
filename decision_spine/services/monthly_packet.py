@@ -439,6 +439,11 @@ def build_decision_changelog(
 
 
 def build_monthly_packet() -> dict[str, Any]:
+    from decision_spine.services.stakeholder_gates import (
+        build_stakeholder_gate_review,
+        stakeholder_gate_summary_from_review,
+    )
+
     warnings = validation_warnings_or_raise()
     signals = load_json("signals.json")
     decisions = load_json("decisions.json")
@@ -509,6 +514,8 @@ def build_monthly_packet() -> dict[str, Any]:
         "stakeholder_drilldowns": STAKEHOLDER_DRILLDOWNS,
         "known_limits": KNOWN_LIMITS,
     }
+    stakeholder_gate = build_stakeholder_gate_review(packet=packet)
+    packet["stakeholder_gate"] = stakeholder_gate_summary_from_review(stakeholder_gate)
     packet["review_diff"] = review_diff_from_latest(packet)
     return packet
 
@@ -592,6 +599,17 @@ def render_monthly_packet_markdown(packet: dict[str, Any]) -> str:
     lines.append(f"- Event log entries: {workflow['event_count']}.")
     lines.append(f"- Local register: `{workflow['local_register']}`.")
 
+    gate = packet["stakeholder_gate"]
+    lines.extend(["", "## Stakeholder Communication Gate", ""])
+    lines.append(
+        f"- Share-ready items: {gate['share_ready_count']} "
+        f"across {gate['share_ready_view_count']}/{gate['stakeholder_view_count']} stakeholder view(s)."
+    )
+    lines.append(
+        f"- Follow-up: {gate['needs_follow_up_count']}; suppressed: {gate['suppressed_count']}; "
+        f"internal-only: {gate['internal_only_count']}; unreviewed: {gate['unreviewed_count']}."
+    )
+
     lines.extend(["", "## Stakeholder Drill-Downs", ""])
     for item in packet["stakeholder_drilldowns"]:
         lines.append(f"- {item['label']}: `{item['command']}`")
@@ -666,6 +684,7 @@ def render_monthly_packet_text(packet: dict[str, Any]) -> str:
     for item in packet["review_diff"]["items"][:6]:
         lines.append(f"- {item['text']}")
     workflow = packet["review_workflow"]
+    gate = packet["stakeholder_gate"]
     lines.extend(
         [
             "",
@@ -675,6 +694,15 @@ def render_monthly_packet_text(packet: dict[str, Any]) -> str:
                 f"- recorded={workflow['recorded_outcome_count']} accepted={workflow['accepted_count']} "
                 f"follow_up={workflow['needs_follow_up_count']} blocked={workflow['blocked_count']} "
                 f"deferred={workflow['deferred_count']} events={workflow['event_count']}"
+            ),
+            "",
+            "Stakeholder Communication Gate",
+            "------------------------------",
+            (
+                f"- share_ready={gate['share_ready_count']} follow_up={gate['needs_follow_up_count']} "
+                f"suppressed={gate['suppressed_count']} internal={gate['internal_only_count']} "
+                f"unreviewed={gate['unreviewed_count']} share_ready_views="
+                f"{gate['share_ready_view_count']}/{gate['stakeholder_view_count']}"
             ),
         ]
     )

@@ -52,6 +52,8 @@ The first working version is intentionally smaller than the target architecture.
 - `scripts/stakeholder_journey_review.py` and `docs/stakeholder_journey_map.md` for mapping what each stakeholder can do now, must defer, escalate, and evidence-gate.
 - `scripts/decision_policy_review.py` and `docs/decision_policy.md` for turning current evidence posture into safe policy outcomes: act now, revise, monitor, wait, escalate, or archive.
 - `scripts/reasoning_stress_review.py` and `docs/reasoning_stress_tests.md` for forcing unsafe claims to downgrade across signal, trust, ingestion, decision, activation, and stakeholder-experience layers.
+- `scripts/review_workflow.py` for recording council review outcomes against trust, source, decision-policy, stress-test, and action-queue items.
+- `scripts/stakeholder_gate_review.py` for converting those review outcomes into stakeholder communication permissions: share-ready, follow-up, suppressed, internal-only, or unreviewed.
 - `SPEC.md` for the executable MVP specification and acceptance criteria.
 
 This MVP is not the end state. It is the smallest trustworthy operating surface for the larger intelligence engine.
@@ -114,6 +116,10 @@ Reasoning stress tests then check whether the horizontal architecture holds
 together under pressure: strong signals cannot bypass red evidence sources,
 approvals cannot masquerade as implementation proof, and dashboard actions
 cannot override policy outcomes.
+Review workflow and stakeholder-gate checks then close the loop between
+governance and communication: a council outcome determines whether a stakeholder
+surface can use bounded share-ready language, ask for follow-up, suppress a
+claim, or keep the item internal.
 
 ## 2) Data domains to add (richness expansion)
 1. **Live job demand signals**
@@ -274,6 +280,7 @@ The council charter for this operating owner is defined in `docs/signal_intellig
 4. Add a “matcher view” that translates curriculum outcomes into client-ready talent profiles.
 5. Add changelog diffing so stakeholders see what changed since last review.
 6. Add architecture-wide navigation so stakeholders can move across signals, trust, decisions, activation, and learning without needing technical packet output.
+7. Gate stakeholder-facing language from council review outcomes so share-ready summaries cannot outrun evidence, privacy, source, or policy posture.
 
 ---
 

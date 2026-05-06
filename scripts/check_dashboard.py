@@ -23,8 +23,13 @@ API_BASE_URL = "http://127.0.0.1:8000/api"
 EXPECTED_DASHBOARD_TEXT = [
     "Monthly Council Dashboard",
     "Copy brief",
+    "Workspace",
+    "Stakeholder workspace",
     "Stakeholder lens",
     "Stakeholder insights",
+    "Stakeholder mode",
+    "Review-gated communication",
+    "Share-ready language",
     "Architecture navigation",
     "Horizontal MVP surface",
     "Next horizontal slices",
@@ -126,6 +131,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/reviewWorkflow.js",
             "render/schemaGap.js",
             "render/stakeholderBrief.js",
+            "render/stakeholderGates.js",
             "render/summary.js",
             "render/table.js",
             "render/v02Intelligence.js",
@@ -321,6 +327,19 @@ def check_api(errors: list[str]) -> None:
         errors.append("review workflow endpoint item count does not match step items")
     if not review_workflow.get("allowed_outcomes"):
         errors.append("review workflow endpoint returned no allowed outcomes")
+
+    try:
+        stakeholder_gates = fetch_json(f"{API_BASE_URL}/stakeholder-gates", origin=DASHBOARD_BASE_URL.rstrip("/"))
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    if stakeholder_gates.get("summary", {}).get("item_count") is None:
+        errors.append("stakeholder gates endpoint returned no item count")
+    if not stakeholder_gates.get("stakeholder_views"):
+        errors.append("stakeholder gates endpoint returned no stakeholder views")
+    if not stakeholder_gates.get("gate_catalog"):
+        errors.append("stakeholder gates endpoint returned no gate catalog")
 
     first_decision_id = rows[0].get("decision_id")
     if not first_decision_id:

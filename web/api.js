@@ -60,6 +60,10 @@ export async function fetchReviewWorkflow() {
   return fetchJson("/review-workflow");
 }
 
+export async function fetchStakeholderGates() {
+  return fetchJson("/stakeholder-gates");
+}
+
 export async function updateSchemaAction(capability, field, status, notes) {
   const response = await fetch(
     `${API_BASE_URL}/schema-gap/actions/${encodeURIComponent(capability)}/${encodeURIComponent(field)}`,

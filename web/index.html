@@ -24,7 +24,16 @@
         Connecting to the API...
       </section>
 
-      <section class="view-panel" aria-label="Stakeholder view">
+      <section class="mode-switcher" aria-label="Dashboard mode">
+        <div>
+          <p class="eyebrow">Workspace</p>
+          <h2 id="dashboard-mode-title">Stakeholder workspace</h2>
+          <p id="dashboard-mode-summary" class="section-question">Loading workspace mode...</p>
+        </div>
+        <div id="dashboard-modes" class="segmented dashboard-modes" aria-label="Dashboard modes"></div>
+      </section>
+
+      <section class="view-panel mode-section mode-stakeholder" aria-label="Stakeholder view">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Stakeholder lens</p>
@@ -48,9 +57,30 @@
         </div>
       </section>
 
-      <section id="stakeholder-insights" class="insight-grid" aria-label="Stakeholder insights"></section>
+      <section id="stakeholder-insights" class="insight-grid mode-section mode-stakeholder" aria-label="Stakeholder insights"></section>
 
-      <section class="panel architecture-panel" aria-label="Architecture navigation">
+      <section class="panel stakeholder-gate-panel mode-section mode-stakeholder" aria-label="Review-gated stakeholder mode">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Stakeholder mode</p>
+            <h2>Review-gated communication</h2>
+            <p id="stakeholder-gate-summary" class="section-question">Loading stakeholder communication gates...</p>
+          </div>
+        </div>
+        <div id="stakeholder-gate-view" class="stakeholder-gate-view"></div>
+        <div class="stakeholder-gate-columns">
+          <div>
+            <h3>Share-ready language</h3>
+            <div id="stakeholder-gate-share-list" class="stakeholder-gate-list"></div>
+          </div>
+          <div>
+            <h3>Internal or follow-up only</h3>
+            <div id="stakeholder-gate-internal-list" class="stakeholder-gate-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel architecture-panel mode-section mode-architecture" aria-label="Architecture navigation">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Architecture navigation</p>
@@ -66,7 +96,7 @@
         </div>
       </section>
 
-      <section class="panel review-workflow-panel" aria-label="Council review workflow">
+      <section class="panel review-workflow-panel mode-section mode-council" aria-label="Council review workflow">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Review workflow</p>
@@ -82,7 +112,7 @@
         </div>
       </section>
 
-      <section class="panel v02-intelligence-panel" aria-label="v0.2 intelligence preview">
+      <section class="panel v02-intelligence-panel mode-section mode-evidence" aria-label="v0.2 intelligence preview">
         <div class="section-heading">
           <div>
             <p class="eyebrow">v0.2 intelligence</p>
@@ -94,7 +124,7 @@
         <div id="v02-intelligence-list" class="v02-intelligence-list"></div>
       </section>
 
-      <section class="panel pilot-request-panel" aria-label="Pilot data requests">
+      <section class="panel pilot-request-panel mode-section mode-evidence" aria-label="Pilot data requests">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Pilot data requests</p>
@@ -106,7 +136,7 @@
         <div id="pilot-request-list" class="pilot-request-list"></div>
       </section>
 
-      <section class="panel pilot-intake-panel" aria-label="Pilot intake readiness">
+      <section class="panel pilot-intake-panel mode-section mode-evidence" aria-label="Pilot intake readiness">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Pilot intake readiness</p>
@@ -118,7 +148,7 @@
         <div id="pilot-intake-list" class="pilot-intake-list"></div>
       </section>
 
-      <section class="summary-grid" aria-label="Executive summary">
+      <section class="summary-grid mode-section mode-stakeholder" aria-label="Executive summary">
         <article class="metric-card">
           <span class="metric-label">Data Trust</span>
           <strong id="data-trust">-</strong>
@@ -141,7 +171,7 @@
         </article>
       </section>
 
-      <section class="panel review-diff-panel" aria-label="Since last review snapshot">
+      <section class="panel review-diff-panel mode-section mode-council" aria-label="Since last review snapshot">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Since last snapshot</p>
@@ -153,7 +183,7 @@
         <div id="review-diff-list" class="review-diff-list"></div>
       </section>
 
-      <section class="panel schema-gap-panel" aria-label="v0.2 readiness">
+      <section class="panel schema-gap-panel mode-section mode-evidence" aria-label="v0.2 readiness">
         <div class="section-heading">
           <div>
             <p class="eyebrow">v0.2 readiness</p>
@@ -175,7 +205,7 @@
         <div id="schema-gap-blockers" class="schema-gap-blockers"></div>
       </section>
 
-      <section class="workspace">
+      <section class="workspace mode-section mode-stakeholder">
         <section class="main-column">
           <div class="section-heading">
             <div>
@@ -259,7 +289,7 @@
         </aside>
       </section>
 
-      <section class="panel changelog-panel" aria-label="What changed since last review">
+      <section class="panel changelog-panel mode-section mode-council" aria-label="What changed since last review">
         <div class="section-heading">
           <div>
             <p class="eyebrow">What changed since last review</p>
@@ -271,7 +301,7 @@
         <div id="changelog-list" class="changelog-list"></div>
       </section>
 
-      <section class="lower-grid">
+      <section class="lower-grid mode-section mode-stakeholder">
         <section class="panel">
           <p class="eyebrow">Stakeholder drill-downs</p>
           <div id="drilldowns" class="drilldown-grid"></div>

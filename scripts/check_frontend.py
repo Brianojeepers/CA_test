@@ -18,6 +18,9 @@ REQUIRED_IDS = {
     "copy-stakeholder-brief",
     "refresh-button",
     "status-banner",
+    "dashboard-mode-title",
+    "dashboard-mode-summary",
+    "dashboard-modes",
     "stakeholder-views",
     "view-title",
     "view-description",
@@ -26,6 +29,10 @@ REQUIRED_IDS = {
     "view-scope-count",
     "view-action-count",
     "stakeholder-insights",
+    "stakeholder-gate-summary",
+    "stakeholder-gate-view",
+    "stakeholder-gate-share-list",
+    "stakeholder-gate-internal-list",
     "architecture-summary",
     "architecture-tabs",
     "architecture-body",
@@ -106,6 +113,7 @@ REQUIRED_FILES = [
     "render/reviewWorkflow.js",
     "render/schemaGap.js",
     "render/stakeholderBrief.js",
+    "render/stakeholderGates.js",
     "render/summary.js",
     "render/table.js",
     "render/v02Intelligence.js",
@@ -166,6 +174,7 @@ def check_api_contract(errors: list[str]) -> None:
         "/decision-policy",
         "/reasoning-stress",
         "/review-workflow",
+        "/stakeholder-gates",
         "/decisions/",
     ):
         if endpoint not in api_js:
@@ -182,6 +191,24 @@ def check_insight_trust_contract(errors: list[str]) -> None:
     for token in ("sourceCoverageForRows", "confidenceForRows", "maturityForRows", "trust-badges"):
         if token not in insights_js:
             errors.append(f"web/render/insights.js is missing insight trust token: {token}")
+
+
+def check_dashboard_mode_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    index_html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("dashboardModes", "activeDashboardMode", "renderDashboardModes", "mode-section"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing dashboard mode token: {token}")
+
+    for token in ("dashboard-mode-title", "dashboard-mode-summary", "dashboard-modes", "mode-section"):
+        if token not in index_html:
+            errors.append(f"web/index.html is missing dashboard mode token: {token}")
+
+    for token in (".mode-switcher", ".dashboard-modes", ".mode-section[hidden]"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing dashboard mode style: {token}")
 
     for token in (".trust-badges", ".trust-badge"):
         if token not in styles_css:
@@ -232,9 +259,39 @@ def check_stakeholder_brief_contract(errors: list[str]) -> None:
         if token not in app_js:
             errors.append(f"web/app.js is missing stakeholder brief token: {token}")
 
-    for token in ("Primary question", "Key Decisions", "Action Items", "What Changed"):
+    for token in ("Primary question", "Key Decisions", "Action Items", "Review Gate", "What Changed"):
         if token not in brief_js:
             errors.append(f"web/render/stakeholderBrief.js is missing brief token: {token}")
+
+
+def check_stakeholder_gate_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    gates_js = (WEB_DIR / "render" / "stakeholderGates.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("fetchStakeholderGates", "renderStakeholderGates", "stakeholderGates"):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing stakeholder gate token: {token}")
+
+    for token in (
+        "stakeholder-gate-summary",
+        "stakeholder-gate-view",
+        "stakeholder-gate-share-list",
+        "stakeholder-gate-internal-list",
+        "share_ready_items",
+        "follow_up_items",
+    ):
+        if token not in gates_js:
+            errors.append(f"web/render/stakeholderGates.js is missing stakeholder gate token: {token}")
+
+    for token in (
+        ".stakeholder-gate-panel",
+        ".stakeholder-gate-view",
+        ".stakeholder-gate-columns",
+        ".stakeholder-gate-item",
+    ):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing stakeholder gate style: {token}")
 
 
 def check_review_diff_contract(errors: list[str]) -> None:
@@ -474,10 +531,12 @@ def main() -> int:
     if not errors:
         check_html_contract(errors)
         check_api_contract(errors)
+        check_dashboard_mode_contract(errors)
         check_insight_trust_contract(errors)
         check_recommendation_contract(errors)
         check_changelog_contract(errors)
         check_stakeholder_brief_contract(errors)
+        check_stakeholder_gate_contract(errors)
         check_review_diff_contract(errors)
         check_schema_gap_contract(errors)
         check_v02_intelligence_contract(errors)

@@ -104,6 +104,32 @@ select {
   color: var(--red);
 }
 
+.mode-section[hidden] {
+  display: none !important;
+}
+
+.mode-switcher {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.mode-switcher h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.dashboard-modes {
+  flex: 0 1 560px;
+  justify-content: flex-end;
+}
+
 .summary-grid,
 .insight-grid {
   display: grid;
@@ -115,6 +141,7 @@ select {
 .metric-card,
 .insight-card,
 .view-panel,
+.mode-switcher,
 .panel,
 .table-panel,
 .impact-visual {
@@ -317,6 +344,10 @@ select {
   margin-bottom: 22px;
 }
 
+.stakeholder-gate-panel {
+  margin-bottom: 22px;
+}
+
 .architecture-tabs {
   justify-content: flex-end;
   max-width: 620px;
@@ -333,6 +364,101 @@ select {
 
 .review-workflow-body {
   margin-top: 14px;
+}
+
+.stakeholder-gate-view {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.stakeholder-gate-view strong {
+  display: block;
+  font-size: 22px;
+  margin-top: 3px;
+}
+
+.stakeholder-gate-counts,
+.stakeholder-gate-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.stakeholder-gate-counts {
+  justify-content: flex-end;
+}
+
+.stakeholder-gate-counts span,
+.stakeholder-gate-meta span {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--neutral);
+  font-size: 11px;
+  font-weight: 720;
+  padding: 5px 8px;
+}
+
+.stakeholder-gate-columns {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.stakeholder-gate-columns h3 {
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+
+.stakeholder-gate-list {
+  display: grid;
+  gap: 10px;
+}
+
+.stakeholder-gate-item {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--neutral);
+  border-radius: 7px;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.stakeholder-gate-item h3 {
+  font-size: 14px;
+  margin: 0 0 5px;
+}
+
+.stakeholder-gate-item p {
+  color: var(--neutral);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.stakeholder-gate-item.green {
+  background: var(--green-bg);
+  border-left-color: var(--green);
+}
+
+.stakeholder-gate-item.amber {
+  background: var(--amber-bg);
+  border-left-color: var(--amber);
+}
+
+.stakeholder-gate-item.red {
+  background: var(--red-bg);
+  border-left-color: var(--red);
 }
 
 .architecture-list {
@@ -1836,6 +1962,7 @@ tbody tr.no-results:hover {
   .changelog-list,
   .architecture-list,
   .architecture-two-column,
+  .stakeholder-gate-columns,
   .review-workflow-list,
   .review-workflow-step-heading,
   .v02-intelligence-list,
@@ -1855,8 +1982,10 @@ tbody tr.no-results:hover {
 
 @media (max-width: 720px) {
   .topbar,
+  .mode-switcher,
   .section-heading,
   .architecture-card-top,
+  .stakeholder-gate-view,
   .review-workflow-item-top,
   .schema-action-heading {
     align-items: stretch;
@@ -1889,6 +2018,16 @@ tbody tr.no-results:hover {
 
   .schema-status-form {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-modes {
+    flex: none;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .dashboard-modes button {
+    flex: 1 1 calc(50% - 4px);
   }
 
   .review-workflow-form {

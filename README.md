@@ -210,6 +210,7 @@ The first API endpoints are:
 - `GET /api/decision-policy`
 - `GET /api/reasoning-stress`
 - `GET /api/review-workflow`
+- `GET /api/stakeholder-gates`
 - `PATCH /api/review-workflow/items/{step_id}/{item_id}`
 - `PATCH /api/schema-gap/actions/{capability}/{field}`
 - `GET /api/decisions/{decision_id}`
@@ -227,14 +228,19 @@ Open `http://127.0.0.1:3000`. The page consumes
 `http://127.0.0.1:8000/api/pilot-request-pack`, intake review at
 `http://127.0.0.1:8000/api/pilot-intake-review`, and horizontal architecture
 reviews for readiness, trust, source ingestion, normalization, cadence, decision
-policy, reasoning stress, and review workflow outcomes.
-Use stakeholder views, clickable insight cards, trust/source badges, selected
-decision recommendations, review snapshot diffs, directional v0.2 intelligence
-previews, architecture navigation, council review workflow controls, owner-ready
-pilot data requests, pilot intake readiness, v0.2 readiness cards, a v0.2 owner
-workbench with field-action status badges, editable action notes, recent
-activity history, changelog filtering, copyable stakeholder briefs, action mode,
-and the council notes panel during monthly review.
+policy, reasoning stress, review workflow outcomes, and stakeholder communication gates.
+Use the mode-based dashboard shell to move between stakeholder, council,
+evidence, and architecture workspaces. The default stakeholder workspace keeps
+share-ready language, current actions, and selected decision context prominent;
+deeper review machinery stays available through the other modes. The dashboard
+also supports stakeholder views, clickable insight cards, trust/source badges,
+selected decision recommendations, review snapshot diffs, directional v0.2
+intelligence previews, architecture navigation, review-gated stakeholder mode,
+council review workflow controls, owner-ready pilot data requests, pilot intake
+readiness, v0.2 readiness cards, a v0.2 owner workbench with field-action status
+badges, editable action notes, recent activity history, changelog filtering,
+copyable stakeholder briefs, action mode, and the council notes panel during
+monthly review.
 The dashboard shell lives in `web/index.html`, API access in `web/api.js`, and
 stakeholder filtering in `web/stakeholders.js`; rendering modules live under
 `web/render/`.
@@ -282,6 +288,7 @@ outcome data exists.
 | `scripts/decision_policy_review.py` | Reviews safe operating policy for current decisions. |
 | `scripts/reasoning_stress_review.py` | Stress-tests cross-layer claim downgrades before schema commitments. |
 | `scripts/review_workflow.py` | Reviews the council agenda workflow and recorded local outcomes. |
+| `scripts/stakeholder_gate_review.py` | Reviews stakeholder communication permissions from council outcomes. |
 | `scripts/save_review_snapshot.py` | Saves current packet state under `outputs/review_snapshots/` for future diffing. |
 | `scripts/decision_impact_review.py` | Decision-level impact status across releases, evidence, and outcomes. |
 | `scripts/competency_gap_review.py` | Role competency coverage and gap hypotheses. |

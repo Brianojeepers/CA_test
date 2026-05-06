@@ -115,13 +115,21 @@ function trustBadges(card, rows, packet) {
   const insightRows = rowsForInsight(card, rows);
   const coverage = sourceCoverageForRows(insightRows);
   const badges = [
-    { label: `Updated ${packet.generated_date}`, tone: "neutral" },
     coverage,
     confidenceForRows(insightRows, coverage),
     maturityForRows(insightRows),
     limitationForRows(insightRows, packet),
   ];
-  return badges
+  const visibleBadges = badges.slice(0, 2);
+  const hiddenBadges = badges.slice(2);
+  if (hiddenBadges.length) {
+    visibleBadges.push({
+      label: `+${hiddenBadges.length} trust detail(s)`,
+      tone: "neutral",
+      title: hiddenBadges.map((badge) => badge.label).join("; "),
+    });
+  }
+  return visibleBadges
     .map(
       (badge) =>
         `<span class="trust-badge ${badge.tone}" title="${escapeHtml(badge.title ?? badge.label)}">${escapeHtml(

@@ -22,6 +22,7 @@ class StakeholderPacketTests(unittest.TestCase):
 
         self.assertEqual(brief["view_id"], "learning")
         self.assertGreaterEqual(brief["scope_count"], 1)
+        self.assertIn("stakeholder_gate", brief)
         self.assertTrue(
             all(
                 decision["owner"] == "Learning" or "curriculum" in decision["summary"].lower()
@@ -36,6 +37,7 @@ class StakeholderPacketTests(unittest.TestCase):
         self.assertIn("# Council Review Brief", markdown)
         self.assertIn("## Key Decisions", markdown)
         self.assertIn("## Action Items", markdown)
+        self.assertIn("## Review Gate", markdown)
         self.assertIn("## What Changed", markdown)
         self.assertIn("Next trigger", markdown)
 

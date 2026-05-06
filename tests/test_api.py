@@ -189,6 +189,18 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["unreviewed_count"], 19)
         self.assertIn("allowed_outcomes", payload)
 
+    def test_stakeholder_gates_endpoint_returns_communication_modes(self) -> None:
+        with self.temporary_review_workflow_register():
+            response = self.client.get("/api/stakeholder-gates")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["summary"]["item_count"], 19)
+        self.assertEqual(payload["summary"]["share_ready_count"], 0)
+        self.assertEqual(payload["summary"]["unreviewed_count"], 19)
+        self.assertIn("stakeholder_views", payload)
+        self.assertIn("gate_catalog", payload)
+
     def test_review_workflow_outcome_update_persists_and_refreshes_workflow(self) -> None:
         with self.temporary_review_workflow_register() as (outcome_path, event_path):
             workflow = self.client.get("/api/review-workflow").json()

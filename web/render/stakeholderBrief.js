@@ -35,8 +35,13 @@ function changelogForView(packet, rows, view) {
   return packet.decision_changelog.items.filter((item) => visibleDecisionIds.has(item.decision_id));
 }
 
-export function buildStakeholderBrief(packet, view, rows, actions) {
+function gateForView(stakeholderGates, view) {
+  return stakeholderGates?.stakeholder_views?.find((item) => item.view_id === view.id) ?? null;
+}
+
+export function buildStakeholderBrief(packet, view, rows, actions, stakeholderGates = null) {
   if (!packet) return "## Stakeholder Brief\n\n- Monthly packet data has not loaded yet.";
+  const gate = gateForView(stakeholderGates, view);
   const lines = [
     `# ${view.title} Brief`,
     "",
@@ -49,6 +54,7 @@ export function buildStakeholderBrief(packet, view, rows, actions) {
     `- Scope: ${rows.length} decision(s).`,
     `- Actions: ${actions.length} item(s).`,
     `- Data trust: passed with ${packet.data_trust.warning_count} warning(s).`,
+    `- Review gate: ${gate ? gate.mode_label : "Not loaded"} (${gate?.share_ready_count ?? 0} share-ready item(s)).`,
     `- Focus: ${view.focus.join(", ")}.`,
     "",
     "## Key Decisions",
@@ -73,6 +79,25 @@ export function buildStakeholderBrief(packet, view, rows, actions) {
     actions.slice(0, 6).forEach((action) => lines.push(`- ${action.text}`));
   } else {
     lines.push("- No action items for this stakeholder lens.");
+  }
+
+  lines.push("", "## Review Gate", "");
+  if (gate) {
+    lines.push(
+      `- Mode: ${gate.mode_label} (follow-up=${gate.needs_follow_up_count}, suppressed=${gate.suppressed_count}, internal=${gate.internal_only_count}, unreviewed=${gate.unreviewed_count}).`,
+    );
+    if (gate.share_ready_items.length) {
+      lines.push("- Share-ready language:");
+      gate.share_ready_items.slice(0, 3).forEach((item) => lines.push(`  - ${item.communication_instruction}`));
+    } else {
+      lines.push("- Share-ready language: none accepted by council yet.");
+    }
+    if (gate.follow_up_items.length) {
+      lines.push("- Follow-up or suppressed items:");
+      gate.follow_up_items.slice(0, 3).forEach((item) => lines.push(`  - ${item.communication_instruction}`));
+    }
+  } else {
+    lines.push("- Review gate data has not loaded yet.");
   }
 
   lines.push("", "## What Changed", "");

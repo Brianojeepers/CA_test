@@ -11,6 +11,7 @@ import {
   fetchReviewWorkflow,
   fetchSchemaGap,
   fetchSourceIngestion,
+  fetchStakeholderGates,
   fetchTrustRegistry,
   fetchV02Intelligence,
   updateSchemaAction,
@@ -33,6 +34,7 @@ import { renderReviewDiff } from "./render/reviewDiff.js";
 import { renderReviewWorkflow } from "./render/reviewWorkflow.js";
 import { renderSchemaGap } from "./render/schemaGap.js";
 import { buildStakeholderBrief } from "./render/stakeholderBrief.js";
+import { renderStakeholderGates } from "./render/stakeholderGates.js";
 import { renderSummary } from "./render/summary.js";
 import { renderDecisionTable } from "./render/table.js";
 import { renderV02Intelligence } from "./render/v02Intelligence.js";
@@ -60,8 +62,10 @@ let governanceCadence = null;
 let decisionPolicy = null;
 let reasoningStress = null;
 let reviewWorkflow = null;
+let stakeholderGates = null;
 let selectedDecisionId = null;
 let activeView = defaultView();
+let activeDashboardMode = "stakeholder";
 let activeArchitectureView = "layers";
 let activeFilter = "all";
 let activeOwner = "all";
@@ -69,6 +73,33 @@ let activeChangelogCategory = "all";
 let searchQuery = "";
 let actionMode = false;
 let decisionDetails = {};
+
+const dashboardModes = [
+  {
+    id: "stakeholder",
+    label: "Stakeholder",
+    title: "Stakeholder workspace",
+    summary: "Share-ready language, current actions, and selected decision context.",
+  },
+  {
+    id: "council",
+    label: "Council",
+    title: "Council review",
+    summary: "Review workflow, changes since last review, and current changelog.",
+  },
+  {
+    id: "evidence",
+    label: "Evidence",
+    title: "Evidence and trust",
+    summary: "Directional intelligence, pilot readiness, and source-owner workbench.",
+  },
+  {
+    id: "architecture",
+    label: "Architecture",
+    title: "Architecture map",
+    summary: "Horizontal MVP coverage across trust, source, policy, and governance layers.",
+  },
+];
 
 function baseRows() {
   return rowsForView(packet, activeView);
@@ -162,6 +193,30 @@ function handleViewChange(nextViewId) {
   if (selectedDecisionId) {
     loadDecisionDetail(selectedDecisionId);
   }
+}
+
+function renderDashboardModes() {
+  const currentMode = dashboardModes.find((mode) => mode.id === activeDashboardMode) ?? dashboardModes[0];
+  document.getElementById("dashboard-mode-title").textContent = currentMode.title;
+  document.getElementById("dashboard-mode-summary").textContent = currentMode.summary;
+  document.getElementById("dashboard-modes").innerHTML = dashboardModes
+    .map((mode) => {
+      const active = mode.id === activeDashboardMode ? "active" : "";
+      return `<button class="${active}" type="button" data-dashboard-mode="${mode.id}">${mode.label}</button>`;
+    })
+    .join("");
+
+  document.querySelectorAll("[data-dashboard-mode]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeDashboardMode = button.dataset.dashboardMode;
+      render();
+      document.getElementById("dashboard-modes").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  });
+
+  document.querySelectorAll(".mode-section").forEach((section) => {
+    section.hidden = !section.classList.contains(`mode-${activeDashboardMode}`);
+  });
 }
 
 function handleChangelogCategoryChange(nextCategory) {
@@ -269,6 +324,7 @@ async function handleReviewOutcomeUpdate(stepId, itemId, outcome, notes) {
   try {
     reviewWorkflow = await updateReviewWorkflowOutcome(stepId, itemId, outcome, notes);
     packet = await fetchMonthlyPacket();
+    stakeholderGates = await fetchStakeholderGates();
     render();
     setStatus(`Saved review outcome: ${outcome.replaceAll("_", " ")}.`, "ok");
   } catch (error) {
@@ -296,9 +352,11 @@ function render() {
   if (!rows.some((row) => row.decision_id === selectedDecisionId)) {
     selectedDecisionId = rows[0]?.decision_id ?? null;
   }
+  renderDashboardModes();
   renderStakeholderTabs(stakeholderViews, activeView, handleViewChange);
   renderStakeholderContext(activeView, rows, actions);
   renderInsights(activeView, rows, actions, packet, handleInsightAction);
+  renderStakeholderGates(stakeholderGates, activeView);
   renderArchitectureSurface(architectureData(), activeArchitectureView, handleArchitectureViewChange);
   renderReviewWorkflow(reviewWorkflow, handleReviewWorkflowStepChange, handleReviewOutcomeUpdate);
   renderSummary(packet, rows, actions);
@@ -348,6 +406,7 @@ async function loadPacket() {
       nextDecisionPolicy,
       nextReasoningStress,
       nextReviewWorkflow,
+      nextStakeholderGates,
     ] = await Promise.all([
       fetchMonthlyPacket(),
       fetchSchemaGap(),
@@ -362,6 +421,7 @@ async function loadPacket() {
       fetchDecisionPolicy(),
       fetchReasoningStress(),
       fetchReviewWorkflow(),
+      fetchStakeholderGates(),
     ]);
     packet = nextPacket;
     schemaGap = nextSchemaGap;
@@ -376,6 +436,7 @@ async function loadPacket() {
     decisionPolicy = nextDecisionPolicy;
     reasoningStress = nextReasoningStress;
     reviewWorkflow = nextReviewWorkflow;
+    stakeholderGates = nextStakeholderGates;
     decisionDetails = {};
     selectedDecisionId = packet.decision_impact.rows[0]?.decision_id ?? null;
     render();
@@ -396,7 +457,7 @@ document.getElementById("copy-stakeholder-brief").addEventListener("click", asyn
   }
   const rows = baseRows();
   const actions = viewActions(rows);
-  const brief = buildStakeholderBrief(packet, activeView, rows, actions);
+  const brief = buildStakeholderBrief(packet, activeView, rows, actions, stakeholderGates);
   try {
     await navigator.clipboard.writeText(brief);
     setStatus(`${activeView.label} brief copied.`, "ok");

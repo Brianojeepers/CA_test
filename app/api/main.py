@@ -30,6 +30,7 @@ from decision_spine.services.schema_gap import (
     update_field_action_status,
 )
 from decision_spine.services.source_ingestion import build_source_ingestion_review
+from decision_spine.services.stakeholder_gates import build_stakeholder_gate_review
 from decision_spine.services.trust_registry import build_trust_registry
 from decision_spine.services.v02_intelligence import build_v02_intelligence_preview
 
@@ -167,6 +168,14 @@ def reasoning_stress() -> dict[str, Any]:
 def review_workflow() -> dict[str, Any]:
     try:
         return build_review_workflow()
+    except ValueError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/stakeholder-gates")
+def stakeholder_gates() -> dict[str, Any]:
+    try:
+        return build_stakeholder_gate_review()
     except ValueError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

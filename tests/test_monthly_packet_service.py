@@ -18,6 +18,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("actions", packet)
         self.assertIn("decision_changelog", packet)
         self.assertIn("review_diff", packet)
+        self.assertIn("stakeholder_gate", packet)
         self.assertIn("stakeholder_drilldowns", packet)
         self.assertIn("known_limits", packet)
         self.assertIn("recommendation", packet["decision_impact"]["rows"][0])
@@ -34,6 +35,7 @@ class MonthlyPacketServiceTests(unittest.TestCase):
         self.assertIn("## Decision Impact", markdown)
         self.assertIn("## What Changed And Why", markdown)
         self.assertIn("## Since Last Review Snapshot", markdown)
+        self.assertIn("## Stakeholder Communication Gate", markdown)
         self.assertIn("## Stakeholder Drill-Downs", markdown)
 
     def test_decision_changelog_groups_releases_and_no_change_decisions(self) -> None:

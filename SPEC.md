@@ -161,6 +161,7 @@ Core operating scripts:
 | `scripts/decision_policy_review.py` | Review safe operating policy for current decisions. |
 | `scripts/reasoning_stress_review.py` | Stress-test cross-layer claim downgrades before schema commitments. |
 | `scripts/review_workflow.py` | Review the monthly council workflow and recorded local outcomes. |
+| `scripts/stakeholder_gate_review.py` | Review stakeholder communication gates derived from council outcomes. |
 
 Reusable service layer:
 
@@ -198,6 +199,8 @@ Reusable service layer:
 | `decision_spine.services.review_workflow.build_review_workflow` | Return the council review agenda with trust, source, policy, stress-test, and action outcomes. |
 | `decision_spine.services.review_workflow.update_review_item_outcome` | Persist local review outcomes and notes to the file-backed review workflow register. |
 | `decision_spine.services.review_workflow.render_review_workflow_text` | Render the review workflow and recorded outcomes for CLI use. |
+| `decision_spine.services.stakeholder_gates.build_stakeholder_gate_review` | Convert review outcomes into stakeholder communication modes: share-ready, follow-up, suppressed, internal-only, or unreviewed. |
+| `decision_spine.services.stakeholder_gates.render_stakeholder_gate_text` | Render the stakeholder communication gate for CLI use. |
 
 API surface:
 
@@ -217,6 +220,7 @@ API surface:
 | `GET /api/decision-policy` | Return current decision operating policies across act, revise, monitor, wait, escalate, and archive outcomes. |
 | `GET /api/reasoning-stress` | Return cross-layer stress scenarios that verify unsafe claims downgrade before schema commitments. |
 | `GET /api/review-workflow` | Return the current council review agenda with recorded local outcomes. |
+| `GET /api/stakeholder-gates` | Return stakeholder communication permissions derived from review outcomes. |
 | `PATCH /api/review-workflow/items/{step_id}/{item_id}` | Persist a local review outcome and notes for one agenda item, then return the refreshed workflow. |
 | `PATCH /api/schema-gap/actions/{capability}/{field}` | Update a v0.2 field-action status and notes in the local status register, then return the refreshed schema-gap report. |
 | `GET /api/decisions/{decision_id}` | Return a joined traceability detail across signals, releases, competencies, evidence, outcomes, predictions, and pedagogy. |
@@ -225,11 +229,11 @@ Frontend prototype:
 
 | Surface | Requirement |
 | --- | --- |
-| `web/index.html` | Render the monthly-packet and horizontal-review APIs as a stakeholder dashboard with architecture navigation, council review workflow, summary metrics, actions, review snapshot diffs, decision impact, changelog review, copyable briefs, drill-downs, and known limits. |
-| `web/app.js` | Coordinate dashboard state, architecture navigation, review workflow updates, filtering, decision selection, and council meeting controls. |
-| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, pilot request pack, pilot intake review, architecture review, trust, source ingestion, normalization, cadence, decision policy, reasoning stress, review workflow, and decision-detail API data. |
+| `web/index.html` | Render the monthly-packet and horizontal-review APIs as a mode-based stakeholder dashboard with stakeholder, council, evidence, and architecture workspaces. |
+| `web/app.js` | Coordinate dashboard mode state, architecture navigation, stakeholder communication gates, review workflow updates, filtering, decision selection, and council meeting controls. |
+| `web/api.js` | Fetch monthly-packet, schema-gap, v0.2 intelligence preview, pilot request pack, pilot intake review, architecture review, trust, source ingestion, normalization, cadence, decision policy, reasoning stress, review workflow, stakeholder gates, and decision-detail API data. |
 | `web/stakeholders.js` | Define stakeholder-specific dashboard lenses and row/action filtering. |
-| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, architecture navigation, review workflow forms, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, pilot data requests, pilot intake readiness, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
+| `web/render/*.js` | Render stakeholder insight cards, trust/source badges, architecture navigation, review-gated communication panels, review workflow forms, selected-decision recommendations, review snapshot diffs, v0.2 intelligence previews, pilot data requests, pilot intake readiness, changelog filters, summary metrics, filters, action queues, decision detail, drill-downs, warnings, meeting notes, and impact tables. |
 | `scripts/check_frontend.py` | Validate dashboard DOM contracts, module wiring, API references, and JavaScript syntax. |
 | `scripts/check_dashboard.py` | Smoke-test the live local dashboard/API contract when both local servers are running. |
 
