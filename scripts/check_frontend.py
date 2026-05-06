@@ -28,6 +28,7 @@ REQUIRED_IDS = {
     "view-focus-list",
     "view-scope-count",
     "view-action-count",
+    "focus-strip",
     "stakeholder-insights",
     "stakeholder-gate-summary",
     "stakeholder-gate-view",
@@ -103,6 +104,7 @@ REQUIRED_FILES = [
     "render/detail.js",
     "render/drilldowns.js",
     "render/filters.js",
+    "render/focusStrip.js",
     "render/impact.js",
     "render/insights.js",
     "render/meetingNotes.js",
@@ -213,6 +215,24 @@ def check_dashboard_mode_contract(errors: list[str]) -> None:
     for token in (".trust-badges", ".trust-badge"):
         if token not in styles_css:
             errors.append(f"web/styles.css is missing insight trust style: {token}")
+
+
+def check_focus_strip_contract(errors: list[str]) -> None:
+    app_js = (WEB_DIR / "app.js").read_text(encoding="utf-8")
+    focus_js = (WEB_DIR / "render" / "focusStrip.js").read_text(encoding="utf-8")
+    styles_css = (WEB_DIR / "styles.css").read_text(encoding="utf-8")
+
+    for token in ("renderFocusStrip",):
+        if token not in app_js:
+            errors.append(f"web/app.js is missing focus strip token: {token}")
+
+    for token in ("Share state", "Next action", "Selected decision"):
+        if token not in focus_js:
+            errors.append(f"web/render/focusStrip.js is missing focus strip token: {token}")
+
+    for token in (".focus-strip", ".focus-card"):
+        if token not in styles_css:
+            errors.append(f"web/styles.css is missing focus strip style: {token}")
 
 
 def check_recommendation_contract(errors: list[str]) -> None:
@@ -533,6 +553,7 @@ def main() -> int:
         check_api_contract(errors)
         check_dashboard_mode_contract(errors)
         check_insight_trust_contract(errors)
+        check_focus_strip_contract(errors)
         check_recommendation_contract(errors)
         check_changelog_contract(errors)
         check_stakeholder_brief_contract(errors)

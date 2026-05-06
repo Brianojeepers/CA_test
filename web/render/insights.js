@@ -148,7 +148,7 @@ function actionAttributes(action) {
 }
 
 export function renderInsights(view, rows, actions, packet, onInsightAction) {
-  document.getElementById("stakeholder-insights").innerHTML = view.insightCards
+  document.getElementById("stakeholder-insights").innerHTML = view.insightCards.slice(0, 3)
     .map((card) => {
       const value = insightValue(card.metric, rows, actions, packet);
       const tone = insightTone(card.metric, value);

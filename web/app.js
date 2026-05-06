@@ -24,6 +24,7 @@ import { renderChangelog } from "./render/changelog.js";
 import { renderDecisionDetail } from "./render/detail.js";
 import { renderDrilldowns, renderKnownLimits } from "./render/drilldowns.js";
 import { renderFilters, renderMeetingControls, renderOwnerFilter } from "./render/filters.js";
+import { renderFocusStrip } from "./render/focusStrip.js";
 import { renderImpactBars } from "./render/impact.js";
 import { renderInsights } from "./render/insights.js";
 import { buildMeetingNotes, renderMeetingNotes } from "./render/meetingNotes.js";
@@ -355,6 +356,7 @@ function render() {
   renderDashboardModes();
   renderStakeholderTabs(stakeholderViews, activeView, handleViewChange);
   renderStakeholderContext(activeView, rows, actions);
+  renderFocusStrip(stakeholderGates, activeView, rows, actions, selectedDecisionId);
   renderInsights(activeView, rows, actions, packet, handleInsightAction);
   renderStakeholderGates(stakeholderGates, activeView);
   renderArchitectureSurface(architectureData(), activeArchitectureView, handleArchitectureViewChange);
@@ -443,7 +445,7 @@ async function loadPacket() {
     if (selectedDecisionId) {
       loadDecisionDetail(selectedDecisionId);
     }
-    setStatus("Connected to FastAPI monthly packet, architecture, pilot, and intake endpoints.", "ok");
+    setStatus("Data loaded from local API.", "ok");
   } catch (error) {
     setStatus(`Unable to load dashboard data: ${error.message}`, "error");
   }

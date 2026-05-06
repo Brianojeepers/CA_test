@@ -121,6 +121,7 @@ def check_static_modules(module_scripts: list[str], errors: list[str]) -> None:
             "render/detail.js",
             "render/drilldowns.js",
             "render/filters.js",
+            "render/focusStrip.js",
             "render/impact.js",
             "render/insights.js",
             "render/meetingNotes.js",

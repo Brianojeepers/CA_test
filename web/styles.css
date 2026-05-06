@@ -131,15 +131,25 @@ select {
 }
 
 .summary-grid,
-.insight-grid {
+.insight-grid,
+.focus-strip {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 22px;
+}
+
+.summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.insight-grid,
+.focus-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .metric-card,
 .insight-card,
+.focus-card,
 .view-panel,
 .mode-switcher,
 .panel,
@@ -211,6 +221,45 @@ select {
 .metric-card {
   min-height: 118px;
   padding: 16px;
+}
+
+.focus-card {
+  border-left: 4px solid var(--neutral);
+  min-height: 118px;
+  padding: 16px;
+}
+
+.focus-card strong {
+  display: block;
+  font-size: 24px;
+  line-height: 1.1;
+  margin-bottom: 9px;
+}
+
+.focus-card p {
+  color: var(--neutral);
+  display: -webkit-box;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.focus-card.green {
+  background: var(--green-bg);
+  border-left-color: var(--green);
+}
+
+.focus-card.amber {
+  background: var(--amber-bg);
+  border-left-color: var(--amber);
+}
+
+.focus-card.red {
+  background: var(--red-bg);
+  border-left-color: var(--red);
 }
 
 .insight-card {
@@ -1957,6 +2006,7 @@ tbody tr.no-results:hover {
 @media (max-width: 1040px) {
   .summary-grid,
   .insight-grid,
+  .focus-strip,
   .view-context-grid,
   .review-diff-list,
   .changelog-list,
@@ -1996,8 +2046,76 @@ tbody tr.no-results:hover {
     padding: 18px;
   }
 
+  .topbar {
+    gap: 12px;
+    min-height: auto;
+    padding: 16px 18px;
+  }
+
+  .topbar h1 {
+    font-size: 22px;
+  }
+
+  .topbar-actions {
+    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .topbar-actions .meta-pill {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .status-banner {
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+  }
+
+  .mode-switcher,
+  .view-panel {
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .mode-switcher .section-question,
+  .view-description,
+  .view-focus-list {
+    display: none;
+  }
+
+  .view-context-grid {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .view-question,
+  .view-counts {
+    padding: 10px;
+  }
+
+  .view-counts {
+    align-content: stretch;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .focus-card {
+    min-height: 96px;
+    padding: 13px;
+  }
+
+  .focus-card strong {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
   .summary-grid,
   .insight-grid,
+  .focus-strip,
   .view-context-grid,
   .side-column,
   .drilldown-grid {
